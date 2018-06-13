@@ -1,0 +1,193 @@
+<App.Page ux:Class="FeedDetailPage">
+    <Router ux:Dependency="router" />
+    <JavaScript>
+        var FirebaseUser = require("Firebase/Authentication/User");
+        var Share = require("FuseJS/Share");
+        var Observable = require("FuseJS/Observable")
+        var post = this.Parameter;
+        var InterApp = require("FuseJS/InterApp");
+        var Database = require("Firebase/Database");
+        var content = Observable();
+        var comments = Observable();
+
+        function addComment() {
+            Database.pushWithTimestamp("comments", {
+                post: post.value.id,
+                content: content.value,
+                time: new Date().toUTCString(),
+                commenter: 'User'
+            })
+            setTimeout(() => {
+                comments.add({
+                    post: post.id,
+                    content: content.value,
+                    time: new Date().toUTCString(),
+                    commenter: 'User'
+                })
+            }, 1000)
+        }
+
+        function back() {
+            router.goBack();
+        }
+
+        module.exports = {
+            post: post,
+            content: content,
+            comments: comments,
+            addComment: addComment,
+            return: back,
+            shareFile: function() {
+                    Camera.takePicture(320,240).then(function(image) {
+                    Share.shareFile(image.path, "image/*", `${post.val.title} ${post.val.body}`);
+                });
+            },
+            shareText: function() {
+                Share.shareText("https://www.reportapp.com/", `${post.val.title} ${post.val.body}`);
+            },
+            shareToWhatsapp: function() {
+                InterApp.on("receivedUri", function(uri) {
+                    console.log("Launched with URI", uri);
+                });
+
+                InterApp.on("error", function(uri) {
+                    console.log("error", uri);
+                });
+
+                InterApp.launchUri(`whatsapp://send?text=${post.val.title} ${post.val.body}`);
+            }
+        }
+    </JavaScript>
+    <EdgeNavigator>
+        <Panel Color="#FFF" ux:Name="commentBar" Edge="Right" Width="100%">
+            <Rectangle Layer="Background" Color="#FFF" />
+            <DockPanel>
+                <StackPanel Padding="5" Dock="Top" ItemSpacing="5">
+                    <App.TextBox LineCol="#CCC" Height="80%" Text="Your Comments" Value="{content}" />
+                    <Rectangle Alignment="Left" Clicked="{addComment}" Padding="5" Height="40" Color="#0095D3" >
+                        <App.Header Value="POST COMMENT" TextColor="#FFF" FontSize="20" />
+                        <Shadow />
+                    </Rectangle>
+                </StackPanel>
+                <WhileTrue ux:Name="commentBox" Value="false">
+                    <WhileEmpty Items="{comments}">
+                        <App.Text Value="Be the first to comment" Alignment="Center" />
+                    </WhileEmpty>
+                    <WhileCount Items="{comments}" GreaterThan="0">
+                        <ScrollView>
+                            <StackPanel>
+                                <Each Items="{comments}">
+                                    <Deferred>
+                                        <Panel Background="#FFF">
+                                            <DropShadow />
+                                            <Rectangle Color="#25333D" Alignment="TopLeft" Width="5" Height="30"/>
+                                            <StackPanel Alignment="Left" Padding="5" ItemSpacing="3">
+                                                <App.Header Alignment="Left" Color="#25333D" TextColor="#FFF" Value="{commenter}" Margin="3,0" FontSize="15"/>
+                                                <App.Text Alignment="Left" TextColor="#25333D" Value="{time}" FontSize="10" Margin="3,0"/>
+                                                <StackPanel Alignment="Left" Padding="5" ItemSpacing="3">
+                                                    <App.Text TextWrapping="Wrap" TextAlignment="Left" TextColor="#25333D" Value="{content}" FontSize="12" Margin="0,0,10,0"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Panel>
+                                    </Deferred>
+                                </Each>
+                            </StackPanel>
+                        </ScrollView>
+                    </WhileCount>
+                </WhileTrue>   
+                <Grid Dock="Bottom" Padding="2" CellSpacing="0" Columns="1*,4*,1*" Height="50" ColumnCount="3">
+                    <Rectangle Layer="Background" Color="#25333D"/>
+                    <Button Dock="Left">
+                        <Icon Alignment="CenterLeft" TextColor="#CCC" Value="&#xf111;" FontSize="30" />
+                        <Clicked>
+                            <Set commentBox.Value="false" />
+                            <NavigateToggle Target="commentBar" />
+                        </Clicked>
+                    </Button>
+                    <Rectangle />
+                    <Grid CellSpacing="1" Columns="1*,1*," ColumnCount="2">
+                        <Button Clicked="{shareToWhatsapp}">
+                            <Icon TextColor="#CCC" Value="&#xf37a;" FontSize="20" />
+                        </Button>
+                        <Button Clicked="{shareText}">
+                            <Mat.Icon TextColor="#CCC" Value="&#xe80d;" FontSize="20" />
+                        </Button>
+                    </Grid>
+                </Grid>             
+            </DockPanel>
+		</Panel>            
+        <DockPanel>
+            <Grid Dock="Bottom" Padding="2" CellSpacing="0" Columns="1*,4*,1*" Height="50" ColumnCount="3">
+                <Rectangle Layer="Background" Color="#25333D"/>
+                <Button Dock="Left" Clicked="{return}">
+                    <Icon Alignment="CenterLeft" TextColor="#CCC" Value="&#xf111;" FontSize="30" />
+                </Button>
+                <Rectangle />
+                <Grid CellSpacing="1" Columns="1*,1*," ColumnCount="2">
+                    <Button Clicked="{shareToWhatsapp}">
+                        <Icon TextColor="#CCC" Value="&#xf37a;" FontSize="20" />
+                    </Button>
+                    <Button Clicked="{shareText}">
+                        <Mat.Icon TextColor="#CCC" Value="&#xe80d;" FontSize="20" />
+                    </Button>
+                </Grid>
+            </Grid>
+            <!-- <StackPanel> -->
+                <DockPanel>
+                    <StackPanel Padding="10, 5" ItemSpacing="10">
+                        <App.Header TextWrapping="Wrap" Value="{post.val.title}" Alignment="Left" FontSize="30" />
+                        <DockPanel>
+                            <Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D" />
+                            <Grid Margin="5, 0, 0, 0" Rows="1*,1*,1*" RowCount="3">
+                                <App.Header Alignment="CenterLeft" FontSize="14" Value="{post.val.author}" />
+                                <App.Text Alignment="CenterLeft" FontSize="12" Value="Blogger living in Lagos, Nigeria" />
+                                <App.Text Alignment="CenterLeft" FontSize="12" Value="20 Posts" />
+                            </Grid>
+                        </DockPanel>
+                        <ScrollView>
+                            <App.Text MaxLength="200" TextWrapping="Wrap" Opacity=".8" FontSize="20" Alignment="Left" Value="{post.val.body}" />
+                        </ScrollView>
+                    </StackPanel>
+                    <DockPanel Dock="Bottom">
+                        <Grid Columns="1*,1*,1*,4*" ColumnCount="4">
+                            <Rectangle Layer="Background" Color="#CCC"/>
+                            <Button Alignment="Center">
+                                <DockPanel>
+                                    <Icon FontSize="20" Dock="Top" Value="&#xf1a1;" />
+                                    <App.Text FontSize="10" Value="500" />
+                                </DockPanel>
+                            </Button>
+                            <Button Alignment="Center">
+                                <DockPanel>
+                                    <Icon FontSize="20" Dock="Top" Value="&#xf33f;" />
+                                    <App.Text FontSize="10" Value="200" />
+                                </DockPanel>
+                            </Button>
+                            <Button Alignment="Center">
+                                <DockPanel>
+                                    <Icon FontSize="20" Dock="Top" Value="&#xf33e;" />
+                                    <App.Text FontSize="10" Value="20" />
+                                </DockPanel>
+                            </Button>
+                            <WhileTrue Value="{Property commentBox.Value}">
+                                <Button Margin="10, 5" Alignment="CenterRight" Text="Comments">
+                                    <Clicked>
+                                        <Set commentBox.Value="false" />
+                                    </Clicked>
+                                </Button>
+                            </WhileTrue>
+                            <WhileFalse Value="{Property commentBox.Value}">
+                                <Button Margin="10, 5" Alignment="CenterRight" Text="Comments">
+                                    <Clicked>
+                                        <Set commentBox.Value="true" />
+                                        <NavigateToggle Target="commentBar" />
+                                    </Clicked>
+                                </Button>
+                            </WhileFalse>
+                        </Grid>
+                    </DockPanel>
+                </DockPanel>
+            <!-- </StackPanel> -->
+        </DockPanel>
+    </EdgeNavigator>
+</App.Page>

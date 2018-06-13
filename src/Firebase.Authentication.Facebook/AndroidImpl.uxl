@@ -1,0 +1,8 @@
+<Extensions Backend="CPlusPlus" Condition="Android">
+    <Require AndroidManifest.ApplicationElement><![CDATA[
+    <activity android:name="com.facebook.FacebookActivity"
+          android:configChanges=
+                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+          android:label="@(Project.Android.ApplicationLabel:EscapeXml)" />
+    ]]></Require>
+</Extensions>

@@ -1,0 +1,44 @@
+{
+  "RootNamespace":"",
+  "Packages": [
+    "Fuse",
+    "FuseJS",
+    "Fuse.BasicTheme",
+    "Fuse.Launcher.InterApp",
+    "Fuse.Share",
+    "Fuse.Scripting"
+  ],
+  "Projects": [
+    "./src/Firebase/Firebase.unoproj",
+    "./src/Firebase.Database/Firebase.Database.unoproj",
+    "./src/Firebase.Authentication/Firebase.Authentication.unoproj",
+    "./src/Firebase.Authentication.Email/Firebase.Authentication.Email.unoproj",
+    "./src/Firebase.Authentication.Google/Firebase.Authentication.Google.unoproj",
+    "./src/Firebase.Authentication.Facebook/Firebase.Authentication.Facebook.unoproj"
+  ],
+  "Android": {
+    "Description": "News",
+    "Package": "com.dirisu.reportapp",
+    "VersionCode": 1
+  },
+  "Facebook": {
+    "AppID": "380083782476794",
+    "DisplayName": "reportapp"
+  },
+  "Google": {
+    "RequestID": "251643722105-kl9iuqn1nmovgfd0gplbdveej8p510mn.apps.googleusercontent.com"
+  },
+   "iOS": {
+    "PList": {
+      "UriSchemes": [
+        "com.googleusercontent.apps.251643722105-kl9iuqn1nmovgfd0gplbdveej8p510mn"
+      ]
+    }
+  },
+  "Includes": [
+    "*",
+    "GoogleService-Info.plist:ObjCSource:iOS",
+    "./Assets/*:Bundle",
+    "./Services/*.js:Bundle"
+  ]
+}

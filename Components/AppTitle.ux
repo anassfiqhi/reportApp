@@ -1,0 +1,3 @@
+<Text HitTestMode="LocalBoundsAndChildren" Alignment="Center" ux:Class="App.Title">
+    <Font File="../Assets/fonts/Sofia-Regular.otf" />
+</Text>

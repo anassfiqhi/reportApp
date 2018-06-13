@@ -1,0 +1,3 @@
+<Text HitTestMode="LocalBoundsAndChildren" Alignment="Center" ux:Class="Arrow.Icon">
+    <Font File="../Assets/fonts/ArrowIcons.ttf" />
+</Text>

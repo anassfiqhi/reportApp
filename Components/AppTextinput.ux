@@ -1,0 +1,13 @@
+<TextInput PlaceholderColor="#aaa" ux:Class="App.Input" TextColor="#EEE" Radius="5" TextWrapping="Wrap" BgCol="#000" LineCol="#FFFFFF" CaretColor="#000" Padding="10" Underline="False">
+    <bool ux:Property="Underline" />
+    <string ux:Property="LineCol" />
+    <string ux:Property="BgCol" />
+    <float ux:Property="Radius" />
+    <WhileTrue Value="{ReadProperty Underline}">
+        <Rectangle Alignment="Bottom" Height="2" Color="{ReadProperty LineCol}" />
+        <Change this.Padding="2" />
+    </WhileTrue>
+    <WhileFalse Value="{ReadProperty Underline}">
+        <Rectangle Layer="Background" CornerRadius="{ReadProperty Radius}" StrokeColor="{ReadProperty BgCol}" />
+    </WhileFalse>
+</TextInput>

@@ -1,0 +1,9 @@
+<StackPanel ux:Class="App.TextBox">
+    <string ux:Property="Text" />
+    <string ux:Property="Value" />
+    <string ux:Property="LineCol" />
+    <FormLabel Alignment="Left">{ReadProperty Text}</FormLabel>
+    <TextView Height="80" TextColor="#25333D" CaretColor="#000" Padding="5" TextWrapping="Wrap" Value="{Property Value}">
+        <Rectangle StrokeColor="{ReadProperty LineCol}" Layer="Background" CornerRadius="5" />
+    </TextView>
+</StackPanel>

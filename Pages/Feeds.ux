@@ -1,0 +1,311 @@
+<App.Page ux:Class="FeedPage">
+    <Router ux:Dependency="router" />
+    <JavaScript>
+        var FirebaseUser = require("Firebase/Authentication/User");
+        var Share = require("FuseJS/Share")
+        var Observable = require("FuseJS/Observable");
+        var InterApp = require("FuseJS/InterApp");
+        var Database = require("Firebase/Database");
+        var title = Observable();
+        var body = Observable();
+        var posts = Observable();
+        var noPosts = Observable(false);
+        var addedPost = Observable();
+        var message = Observable('Loading Posts...');
+
+        function gotoDetails(args) {
+            router.push("feedDetail", args.data);
+        }
+
+        function addPost () {
+            Database.pushWithTimestamp("posts", {
+                title: title.value,
+                body: body.value,
+                author: 'Dirisu Jesse',
+            });
+            setTimeout(() => {
+                posts.add({
+                    id: new Date().valueOf(),
+                    val: {
+                        title: title.value,
+                        body: body.value,
+                        author: 'Dirisu Jesse',
+                    }
+                })
+                addedPost.value = true;
+                title.value = "";
+                body.value = "";
+            }, 1000)
+        }
+
+        // Database.listen("posts");
+
+        function getPosts() {
+            Database.read("posts")
+            .then(function(result) {
+                if (result) {
+                    //var data = res.map(function(datum) {
+                    //    var rec = Object.entries(datum)[0];
+                    //    return {
+                    //        id: rec[0],
+                    //        val: rec[1]
+                    //    }
+                    //});
+                    posts.replaceAll(result);
+                    message.value = `${result}`;
+                } else {
+                    noPosts.value = true;
+                    message.value = "Sorry No recent posts";
+                }
+            }).catch(err => message.value = "Sorry No recent posts");
+        }
+
+        Database.on('dataAdded', function(path, res) {
+            addedPost.value = true;
+            message.value = "Post was added Sucessfully";
+            setTimeout(function() { addedPost.value = false; }, 1000)
+        })
+
+        Database.on('data', function(path, res) {
+            var data = res.map(function(datum) {
+                var rec = Object.entries(datum)[0];
+                return {
+                    id: rec[0],
+                    val: rec[1]
+                }
+            });
+            posts.add(rec)
+            message.value = path;
+        })
+
+        //Database.on('dataChanged', function(path, res) {
+        //    message.value = "Post was added Sucessfully modified";
+        //    setTimeout(function() { addedPost.value = false; }, 1000)
+        //})
+
+        var signOutNow = function() {
+            FirebaseUser.signOut();
+            router.push("login");
+        };
+
+        getPosts();
+
+        module.exports = {
+            posts: posts,
+            noPosts: noPosts,
+            addedPost: addedPost,
+            message: message,
+            title: title,
+            content: body,
+            addPost: addPost,
+            details: gotoDetails,
+            signOut: signOutNow,
+            shareFile: function() {
+                    Camera.takePicture(320,240).then(function(image) {
+                    Share.shareFile(image.path, "image/*", "Photo from Fuse");
+                });
+            },
+            shareText: function(args) {
+                Share.shareText("https://www.reportapp.com/", `${args.data.val.title} ${args.data.val.body}`);
+            },
+            shareToWhatsapp: function(args) {
+                InterApp.on("receivedUri", function(uri) {
+                    console.log("Launched with URI", uri);
+                });
+
+                InterApp.on("error", function(uri) {
+                    console.log("error", uri);
+                });
+
+                InterApp.launchUri(`whatsapp://send?text=${args.data.val.title} ${args.data.val.body}`);
+            }
+        }
+    </JavaScript>
+    <EdgeNavigator>
+        <Panel ux:Name="sidebar1" Edge="Left" Width="100%" Margin="0,0,100,0">
+			<Shadow ux:Name="shadow1" Angle="180" Distance="8" Size="16" Color="#0000" />
+			<ActivatingAnimation>
+				<Change shadow1.Color="#0004" />
+				<Change sidebarFade.Opacity="1" />
+			</ActivatingAnimation>
+            <Image StretchMode="UniformToFill" Layer="Background" Opacity="0.8" File="../Assets/Images/bg_.jpg" />
+            <DockPanel>
+                <Grid Background="#25333D" RowCount="2" Rows="2*, auto" Height="30%" Dock="Top">
+                    <Circle Alignment="VerticalCenter" Color="#FDD006" Height="80%" />
+                    <StackPanel Orientation="Vertical">
+                        <App.Header TextColor="#FFF" Alignment="Center" FontSize="20" Value="DIRISU JESSE" />
+                        <App.Text TextColor="#FFF" Alignment="Center" FontSize="15" Value="dirisujesse@gmail.com" />
+                    </StackPanel>
+                </Grid>
+                <Grid ColumnCount="2" RowCount="2" Rows="1*, 1*" Columns="1*, 1*" Alignment="VerticalCenter" Height="70%">
+                    <Button>
+                        <!-- <Rectangle Layer="Background" Color="#FDD006" /> -->
+                        <DockPanel Alignment="BottomCenter">
+                            <Icon TextColor="#FFF" FontSize="100" Dock="Top" Value="&#xf29c;" />
+                            <App.Header TextColor="#FFF"  FontSize="10" Value="FEEDS" />
+                        </DockPanel>
+                    </Button>
+                    <Button>
+                        <DockPanel Alignment="BottomCenter">
+                            <Icon TextColor="#FFF"  FontSize="100" Dock="Top" Value="&#xf367;" />
+                            <App.Header TextColor="#FFF"  FontSize="10" Value="PROFILE" />
+                        </DockPanel>
+                    </Button>
+                    <Button>
+                        <DockPanel Alignment="TopCenter">
+                            <Icon TextColor="#FFF"  FontSize="100" Dock="Top" Value="&#xf2cc;" />
+                            <App.Header TextColor="#FFF"  FontSize="10" Value="ABOUT US" />
+                        </DockPanel>
+                    </Button>
+                    <Button>
+                        <DockPanel Alignment="TopCenter">
+                            <Icon TextColor="#FFF"  FontSize="100" Dock="Top" Value="&#xf2fc;" />
+                            <App.Header TextColor="#FFF" FontSize="10" Value="LOGOUT" />
+                        </DockPanel>
+                        <Clicked Handler="{signOut}" />
+                    </Button>
+                </Grid>
+            </DockPanel>
+		</Panel>
+
+		<Panel ux:Name="sidebar2" Edge="Bottom" Height="100%" Width="100%" Margin="10,56,10,0">
+			<Shadow ux:Name="shadow2" Angle="180" Distance="8" Size="16" Color="#0000" />
+			<ActivatingAnimation>
+				<Change shadow2.Color="#0004" />
+				<Change sidebarFade.Opacity="1" />
+			</ActivatingAnimation>
+            <DockPanel>
+                <Rectangle Layer="Background" Color="#FFF" CornerRadius="10, 10, 0, 0" />
+                <DockPanel Dock="Top">
+                    <Rectangle Color="#25333D" CornerRadius="10, 10, 0, 0" Layer="Background" />
+                    <App.Header Dock="Left" FontSize="20" Margin="10" Value="Add a Post" TextColor="#FFF" />
+                    <DockPanel Dock="Right">
+                        <Button Margin="5, 1" Dock="Left">
+                            <Icon TextColor="#FFF" Value="&#xf2c2;" FontSize="30" />
+                            <Clicked Handler="{addPost}" />
+                        </Button>
+                        <Button Margin="5, 1"  Dock="Right">
+                            <Icon TextAlignment="Center" Value="&#xf342;" TextColor="#FFF" FontSize="30" />
+                            <Clicked>
+                                <NavigateToggle Target="sidebar2" />
+                                <Set addedMessage.Value="false" />
+                            </Clicked>
+                        </Button>
+                    </DockPanel>
+                </DockPanel>
+                <DockPanel Padding="10">
+                    <WhileTrue ux:Name="addedMessage" Value="{addedPost}">
+                        <Panel Dock="Top" Padding="5">
+                            <Rectangle CornerRadius="5" Layer="Background" Color="#007CBB33" StrokeColor="#007CBB" />
+                            <App.Text TextColor="#007CBB" Value="Your post has been added" TextAlignment="Center" />
+                        </Panel>
+                    </WhileTrue>
+                    <ScrollView Alignment="VerticalCenter">
+                        <StackPanel Padding="5">
+                            <App.Input TextColor="#111" CaretColor="#222" BgCol="#CCC" PlaceholderText="Title" Value="{title}" />
+                            <App.TextBox LineCol="#CCC" Height="80%" Text="Content" Value="{content}" />
+                        </StackPanel>
+                    </ScrollView>
+                </DockPanel>
+            </DockPanel>
+		</Panel>
+	
+        <DockPanel>
+            <Rectangle ux:Name="sidebarFade" Layer="Overlay" Color="#0005" Opacity="0" HitTestMode="None" />
+            <Panel Dock="Top" Margin="0">
+                <DropShadow />
+                <Rectangle Layer="Background" Color="#25333D"/>
+                <DockPanel Padding="10">
+                    <Button Dock="Left">
+                        <Tk.Icon  Value="&#xea37;" FontSize="30" TextColor="#FFF" />
+                        <Clicked>
+                            <NavigateToggle Target="sidebar1" />
+                        </Clicked>
+                    </Button>
+                    <App.Title Alignment="Center" TextAlignment="Center" TextColor="#FFF" FontSize="24" Value="FEEDS" />
+                    <DockPanel Dock="Right">
+                        <Button  Dock="Left">
+                            <Icon Value="&#xf2c2;" TextColor="#FFF" FontSize="30" />
+                            <Clicked>
+                                <NavigateToggle Target="sidebar2" />
+                            </Clicked>
+                        </Button>
+                        <Button Dock="Right">
+                            <Icon Value="&#xf1c4;" TextColor="#FFF" FontSize="32" />
+                            <Clicked>
+                                <NavigateToggle Target="sidebar2" />
+                            </Clicked>
+                        </Button>
+                    </DockPanel>
+                </DockPanel>
+            </Panel>
+            <WhileEmpty Items="{posts}">
+                <Panel Alignment="Center">
+                    <App.Text TextAlignment="Center">{message}</App.Text>
+                </Panel>
+            </WhileEmpty>
+            <WhileCount Items="{posts}" GreaterThan="0">
+                <ScrollView>
+                    <StackPanel Padding="10, 5" ItemSpacing="10">
+                        <Each Items="{posts}">
+                            <DockPanel>
+                                <Rectangle Layer="Background" Color="#FFF" CornerRadius="5">
+                                    <DropShadow />
+                                </Rectangle>
+                                <Grid Padding="2" CellSpacing="0" Columns="4*,1*" Height="50" Dock="Top" ColumnCount="2">
+                                    <DockPanel>
+                                        <Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D" />
+                                        <Grid Margin="5, 0, 0, 0" Rows="1*,1*,1*" RowCount="3">
+                                            <App.Header Alignment="CenterLeft" FontSize="14" Value="{val.author}" />
+                                            <App.Text Alignment="CenterLeft" FontSize="12" Value="Blogger living in Lagos, Nigeria" />
+                                            <App.Text Alignment="CenterLeft" FontSize="12" Value="20 Posts" />
+                                        </Grid>
+                                    </DockPanel>
+                                    <Grid CellSpacing="0.5" Columns="1*,1*," ColumnCount="2">
+                                        <Button  Dock="Left" Clicked="{shareToWhatsapp}">
+                                            <Icon Value="&#xf37a;" FontSize="25" />
+                                        </Button>
+                                        <Button Dock="Right" Clicked="{shareText}">
+                                            <Mat.Icon Value="&#xe80d;" FontSize="25" />
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                                <Panel Height="200">
+                                    <Rectangle Layer="Background" Color="#25333D" />
+                                    <App.Text Value="Report Image" TextAlignment="Center" TextColor="#CCC" />
+                                </Panel>
+                                <StackPanel Dock="Bottom" Padding="5" Orientation="Vertical" ItemSpacing="10">
+                                    <App.Header Alignment="Left" TextWrapping="Wrap" Value="{val.title}" />
+                                    <App.Text MaxLength="200" TextWrapping="Wrap" Opacity=".8" FontSize="14" Alignment="Left" Value="{val.body}" />
+                                    <Grid Columns="1*,1*,1*,4*" ColumnCount="4">
+                                        <Button Alignment="Left">
+                                            <DockPanel>
+                                                <Icon FontSize="30" Dock="Top" Value="&#xf1a1;" />
+                                                <App.Text FontSize="14" Value="500" />
+                                            </DockPanel>
+                                        </Button>
+                                        <Button Alignment="Left">
+                                            <DockPanel>
+                                                <Icon FontSize="30" Dock="Top" Value="&#xf33f;" />
+                                                <App.Text FontSize="14" Value="200" />
+                                            </DockPanel>
+                                        </Button>
+                                        <Button Alignment="Left">
+                                            <DockPanel>
+                                                <Icon FontSize="30" Dock="Top" Value="&#xf33e;" />
+                                                <App.Text FontSize="14" Value="20" />
+                                            </DockPanel>
+                                        </Button>
+                                        <Button Clicked="{details}" Alignment="CenterRight">
+                                            <Tk.Icon Alignment="VerticalCenter" FontSize="30" Value="&#xe9d8;" />
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+                            </DockPanel>
+                        </Each>                        
+                    </StackPanel>
+                </ScrollView>
+            </WhileCount>
+        </DockPanel>
+    </EdgeNavigator>
+</App.Page>
