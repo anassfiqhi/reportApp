@@ -1,49 +1,128 @@
 <App.Page ux:Class="FeedDetailPage">
     <Router ux:Dependency="router" />
     <JavaScript>
-        var FirebaseUser = require("Firebase/Authentication/User");
+        var Fetch = require("modules/fetcher");
+        // var FirebaseUser = require("Firebase/Authentication/User");
         var Share = require("FuseJS/Share");
-        var Observable = require("FuseJS/Observable")
+        var Observable = require("FuseJS/Observable");
         var post = this.Parameter;
+        var upvotes = this.Parameter.map(data => data.upvotes);
+        var downvotes = this.Parameter.map(data => data.downvotes)
         var InterApp = require("FuseJS/InterApp");
-        var Database = require("Firebase/Database");
         var content = Observable();
         var comments = Observable();
+        var message = Observable();
+        var errMessage = Observable();
+        var processFailed = Observable(false);
+        var notLoggedIn = Observable(false);
+        var hasUpVoted = Observable(false);
+        var hasDownVoted = Observable(false);
 
         function addComment() {
-            Database.pushWithTimestamp("comments", {
-                post: post.value.id,
-                content: content.value,
-                time: new Date().toUTCString(),
-                commenter: 'User'
-            })
-            setTimeout(() => {
-                comments.add({
-                    post: post.id,
-                    content: content.value,
-                    time: new Date().toUTCString(),
-                    commenter: 'User'
-                })
-            }, 1000)
+            // console.log(content.value);
+            if (localStorage.getItem('id')) {
+                if (content.value) {
+                    Fetch.addComment({
+                        body: content.value,
+                        post: post.value.id,
+                        author: localStorage.getItem('id')
+                    })
+                    .then(res => {
+                        localStorage.removeItem('content')
+                        comments.insertAt(0, res);
+                        content.value = "";
+                        processFailed.value = false;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        processFailed.value = true;
+                        errMessage.value = 'You may have lost your connection';
+                    });
+                } else {
+                    processFailed.value = true;
+                    errMessage.value = 'Please provide content';
+                }
+            } else {
+                localStorage.setItem('content', content.value);
+                notLoggedIn.value = true;
+                setTimeout(() => router.goto("login"), 1000);
+            }
         }
+
+        function clearComments() {
+            comments.clear();
+        }
+
+        function upvote() {
+            // console.log(content.value);
+            if (!hasUpVoted.value) {
+                upvotes.value = upvotes.value + 1
+                hasUpVoted.value = true;
+                Fetch.upVote(true, post.value.id)
+                .then(res => {
+                    post.value.upvotes += 1
+                })
+                .catch(err => console.log(err))
+            } else {
+                return;
+            }
+        }
+
+
+        function downvote() {
+            if (!hasDownVoted.value) {
+                downvotes.value = downvotes.value + 1
+                hasDownVoted.value = true;
+                Fetch.downVote(true, post.value.id)
+                .then(res => {
+                    post.value.downvotes += 1
+                })
+                .catch(err => console.log(err))
+            }
+        }
+
+        
+        function getComments() {
+            message.value = "loading comments"
+            Fetch.getComments(post.value.id)
+            .then(res => {
+                if (res.length) {
+                    comments.replaceAll(res);
+                } else {
+                    message.value = 'be the first to comment'
+                }
+            })
+            .catch(err => message.value = 'be the first to comment')
+        }
+
 
         function back() {
             router.goBack();
         }
 
         module.exports = {
+            upvotes: upvotes,
+            downvotes: downvotes,
+            message: message,
             post: post,
             content: content,
             comments: comments,
             addComment: addComment,
             return: back,
+            getComments: getComments,
+            upvote: upvote,
+            downvote: downvote,
+            errMessage: errMessage,
+            processFailed: processFailed,
+            notLoggedIn: notLoggedIn,
+            clearComments: clearComments,
             shareFile: function() {
                     Camera.takePicture(320,240).then(function(image) {
-                    Share.shareFile(image.path, "image/*", `${post.val.title} ${post.val.body}`);
+                    Share.shareFile(image.path, "image/*", `${post.value.title} ${post.value.body}`);
                 });
             },
             shareText: function() {
-                Share.shareText("https://www.reportapp.com/", `${post.val.title} ${post.val.body}`);
+                Share.shareText(`${post.value.title} ${post.value.body}`, "https://www.reportapp.com/");
             },
             shareToWhatsapp: function() {
                 InterApp.on("receivedUri", function(uri) {
@@ -54,140 +133,157 @@
                     console.log("error", uri);
                 });
 
-                InterApp.launchUri(`whatsapp://send?text=${post.val.title} ${post.val.body}`);
+                InterApp.launchUri(`whatsapp://send?text=${post.value.title} ${post.value.body}`);
             }
         }
     </JavaScript>
-    <EdgeNavigator>
-        <Panel Color="#FFF" ux:Name="commentBar" Edge="Right" Width="100%">
-            <Rectangle Layer="Background" Color="#FFF" />
-            <DockPanel>
-                <StackPanel Padding="5" Dock="Top" ItemSpacing="5">
-                    <App.TextBox LineCol="#CCC" Height="80%" Text="Your Comments" Value="{content}" />
-                    <Rectangle Alignment="Left" Clicked="{addComment}" Padding="5" Height="40" Color="#0095D3" >
-                        <App.Header Value="POST COMMENT" TextColor="#FFF" FontSize="20" />
-                        <Shadow />
-                    </Rectangle>
-                </StackPanel>
-                <WhileTrue ux:Name="commentBox" Value="false">
-                    <WhileEmpty Items="{comments}">
-                        <App.Text Value="Be the first to comment" Alignment="Center" />
-                    </WhileEmpty>
-                    <WhileCount Items="{comments}" GreaterThan="0">
-                        <ScrollView>
-                            <StackPanel>
-                                <Each Items="{comments}">
-                                    <Deferred>
-                                        <Panel Background="#FFF">
-                                            <DropShadow />
-                                            <Rectangle Color="#25333D" Alignment="TopLeft" Width="5" Height="30"/>
-                                            <StackPanel Alignment="Left" Padding="5" ItemSpacing="3">
-                                                <App.Header Alignment="Left" Color="#25333D" TextColor="#FFF" Value="{commenter}" Margin="3,0" FontSize="15"/>
-                                                <App.Text Alignment="Left" TextColor="#25333D" Value="{time}" FontSize="10" Margin="3,0"/>
-                                                <StackPanel Alignment="Left" Padding="5" ItemSpacing="3">
-                                                    <App.Text TextWrapping="Wrap" TextAlignment="Left" TextColor="#25333D" Value="{content}" FontSize="12" Margin="0,0,10,0"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Panel>
-                                    </Deferred>
-                                </Each>
-                            </StackPanel>
-                        </ScrollView>
-                    </WhileCount>
-                </WhileTrue>   
-                <Grid Dock="Bottom" Padding="2" CellSpacing="0" Columns="1*,4*,1*" Height="50" ColumnCount="3">
-                    <Rectangle Layer="Background" Color="#25333D"/>
-                    <Button Dock="Left">
-                        <Icon Alignment="CenterLeft" TextColor="#CCC" Value="&#xf111;" FontSize="30" />
-                        <Clicked>
-                            <Set commentBox.Value="false" />
-                            <NavigateToggle Target="commentBar" />
-                        </Clicked>
-                    </Button>
-                    <Rectangle />
-                    <Grid CellSpacing="1" Columns="1*,1*," ColumnCount="2">
-                        <Button Clicked="{shareToWhatsapp}">
-                            <Icon TextColor="#CCC" Value="&#xf37a;" FontSize="20" />
-                        </Button>
-                        <Button Clicked="{shareText}">
-                            <Mat.Icon TextColor="#CCC" Value="&#xe80d;" FontSize="20" />
-                        </Button>
-                    </Grid>
-                </Grid>             
-            </DockPanel>
-		</Panel>            
-        <DockPanel>
-            <Grid Dock="Bottom" Padding="2" CellSpacing="0" Columns="1*,4*,1*" Height="50" ColumnCount="3">
-                <Rectangle Layer="Background" Color="#25333D"/>
-                <Button Dock="Left" Clicked="{return}">
-                    <Icon Alignment="CenterLeft" TextColor="#CCC" Value="&#xf111;" FontSize="30" />
+    <Activated Handler="{clearComments}">
+        <Set commentBar.Visibility="Collapsed" />
+    </Activated>
+    <DockPanel>
+        <Grid Dock="Bottom" Padding="2" CellSpacing="0" Columns="1*,4*,1*" Height="50" ColumnCount="3">
+            <Rectangle Layer="Background" Color="#25333D"/>
+            <Button Dock="Left" Clicked="{return}">
+                <Icon Alignment="CenterLeft" TextColor="#CCC" Value="&#xf111;" FontSize="30" />
+            </Button>
+            <Rectangle />
+            <Grid CellSpacing="1" Columns="1*,1*," ColumnCount="2">
+                <Button Clicked="{shareToWhatsapp}">
+                    <Icon TextColor="#CCC" Value="&#xf37a;" FontSize="20" />
                 </Button>
-                <Rectangle />
-                <Grid CellSpacing="1" Columns="1*,1*," ColumnCount="2">
-                    <Button Clicked="{shareToWhatsapp}">
-                        <Icon TextColor="#CCC" Value="&#xf37a;" FontSize="20" />
-                    </Button>
-                    <Button Clicked="{shareText}">
-                        <Mat.Icon TextColor="#CCC" Value="&#xe80d;" FontSize="20" />
-                    </Button>
-                </Grid>
+                <Button Clicked="{shareText}">
+                    <Mat.Icon TextColor="#CCC" Value="&#xe80d;" FontSize="20" />
+                </Button>
             </Grid>
-            <!-- <StackPanel> -->
-                <DockPanel>
-                    <StackPanel Padding="10, 5" ItemSpacing="10">
-                        <App.Header TextWrapping="Wrap" Value="{post.val.title}" Alignment="Left" FontSize="30" />
-                        <DockPanel>
-                            <Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D" />
-                            <Grid Margin="5, 0, 0, 0" Rows="1*,1*,1*" RowCount="3">
-                                <App.Header Alignment="CenterLeft" FontSize="14" Value="{post.val.author}" />
-                                <App.Text Alignment="CenterLeft" FontSize="12" Value="Blogger living in Lagos, Nigeria" />
-                                <App.Text Alignment="CenterLeft" FontSize="12" Value="20 Posts" />
-                            </Grid>
-                        </DockPanel>
-                        <ScrollView>
-                            <App.Text MaxLength="200" TextWrapping="Wrap" Opacity=".8" FontSize="20" Alignment="Left" Value="{post.val.body}" />
-                        </ScrollView>
+        </Grid>
+        <DockPanel>
+            <DockPanel Dock="Top">
+                <DockPanel Padding="5" Dock="Top">
+                    <Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D">
+                        <Match Value="{post.anonymous}">
+                            <Case Bool="true">
+                                <Image File="../Assets/Images/user.png"/>
+                            </Case>
+                            <Case Bool="false">
+                                <App.Img Data="{post.author.avatar}" IsAvatar="true" />
+                            </Case>
+                        </Match>
+                    </Circle>
+                    <!--<Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D">
+                        <ImageFill Url="{post.author.avatar}"/>
+                    </Circle> -->
+                    <Grid Margin="5, 0, 0, 0" CellSpacing="5" Rows="1*,1*,1*" RowCount="3">
+                        <Match Value="{post.anonymous}">
+                            <Case Bool="true">
+                                <App.Header TextColor="#FFF" Alignment="CenterLeft" FontSize="14" Value="Anonymous User" />
+                            </Case>
+                            <Case Bool="false">
+                                <App.Header TextColor="#FFF" Alignment="CenterLeft" FontSize="14" Value="{post.author.name}" />
+                            </Case>
+                        </Match>
+                        <App.Text TextColor="#FFF" Alignment="CenterLeft" FontSize="12" Value="{post.title}" />
+                        <App.Text TextColor="#FFF" Alignment="CenterLeft" FontSize="12" Value="{post.time}" />
+                    </Grid>
+                    <Rectangle Layer="Background" Color="#25333D" />
+                </DockPanel>
+            </DockPanel>
+            <ScrollView>
+                <StackPanel>
+                    <!-- <App.Header TextColor="#25333D" TextWrapping="Wrap" Value="{=toUpper({post.title})}" TextAlignment="Center" Alignment="Center" FontSize="30" /> -->
+                    <Panel Height="200">
+                        <Rectangle Layer="Background" Color="#25333D">
+                            <App.Img Data="{post.image}" IsAvatar="false" />
+                        </Rectangle>
+                        <Rectangle CornerRadius="20" Padding="10" Color="#25333D" Alignment="Center">
+                            <App.Header TextAlignment="Center" TextColor="#FFF" TextWrapping="Wrap" Value="{=toUpper({post.title})}" FontSize="15" />
+                        </Rectangle>
+                    </Panel>
+                    <StackPanel MinHeight="100">
+                        <App.Text Margin="5, 0" MaxLength="200" TextWrapping="Wrap" Opacity=".8" FontSize="20" Alignment="Left" Value="{post.body}" />
                     </StackPanel>
-                    <DockPanel Dock="Bottom">
-                        <Grid Columns="1*,1*,1*,4*" ColumnCount="4">
-                            <Rectangle Layer="Background" Color="#CCC"/>
-                            <Button Alignment="Center">
+                    <DockPanel Height="50">
+                        <Rectangle Layer="Background" Color="#003D79"/>
+                        <Grid Columns="1*,1*,6*" ColumnCount="3">
+                            <Button Alignment="Center" Clicked="{upvote}">
                                 <DockPanel>
-                                    <Icon FontSize="20" Dock="Top" Value="&#xf1a1;" />
-                                    <App.Text FontSize="10" Value="500" />
+                                    <Icon ux:Name="upVter" TextColor="#FFF" FontSize="25" Dock="Top" Value="&#xf33f;" />
+                                    <App.Text TextColor="#FFF" FontSize="10" Value="{upvotes}" />
                                 </DockPanel>
+                                <WhilePressed>
+                                    <Change upVter.TextColor="#007CBB" />
+                                </WhilePressed>
                             </Button>
-                            <Button Alignment="Center">
+                            <Button Alignment="Center" Clicked="{downvote}">
                                 <DockPanel>
-                                    <Icon FontSize="20" Dock="Top" Value="&#xf33f;" />
-                                    <App.Text FontSize="10" Value="200" />
+                                    <Icon TextColor="#FFF" ux:Name="dnVter" FontSize="25" Dock="Top" Value="&#xf33e;" />
+                                    <App.Text TextColor="#FFF" FontSize="10" Value="{downvotes}" />
                                 </DockPanel>
+                                <WhilePressed>
+                                    <Change dnVter.TextColor="#007CBB" />
+                                </WhilePressed>
                             </Button>
-                            <Button Alignment="Center">
-                                <DockPanel>
-                                    <Icon FontSize="20" Dock="Top" Value="&#xf33e;" />
-                                    <App.Text FontSize="10" Value="20" />
-                                </DockPanel>
+                            <Button Margin="10, 5" Alignment="Right" Text="View Comments">
+                                <!-- <Icon FontSize="25" Dock="Top" Value="&#xf1a1;" /> -->
+                                <Clicked Handler="{getComments}">
+                                    <Set commentBox.Value="true" />
+                                    <Set commentBar.Visibility="Visible" />
+                                    <!-- <NavigateToggle Target="commentBar" /> -->
+                                </Clicked>
                             </Button>
-                            <WhileTrue Value="{Property commentBox.Value}">
-                                <Button Margin="10, 5" Alignment="CenterRight" Text="Comments">
-                                    <Clicked>
-                                        <Set commentBox.Value="false" />
-                                    </Clicked>
-                                </Button>
-                            </WhileTrue>
-                            <WhileFalse Value="{Property commentBox.Value}">
-                                <Button Margin="10, 5" Alignment="CenterRight" Text="Comments">
-                                    <Clicked>
-                                        <Set commentBox.Value="true" />
-                                        <NavigateToggle Target="commentBar" />
-                                    </Clicked>
-                                </Button>
-                            </WhileFalse>
                         </Grid>
                     </DockPanel>
-                </DockPanel>
-            <!-- </StackPanel> -->
+                    <Panel Color="#FFF" ux:Name="commentBar" Visibility="Collapsed" Width="100%">
+                        <Rectangle Layer="Background" Color="#FFF" />
+                        <DockPanel>
+                            <StackPanel Padding="5" Dock="Top" ItemSpacing="5">
+                                <WhileTrue Value="{notLoggedIn}">
+                                    <Panel Dock="Top" Padding="5">
+                                        <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
+                                        <App.Text TextColor="#9B0D54" Value="Please login to make posts" TextAlignment="Center" />
+                                    </Panel>
+                                </WhileTrue>
+                                <WhileTrue Value="{processFailed}">
+                                    <Panel Dock="Top" Padding="5">
+                                        <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
+                                        <App.Text TextColor="#9B0D54" Value="{errMessage}" TextAlignment="Center" />
+                                    </Panel>
+                                </WhileTrue>
+                                <App.TextBox LineCol="#CCC" Height="80%" Text="Your Comments" Value="{content}" />
+                                <Rectangle Alignment="Left" Clicked="{addComment}" Padding="5" Height="40" Color="#0095D3" >
+                                    <App.Header Value="POST COMMENT" TextColor="#FFF" FontSize="20" />
+                                    <Shadow />
+                                </Rectangle>
+                            </StackPanel>
+                            <WhileTrue ux:Name="commentBox" Value="false">
+                                <WhileEmpty Items="{comments}">
+                                    <App.Text MinHeight="200" Value="{message}" Alignment="Center" />
+                                </WhileEmpty>
+                                <WhileCount Items="{comments}" GreaterThan="0">
+                                    <ScrollView>
+                                        <StackPanel>
+                                            <Each Items="{comments}">
+                                                <Deferred>
+                                                    <Panel Background="#FFF">
+                                                        <DropShadow />
+                                                        <Rectangle Color="#25333D" Alignment="TopLeft" Width="5" Height="30"/>
+                                                        <StackPanel Alignment="Left" Padding="5" ItemSpacing="3">
+                                                            <App.Header Alignment="Left" TextColor="#25333D" Value="{author.name}" Margin="3,0" FontSize="15"/>
+                                                            <App.Text Alignment="Left" TextColor="#25333D" Value="{time}" FontSize="10" Margin="3,0"/>
+                                                            <StackPanel Alignment="Left" Padding="5" ItemSpacing="3">
+                                                                <App.Text TextWrapping="Wrap" TextAlignment="Left" TextColor="#25333D" Value="{body}" FontSize="12" Margin="0,0,10,0"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Panel>
+                                                </Deferred>
+                                            </Each>
+                                        </StackPanel>
+                                    </ScrollView>
+                                </WhileCount>
+                            </WhileTrue>   
+                        </DockPanel>
+                    </Panel>
+                </StackPanel>
+            </ScrollView>
         </DockPanel>
-    </EdgeNavigator>
+    </DockPanel>
 </App.Page>

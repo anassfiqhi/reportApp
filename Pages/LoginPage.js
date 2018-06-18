@@ -1,95 +1,82 @@
 var Observable = require("FuseJS/Observable");
-var FirebaseUser = require("Firebase/Authentication/User");
-var InterApp = require("FuseJS/InterApp");
-var EAuth = require("Firebase/Authentication/Email");
-var GAuth = require("Firebase/Authentication/Google");
+var Fetch = require("modules/fetcher");
+var storage = require("modules/storage");
+var page = Observable('Login');
+var username =  Observable();
+var name =  Observable();
+var processing = Observable(false);
+var loginFailed =  Observable(false);
+var regFailed =  Observable(false);
 
-var defaultStatusMessage = "Status OK";
-var signedInStatusText = Observable(defaultStatusMessage);
-var lobbyStatusText = Observable(defaultStatusMessage);
-
-var userName = Observable("-");
-var userEmail = Observable("-");
-var userPhotoUrl = Observable("-");
-
-function aunthenticateTWTR() {
-    InterApp.on("receivedUri", function(uri) {
-        console.log("Launched with URI", uri);
-    });  
-    InterApp.launchUri('google.navigation:q=Sanusi+Fafunwa,+Lagos+Nigeria');
-    // https://api.twitter.com/oauth/authorize?oauth_token=e35Y_AAAAAAA6czzAAABY9vkL7g
+function goLogin() {
+    page.value = 'Login';
 }
 
-function signedIn() {
-    router.goto("feeds");
-    // signedInStatusText.value = defaultStatusMessage;
+function goRegister() {
+    page.value = 'Register';
 }
 
-function signedOut() {
-    currentPage.value = mainPage;
+function goHome() {
+    storage.getUser()
+        .then(res => {
+            if (res.id) {
+                router.goto("feeds", res);
+            } else {
+                storage.setUser({name: 'Anonymous User', username: 'anonymous', 'avatar': 'https://www.gravatar.com/avatar'})
+                .then(resp => router.goto("feeds", resp))
+            }
+        })
+        .catch(err => {
+            storage.setUser({name: 'Anonymous User', username: 'anonymous', 'avatar': 'https://www.gravatar.com/avatar'})
+            .then(resp => router.goto("feeds", resp))
+        });
 }
 
-FirebaseUser.onError = function(errorMsg, errorCode) {
-    console.log("ERROR(" + errorCode + "): " + errorMsg);
-    lobbyStatusText.value = "Error: " + errorMsg;
-};
 
-FirebaseUser.signedInStateChanged = function() {
-    if (FirebaseUser.isSignedIn)
-        signedIn();
-    else
-        signedOut();
-};
+function login() {
+    processing.value = true;
+    Fetch.login(username.value)
+        .then(res => {
+            localStorage.setItem('id', res.id);
+            storage.setUser(res)
+                .then(resp => router.goto("feeds", resp))
+                .catch(err => router.goto("feeds", res))
+            // router.goto("feeds", res)
+            processing.value = false;
+        })
+        .catch(err => {
+            processing.value = false;
+            loginFailed.value = true;
+        });
+}
 
-var userEmailInput = Observable("");
-var userPasswordInput = Observable("");
-
-var createUser = function() {
-    var email = userEmailInput.value;
-    var password = userPasswordInput.value;
-    EAuth.createWithEmailAndPassword(email, password).then(function(user) {
-        console.log(e);
-        signedIn();
-    }).catch(function(e) {
-        console.log("Signup failed: " + e);
-        FirebaseUser.onError(e, -1);
-    });
-};
-
-var signInWithEmail = function() {
-    var email = userEmailInput.value;
-    var password = userPasswordInput.value;
-    EAuth.signInWithEmailAndPassword(email, password).then(function(user) {
-        signedIn();
-    }).catch(function(e) {
-        console.log("SignIn failed: " + e);
-        FirebaseUser.onError(e, -1);
-    });
-};
-
-var reauthenticate = function() {
-    FirebaseUser.reauthenticate().then(function(message) {
-        console.log(message);
-    }).catch(function(e) {
-        console.log("reauthentication failed:" + e);
-    });
-};
-
-var signOutNow = function() {
-    FirebaseUser.signOut();
-};
-
+function register() {
+    processing.value = true;
+    Fetch.signup(username.value, name.value)
+        .then(res => {
+            localStorage.setItem('id', res.id);
+            storage.setUser(res)
+                .then(resp => router.goto("feeds", resp))
+                .catch(err => router.goto("feeds", res))
+            // router.goto("feeds", res)
+            processing.value = false;
+        })
+        .catch(err => {
+            processing.value = false;
+            regFailed.value = true;
+        });
+}
 
 module.exports = {
-    userEmailInput: userEmailInput,
-    userPasswordInput: userPasswordInput,
-    createUser: createUser,
-    signInWithEmail: signInWithEmail,
-    signedInStatusText: signedInStatusText,
-    userName: userName,
-    userEmail: userEmail,
-    userPhotoUrl: userPhotoUrl,
-    reauthenticate: reauthenticate,
-    aunthenticateTWTR: aunthenticateTWTR,
-    signedIn: signedIn
+    login: login,
+    register: register,
+    page: page,
+    username: username,
+    name: name,
+    processing: processing,
+    loginFailed: loginFailed,
+    regFailed: regFailed,
+    goLogin: goLogin,
+    goRegister: goRegister,
+    goHome: goHome
 };

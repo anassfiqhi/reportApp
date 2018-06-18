@@ -1,34 +1,75 @@
 <Page ux:Class="LoginPage">
-	<Image StretchMode="Fill" Layer="Background" File="../Assets/Images/bg_.jpg" />
+	<!-- <ImageFill StretchMode="UniformToFill" File="../Assets/Images/bg_.jpg" /> -->
+	<Rectangle Color="#25333D" Layer="Background" />
 	<!-- <Rectangle Layer="Background" Color="#9B0D54" /> -->
 	<Router ux:Dependency="router" />
 	<JavaScript File="LoginPage.js"/>
-		<StackPanel Alignment="Center" Width="80%" ItemSpacing="5">
-			<!-- <NativeViewHost >
-				<Firebase.Authentication.Google.GoogleButton Margin="0,20,0,0"/>
-			</NativeViewHost> -->
-			<NativeViewHost >
-				<Firebase.Authentication.Facebook.FacebookButton Margin="0,20,0,0"/>
-			</NativeViewHost>
-			<!-- <Basic.Button Text="Twitter Sign in" Clicked="{aunthenticateTWTR}" /> -->
-			<Basic.TextInput Width="100%" Value="{userEmailInput}" TextColor="#FFF" ux:Name="userName" Alignment="Center" PlaceholderText="Email Address" CaretColor="#FFF" PlaceholderColor="#CCC" />
-			<Basic.TextInput Width="100%" Value="{userPasswordInput}" TextColor="#FFF" IsPassword="true" Alignment="Center" PlaceholderText="Password" CaretColor="#FFF" PlaceholderColor="#CCC" />
-			<Rectangle Clicked="{signedIn}" CornerRadius="3" Height="40" Color="#0095D3" Width="95%">
-				<App.Header Value="LOGIN" TextColor="#FFF" FontSize="20" />
-				<Rectangle CornerRadius="0, 0, 3, 3" Height="3" Alignment="Bottom" Color="#0065AB">
-					<Shadow />
-				</Rectangle>
-			</Rectangle>
-			<Rectangle Clicked="{createUser}"  CornerRadius="3" Height="40" Color="#009CBF" Width="95%">
-				<App.Header Value="SIGNUP" TextColor="#FFF" FontSize="20" />
-				<Rectangle CornerRadius="0, 0, 3, 3" Height="3" Alignment="Bottom" Color="#005680">
-					<Shadow />
-				</Rectangle>
-			</Rectangle>
-		</StackPanel>
-
-	<ExitingAnimation>
-		<Move X="-1" RelativeTo="Size"
-				Duration="0.3" Easing="CircularInOut"/>
-	</ExitingAnimation>
+	<DockPanel>
+		<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goHome}" Color="#9B0D5400" Dock="Top" Padding="5">
+			<Icon TextWrapping="Wrap"
+				TextAlignment="Left" Alignment="Left" TextColor="#FFF" FontSize="30">
+				&#xf237;
+			</Icon>
+		</Panel>
+		<WhileTrue Value="{regFailed}">
+			<Panel Color="#9B0D54" Alignment="Top" Padding="5">
+				<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+					Oops, registration failed please check that you entered valid name and username or your network connection      
+				</App.Text>
+			</Panel>
+		</WhileTrue>
+		<WhileTrue Value="{loginFailed}">
+			<Panel Color="#9B0D54" Alignment="Top" Padding="5">
+				<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+					Oops, login failed please check that you entered valid username or your network connection      
+				</App.Text>
+			</Panel>
+		</WhileTrue>
+		<WhileTrue Value="{processing}">
+			<Panel Color="#004A70" Alignment="Top" Padding="5">
+				<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+					Your Request is being processed       
+				</App.Text>
+			</Panel>
+		</WhileTrue>
+		<Match Value="{page}">
+			<Case String="Login">
+				<StackPanel Alignment="VerticalCenter">
+					<Grid CellSpacing="5" ColumnCount="2" Columns="5*, auto" Padding="5">
+						<Rectangle Padding="4, 1" Color="#25333D" StrokeColor="#fff" StrokeWidth="2">
+							<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="20"  PlaceholderText="Login with user name" Value="{username}" />
+						</Rectangle>
+						<Icon Clicked="{login}" Alignment="Center" FontSize="30" TextColor="#FFF" TextAlignment="Center" Value="&#xf11b;" />
+					</Grid>
+					<StackPanel Padding="5" Orientation="Horizontal">
+						<App.Text TextColor="#FFF" FontSize="13">
+							New here?
+						</App.Text>
+						<Button Clicked="{goRegister}" Text="register" />
+					</StackPanel>
+				</StackPanel>
+			</Case> 
+			<Case String="Register">
+				<StackPanel Alignment="VerticalCenter">
+					<Grid CellSpacing="5" ColumnCount="1" Columns="1*" Padding="5">
+						<Rectangle ColumnSpan="2" Padding="4, 1" Color="#25333D" StrokeColor="#fff" StrokeWidth="2">
+							<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="25"  PlaceholderText="fullname" Value="{name}" />
+						</Rectangle>
+					</Grid>
+					<Grid CellSpacing="5" ColumnCount="2" Columns="5*, auto" Padding="5">
+						<Rectangle Padding="4, 1" Color="#25333D" StrokeColor="#fff" StrokeWidth="2">
+							<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="20"  PlaceholderText="username" Value="{username}" />
+						</Rectangle>
+						<Icon Clicked="{register}" Alignment="Center" FontSize="30" TextColor="#FFF" TextAlignment="Center" Value="&#xf11b;" />
+					</Grid>
+					<StackPanel Padding="5" Orientation="Horizontal">
+						<App.Text TextColor="#FFF" FontSize="13">
+							Already have an account?
+						</App.Text>
+						<Button Clicked="{goLogin}" Text="login" />
+					</StackPanel>
+				</StackPanel>
+			</Case>     
+		</Match>
+	</DockPanel>
 </Page>

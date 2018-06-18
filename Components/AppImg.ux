@@ -1,0 +1,61 @@
+<WhileTrue Value="true" ux:Class="App.Img">
+    <string ux:Property="Data" />
+    <bool ux:Property="IsAvatar" />
+    <JavaScript>
+        var Observable = require("FuseJS/Observable");
+        var ImageTools = require("FuseJS/ImageTools");
+        var img = Observable();
+        var isUrl = Observable();
+
+        function getImg(image) {
+            if (image) {
+                if (image.startsWith('http')) {
+                    isUrl.value = true;
+                    img.value = image;
+                } else {
+                    isUrl.value = false;
+                    ImageTools.getImageFromBase64(image)
+                        .then(imag_ => img.value = imag_.path)
+                        .catch(err => console.log(err));
+                }
+            }
+        }
+        this.Data.onValueChanged(module, res => {
+            setTimeout(() => getImg(res), 300)
+        })
+        module.exports = {
+            isUrl: isUrl,
+            img: img
+        }
+    </JavaScript>
+    <Match Value="{ReadProperty IsAvatar}">
+        <Case Bool="true">
+            <Match Value={isUrl}>
+                <Case Bool="true">
+                    <Circle>
+                        <ImageFill Url="{img}"/>
+                    </Circle>
+                </Case>
+                <Case Bool="false">
+                    <Circle>
+                        <ImageFill File="{img}"/>
+                    </Circle>
+                </Case>
+            </Match> 
+        </Case>
+        <Case Bool="false">
+            <Match Value={isUrl}>
+                <Case Bool="true">
+                    <Rectangle>
+                        <ImageFill Url="{img}"/>
+                    </Rectangle>
+                </Case>
+                <Case Bool="false">
+                    <Rectangle>
+                        <ImageFill File="{img}"/>
+                    </Rectangle>
+                </Case>
+            </Match> 
+        </Case>
+    </Match>
+</WhileTrue>

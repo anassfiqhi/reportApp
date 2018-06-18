@@ -6,15 +6,21 @@
     "Fuse.BasicTheme",
     "Fuse.Launcher.InterApp",
     "Fuse.Share",
-    "Fuse.Scripting"
+    "Fuse.GeoLocation",
+    // "Fuse.Maps",
+    // "Fuse.Camera",
+    // "Fuse.CameraRoll",
+    "Fuse.ImageTools",
+    "Fuse.Controls.CameraView",
+    "Fuse.FileSystem"
   ],
   "Projects": [
-    "./src/Firebase/Firebase.unoproj",
-    "./src/Firebase.Database/Firebase.Database.unoproj",
-    "./src/Firebase.Authentication/Firebase.Authentication.unoproj",
-    "./src/Firebase.Authentication.Email/Firebase.Authentication.Email.unoproj",
-    "./src/Firebase.Authentication.Google/Firebase.Authentication.Google.unoproj",
-    "./src/Firebase.Authentication.Facebook/Firebase.Authentication.Facebook.unoproj"
+    //"./src/Firebase/Firebase.unoproj",
+    //"./src/Firebase.Database/Firebase.Database.unoproj",
+    //"./src/Firebase.Authentication/Firebase.Authentication.unoproj",
+    //"./src/Firebase.Authentication.Email/Firebase.Authentication.Email.unoproj",
+    //"./src/Firebase.Authentication.Google/Firebase.Authentication.Google.unoproj",
+    //"./src/Firebase.Authentication.Facebook/Firebase.Authentication.Facebook.unoproj"
   ],
   "Android": {
     "Description": "News",
@@ -38,7 +44,7 @@
   "Includes": [
     "*",
     "GoogleService-Info.plist:ObjCSource:iOS",
-    "./Assets/*:Bundle",
-    "./Services/*.js:Bundle"
+    "Assets/*:Bundle",
+    "modules/*.js:Bundle"
   ]
 }
