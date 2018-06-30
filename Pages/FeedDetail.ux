@@ -154,7 +154,7 @@
                         </Match>
                         <App.Text TextColor="#25333D" TextAlignment="Center" Alignment="Center" FontSize="12" Value="{post.time}" />
                         <Rectangle Height="150" Width="97%" Margin="0, 15, 0, 15" Alignment="Center" Color="#25333D">
-                            <App.Img Data="{post.image}" IsAvatar="false" />
+                            <ImageFill Url="{post.image}" StretchMode="UniformToFill" />
                         </Rectangle>
                         <App.Text MinHeight="100" TextWrapping="Wrap" FontSize="15" Alignment="Left" Value="{post.body}" />
                         <Panel Color="#FFF" ux:Name="commentBar" Visibility="Visible" Width="100%">

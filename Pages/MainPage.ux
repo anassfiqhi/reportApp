@@ -11,7 +11,7 @@
                     <DockPanel Dock="Top" Padding="5">
                         <Rectangle Layer="Background" Color="#FFF" />
                         <Circle Dock="Left" Height="48" Width="48" Alignment="CenterLeft" Color="#FDD006">
-                            <App.Img Data="{user.avatar}" IsAvatar="true" />
+                            <ImageFill Url="{user.avatar}" />
                         </Circle>
                         <Grid Margin="5, 0" RowCount="2" Rows="1*, auto">
                             <App.Header TextColor="#25333D" Alignment="CenterLeft" FontSize="15" Value="{user.name}" />

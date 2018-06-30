@@ -15,7 +15,7 @@ function gotoDetails(args) {
 }
 
 function getRecentPosts() {
-    if (hasRequestedPosts.value === false) {
+    if (hasRequestedPosts.value === false && (posts.value !== undefined && posts.length !== 0 )) {
         hasRequestedPosts.value = true;
         var latest = posts.toArray()[0];
         Fetch.getRecPosts(latest.createdAt)
@@ -37,6 +37,7 @@ function getRecentPosts() {
             });
 
     } else {
+        getPosts();
         console.log('illicit request');
     }
 }

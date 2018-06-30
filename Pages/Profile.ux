@@ -131,7 +131,7 @@
             <DockPanel Dock="Top" MinHeight="200" Padding="10">
                 <Rectangle Height="50%" Alignment="Top" Layer="Background" Color="#25333D" />
                 <Circle Height="60%" Width="60%" Layer="Overlay" Alignment="Center" Color="#25333D">
-                    <App.Img Data="{user.avatar}" IsAvatar="true" />
+                    <ImageFill Url="{user.avatar}" StretchMode="UniformToFill" />
                 </Circle>
                 <DockPanel Margin="50, 5" Alignment="BottomLeft" Dock="Left">
                     <App.Text TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="30" Value="{stats.posts}" />

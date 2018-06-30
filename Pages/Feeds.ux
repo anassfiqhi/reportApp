@@ -132,7 +132,7 @@
                                             <Rectangle Layer="Background" StrokeColor="#FFF" />
                                             <Panel Clicked="{details}" Height="200" HitTestMode="LocalBoundsAndChildren">
                                                 <Rectangle Layer="Background" Color="#25333D">
-                                                    <App.Img Data="{image}" IsAvatar="false" />
+                                                    <ImageFill Url="{image}" StretchMode="UniformToFill" />
                                                 </Rectangle>
                                                 <Rectangle Layer="Overlay" Color="#25333DAA">
                                                     <StackPanel Alignment="Center" Width="90%">
