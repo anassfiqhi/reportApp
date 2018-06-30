@@ -1,326 +1,173 @@
-<App.Page ux:Class="FeedPage">
-    <Router ux:Dependency="router" />
+<Page ux:Class="FeedPage" Background="#3D8B37" PageY="{= abs(y({Property MainScroll.ScrollPosition}))}">
+    <object ux:Property="Post" />
+    <float ux:Property="PageY" />
     <JavaScript File="Feeds.js" />
-    <Activated Handler="{getPosts}" />
-    <EdgeNavigator>
-        <Panel ux:Name="sidebar1" Edge="Left" Width="100%" Margin="0,0,100,0">
-			<Shadow ux:Name="shadow1" Angle="180" Distance="8" Size="16" Color="#0000" />
-			<ActivatingAnimation>
-				<Change shadow1.Color="#0004" />
-				<Change sidebarFade.Opacity="1" />
-			</ActivatingAnimation>
-            <Image StretchMode="UniformToFill" Layer="Background" Opacity="0.8" File="../Assets/Images/bg_.jpg" />
-            <DockPanel>
-                <Grid Background="#25333D" RowCount="2" Rows="2*, auto" Height="30%" Dock="Top">
-                    <Circle Alignment="VerticalCenter" Color="#FDD006" Height="80%">
-                        <App.Img Data="{user.avatar}" IsAvatar="true" />
-                        <!-- <ImageFill Url="{}" /> -->
-                    </Circle>
-                    <StackPanel Orientation="Vertical">
-                        <App.Header TextColor="#FFF" Alignment="Center" FontSize="20" Value="{user.name}" />
-                        <App.Text TextColor="#FFF" Alignment="Center" FontSize="15" Value="{user.username}" />
-                    </StackPanel>
-                </Grid>
-                <Grid ColumnCount="2" RowCount="2" Rows="1*, 1*" Columns="1*, 1*" Alignment="VerticalCenter" Height="70%">
-                    <Button>
-                        <!-- <Rectangle Layer="Background" Color="#FDD006" /> -->
-                        <DockPanel Alignment="BottomCenter">
-                            <Icon TextColor="#FFF" FontSize="100" Dock="Top" Value="" />
-                            <App.Header TextColor="#FFF" FontSize="10" Value="FEEDS" />
-                        </DockPanel>
-                    </Button>
-                    <Button>
-                        <DockPanel Alignment="BottomCenter">
-                            <Icon TextColor="#FFF" FontSize="100" Dock="Top" Value="" />
-                            <App.Header TextColor="#FFF" FontSize="10" Value="PROFILE" />
-                        </DockPanel>
-                    </Button>
-                    <Button>
-                        <DockPanel Alignment="TopCenter">
-                            <Icon TextColor="#FFF" FontSize="100" Dock="Top" Value="" />
-                            <App.Header TextColor="#FFF" FontSize="10" Value="ABOUT US" />
-                        </DockPanel>
-                    </Button>
-                    <Button>
-                        <DockPanel Alignment="TopCenter">
-                            <Icon TextColor="#FFF" FontSize="100" Dock="Top" Value="" />
-                            <App.Header TextColor="#FFF" FontSize="10" Value="LOGOUT" />
-                        </DockPanel>
-                        <Clicked Handler="{signOut}" />
-                    </Button>
-                </Grid>
-            </DockPanel>
-		</Panel>
-		<DockPanel ux:Name="sidebar2" Edge="Right" Height="100%" Width="100%">
-			<Shadow ux:Name="shadow2" Angle="180" Distance="8" Size="16" Color="#0000" />
-			<ActivatingAnimation>
-				<Change shadow2.Color="#0004" />
-				<Change sidebarFade.Opacity="1" />
-			</ActivatingAnimation>
-            <Rectangle Layer="Background" Color="#FFF" CornerRadius="10, 10, 0, 0" />
-            <DockPanel Dock="Top">
-                <Rectangle Color="#25333D" CornerRadius="10, 10, 0, 0" Layer="Background" />
-                <App.Header Dock="Left" FontSize="20" Margin="10" Value="Add a Post" TextColor="#FFF" TextAlignment="Right" />
-                <DockPanel Dock="Right">
-                    <Button Margin="5, 1" Dock="Left">
-                        <Icon TextColor="#FFF" Value="" FontSize="30" />
-                        <Clicked Handler="{addPost}" />
-                    </Button>
-                    <Button Margin="5, 1" Dock="Right">
-                        <Icon TextAlignment="Center" Value="" TextColor="#FFF" FontSize="30" />
-                        <Clicked>
-                            <NavigateToggle Target="sidebar2" />
-                            <Set addedMessage.Value="false" />
-                        </Clicked>
-                    </Button>
-                </DockPanel>
-            </DockPanel>
-            <DockPanel Visibility="Collapsed" Background="#25333D" Margin="0" ux:Name="camera">
-                <Rectangle Height="50" Dock="Top" Color="#9B0D54">
-                    <App.Text TextColor="#FFF" Value="Close" />
-                    <Clicked>
-                        <Set camera.Visibility="Collapsed" />
-                        <Set Form.Visibility="Visible" />
-                    </Clicked>
-                </Rectangle>
-                <NativeViewHost>
-                    <CameraView ux:Name="_cameraView" />
-                </NativeViewHost>
-                <Rectangle Height="50" Dock="Bottom" Color="#007CBB">
-                    <Clicked Handler="{capturePhoto}" />
-                    <App.Text TextColor="#FFF" Value="Take Photo" />
+    <Router ux:Dependency="router" />
+    <Navigator ux:Dependency="nav" />
+    <WhileActive>
+        <OnBackButton>
+            <HomeScreen Type="CallIntent" />
+        </OnBackButton>
+    </WhileActive>
+    <Circle Color="#FDD006" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 10, 80" Alignment="BottomRight" Padding="12" Layer="Overlay">
+        <Icon TextAlignment="Center" Alignment="Center" ux:Name="refresh" Value="&#xf2d5;" TextColor="#FFF" FontSize="25" />
+        <Clicked Handler="{getPosts}" />
+        <WhilePressed>
+            <Scale Factor="0.8" />
+            <Rotate Degrees="80" />
+        </WhilePressed>
+    </Circle>
+    <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 30, 20" Alignment="BottomRight" Padding="12" Layer="Overlay">
+        <Icon TextAlignment="Center" Alignment="Center" ux:Name="add" Value="&#xf113;" TextColor="#FFF" FontSize="25" />
+        <Clicked>
+            <ScrollTo Position="0" TargetNode="MainScroll" />
+        </Clicked>
+        <WhilePressed>
+            <Scale Factor="0.8" />
+        </WhilePressed>
+    </Circle>
+    <ScrollView ux:Name="MainScroll" LayoutMode="PreserveVisual">
+        <DockPanel Height="200%">
+            <Rectangle Layer="Background" Color="#FFF" HitTestMode="None" />
+            <DockPanel Height="25%" ux:Name="hero" Background="#1C5120" Dock="Top" Margin="0">
+                <Image StretchMode="UniformToFill" Layer="Background" File="../Assets/Images/Tour Guide 01.jpg" />
+                <Rectangle Dock="Fill">
+                    <Grid Alignment="BottomCenter" Width="20%" Margin="10" ColumnCount="3" Columns="1*,1*,1*" Layer="Overlay">
+                        <Circle ux:Name="first" Height="10" Width="10" Color="#333" />
+                        <Circle ux:Name="second" Height="10" Width="10" Color="#333" />
+                        <Circle ux:Name="third" Height="10" Width="10" Color="#333" />
+                    </Grid>
+                    <WhileEmpty Items="{posts}">
+                        <Panel Alignment="Center">
+                            <App.Text TextAlignment="Center" TextColor="#FFF">{message}</App.Text>
+                        </Panel>
+                    </WhileEmpty>
+                    <WhileCount Items="{posts}" GreaterThan="3">
+                        <Deferred>
+                            <PageControl IsRouterOutlet="false" ux:Name="featured" ActiveIndex="0">
+                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg1" Alignment="Center" >
+                                    <WhileActive>
+                                        <Change first.Color="#FFF" />
+                                    </WhileActive>
+                                    <With Data="{posts[0]}">
+                                        <App.Header Clicked="{details}" TextColor="#FFF" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Value="{title}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{body}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
+                                    </With>
+                                </StackPanel>
+                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg2" Alignment="Center" >
+                                    <WhileActive>
+                                        <Change second.Color="#FFF" />
+                                    </WhileActive>
+                                    <With Data="{posts[1]}">
+                                        <App.Header Clicked="{details}" TextColor="#FFF" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Value="{title}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{body}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
+                                    </With>
+                                </StackPanel>
+                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg3" Alignment="Center">
+                                    <WhileActive>
+                                        <Change third.Color="#FFF" />
+                                    </WhileActive>
+                                    <With Data="{posts[2]}">
+                                        <App.Header Clicked="{details}" TextColor="#FFF" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Value="{title}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{body}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
+                                    </With>
+                                </StackPanel>
+                            </PageControl>
+                        </Deferred>
+                    </WhileCount>
                 </Rectangle>
             </DockPanel>
-            <ScrollView Visibility="Visible" ux:Name="Form" AllowedScrollDirections="Vertical" Opacity="1">
-                <StackPanel MinHeight="700" ux:Name="Editor" Padding="5" ItemSpacing="5">
-                    <WhileTrue ux:Name="addedMessage" Value="{addedPost}">
-                        <Panel Dock="Top" Padding="5">
-                            <Rectangle CornerRadius="5" Layer="Background" Color="#007CBB33" StrokeColor="#007CBB" />
-                            <App.Text TextColor="#007CBB" Value="Your post has been added" TextAlignment="Center" />
-                        </Panel>
-                    </WhileTrue>
-                    <WhileTrue Value="{notLoggedIn}">
-                        <Panel Dock="Top" Padding="5">
-                            <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
-                            <App.Text TextColor="#9B0D54" Value="Please login to add a post" TextAlignment="Center" />
-                        </Panel>
-                    </WhileTrue>
-                    <WhileTrue Value="{processFailed}">
-                        <Panel Dock="Top" Padding="5">
-                            <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
-                            <App.Text TextColor="#9B0D54" Value="{errMessage}" TextAlignment="Left" TextWrapping="NoWrap" />
-                        </Panel>
-                    </WhileTrue>
-                    <WhileTrue Value="{processing}">
-                        <Panel Dock="Top" Padding="5">
-                            <Rectangle CornerRadius="5" Layer="Background" Color="#007CBB33" StrokeColor="#007CBB" />
-                            <App.Text TextColor="#007CBB" Value="Sending post..." TextAlignment="Center" />
-                        </Panel>
-                    </WhileTrue>
-                    <Match Value="{hasImg}">
-                        <Case Bool="true">
-                            <Image Alignment="Center" Height="100" File="{img}">
-                                <App.Text TextColor="#FFF" FontSize="10" Alignment="Center">Click to change image</App.Text>
-                                <Clicked>
-                                   <Set Form.Visibility="Collapsed" />
-                                   <Set camera.Visibility="Visible" />
-                                </Clicked>
-                            </Image>
-                        </Case>
-                        <Case Bool="false">
-                             <Image Alignment="Center" Height="100" File="../Assets/Images/img-placeholder.png">
-                                <App.Text TextColor="#FFF" FontSize="10" Alignment="Center">Click to add image</App.Text>
-                                <Clicked>
-                                    <Set camera.Visibility="Visible" />
-                                    <Set Form.Visibility="Collapsed" />
-                                </Clicked>
-                            </Image>
-                        </Case>
-                    </Match>
-                    <FormLabel TextColor="#111" Alignment="Left">Post Anonymously</FormLabel>   
-                    <Panel>
-                        <Button ux:Name="StatusBtn" Height="40">
-                            <Rectangle CornerRadius="5" StrokeColor="#CCC" Layer="Background" />
-                            <DockPanel>
-                                <WhileFloat Value="{anonymous}" GreaterThanEqual="1">
-                                    <App.Text TextColor="#111" Value="Yes" />
-                                </WhileFloat>
-                                <WhileFloat Value="{anonymous}" LessThanEqual="0">
-                                    <App.Text TextColor="#111" Value="No" />
-                                </WhileFloat>
-                                <Icon Dock="Right" Value="&#xf306;" />
-                            </DockPanel>
-                            <Clicked>
-                                <Set StatusBtn.Visibility="Collapsed" />
-                                <Set StatusBtn.Height="0" />
-                                <Set StatusCard.Visibility="Visible" />
-                                <Set StatusCard.Height="100%" />
-                            </Clicked>
-                            <WhileVisible>
-                                <Set StatusCard.Visibility="Collapsed" />
-                                <Set StatusCard.Height="0" />
-                            </WhileVisible>
-                        </Button>
-                        <Rectangle CornerRadius="5" ux:Name="StatusCard" Visibility="Hidden" Height="0" Color="#FFF">
-                            <StackPanel ItemSpacing="5">
-                                <Each Items="{status}">
-                                    <Selection Value="{anonymous}" MaxCount="1" MinCount="1" />
-                                    <Deferred>
-                                        <Panel ux:Name="con" Background="#FFF">
-                                            <Selectable Value="{value}" />
-                                            <WhileSelected>
-                                                <Change caption.TextColor="#FFF" />
-                                                <Change con.Background="#25333D"/>
-                                            </WhileSelected>
-                                            <!-- <Selected>
-                                                <Set StatusCard.Visibility="Collapsed" />
-                                                <Set StatusCard.Height="0" />
-                                                <Set StatusBtn.Visibility="Visible" />
-                                                <Set StatusBtn.Height="40" />
-                                            </Selected> -->
-                                            <Tapped Handler="{setAnon}">
-                                                <Set StatusCard.Visibility="Collapsed" />
-                                                <Set StatusCard.Height="0" />
-                                                <Set StatusBtn.Visibility="Visible" />
-                                                <Set StatusBtn.Height="40" />
-                                                <ToggleSelection />                 
-                                            </Tapped>
-                                            <App.Text ux:Name="caption" TextColor="#000" TextAlignment="Center" Alignment="HorizontalCenter">
-                                                {label}
-                                            </App.Text>
-                                        </Panel>
-                                    </Deferred>
-                                </Each>
-                            </StackPanel>
-                        </Rectangle>
-                    </Panel>    
-                    <FormLabel TextColor="#111" Alignment="Left">Title</FormLabel>                     
-                    <App.Input TextColor="#111" CaretColor="#222" BgCol="#CCC" PlaceholderText="Title" Value="{title}" />
-                    <FormLabel TextColor="#111" Alignment="Left">Content</FormLabel>
-                    <App.TextBox LineCol="#CCC" Text="Content" Value="{content}">
-                    </App.TextBox>
-                    <!-- <Rectangle MinHeight="350" StrokeColor="#CCC" CornerRadius="5">
-                        <ScrollView>
-                            <App.TextBox LineCol="#CCC" Text="Content" Value="{content}">
-                            </App.TextBox>
-                        </ScrollView>
-                    </Rectangle> -->
-                    
-                </StackPanel>
-            </ScrollView>
-		</DockPanel>
-	
-        <DockPanel>
-            <Rectangle ux:Name="sidebarFade" Layer="Overlay" Color="#0005" Opacity="0" HitTestMode="None" />
-            <Panel Dock="Top" Margin="0">
-                <DropShadow />
-                <Rectangle Layer="Background" Color="#25333D" />
-                <DockPanel Padding="10">
-                    <Button Dock="Left">
-                        <Icon Value="" FontSize="30" TextColor="#FFF" />
-                        <Clicked>
-                            <NavigateToggle Target="sidebar1" />
-                        </Clicked>
-                    </Button>
-                    <App.Title Alignment="Center" TextAlignment="Center" TextColor="#FFF" FontSize="24" Value="FEEDS" />
-                    <DockPanel Dock="Right">
-                        <Button Dock="Left">
-                            <Icon Value="" TextColor="#FFF" FontSize="30" />
-                            <Clicked>
-                                <NavigateToggle Target="sidebar2" />
-                            </Clicked>
-                        </Button>
-                        <Button Dock="Right">
-                            <Icon Value="" TextColor="#FFF" FontSize="32" />
-                            <Clicked Handler="{getPosts}" />
-                        </Button>
-                    </DockPanel>
-                </DockPanel>
-            </Panel>
             <WhileEmpty Items="{posts}">
-                <Panel Alignment="Center">
+                <Panel Alignment="Center" Background="#FFF">
                     <App.Text TextAlignment="Center">{message}</App.Text>
                 </Panel>
             </WhileEmpty>
             <WhileCount Items="{posts}" GreaterThan="0">
-                <ScrollView>
-                    <StackPanel Padding="10, 5" ItemSpacing="10">
-                        <Each Items="{posts}">
-                            <DockPanel>
-                                <Rectangle Layer="Background" Color="#FFF" CornerRadius="5">
-                                    <DropShadow />
-                                </Rectangle>
-                                <Grid Padding="2" CellSpacing="0" Columns="4*,1*" Height="50" Dock="Top" ColumnCount="2">
-                                    <DockPanel Clicked="{details}">
-                                        <Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D">
-                                            <Match Value="{anonymous}">
-                                                <Case Bool="true">
-                                                    <Image File="../Assets/Images/user.png"/>
-                                                </Case>
-                                                <Case Bool="false">
-                                                    <App.Img Data="{author.avatar}" IsAvatar="true" />
-                                                </Case>
-                                            </Match>
-                                        </Circle>
-                                        <Grid Margin="5, 0, 0, 0" Rows="1*,1*,1*" RowCount="3">
-                                            <Match Value="{anonymous}">
-                                                <Case Bool="true">
-                                                    <App.Header Alignment="CenterLeft" FontSize="14" Value="Anonymous User" />
-                                                </Case>
-                                                <Case Bool="false">
-                                                    <App.Header Alignment="CenterLeft" FontSize="14" Value="{author.name}" />
-                                                </Case>
-                                            </Match>
-                                            <App.Text Alignment="CenterLeft" FontSize="12" Value="{loc}" />
-                                            <App.Text Alignment="CenterLeft" FontSize="12" Value="{time}" />
-                                        </Grid>
-                                    </DockPanel>
-                                    <Grid CellSpacing="0.5" Columns="1*,1*," ColumnCount="2">
-                                        <Button Dock="Left" Clicked="{shareToWhatsapp}">
-                                            <Icon Value="" FontSize="25" />
-                                        </Button>
-                                        <Button Dock="Right" Clicked="{shareText}">
-                                            <Mat.Icon Value="" FontSize="25" />
-                                        </Button>
-                                    </Grid>
-                                </Grid>
-                                <Panel Clicked="{details}" Height="200">
-                                    <Clicked>
-                                        <Change sidebarFade.Opacity="1" />
-                                    </Clicked>
-                                    <Rectangle Layer="Background" Color="#25333D">
-                                        <App.Img Data="{image}" IsAvatar="false" />
-                                    </Rectangle>
-                                </Panel>
-                                <StackPanel Dock="Bottom" Padding="5" Orientation="Vertical" ItemSpacing="10" Clicked="{details}" Width="100%" HitTestMode="LocalBoundsAndChildren">
-                                    <App.Header Dock="Top" Alignment="Left" TextWrapping="Wrap" Value="{title}" />
-                                    <App.Text MaxLength="200" TextWrapping="Wrap" Opacity=".8" FontSize="14" Alignment="Left" Value="{body}" />
-                                    <!-- <Grid Columns="1*,1*,6*" ColumnCount="3">
-                                        <Button Alignment="Left">
-                                            <DockPanel>
-                                                <Icon FontSize="30" Dock="Top" Value="" />
-                                                <App.Text FontSize="14" Value="{upvotes}" />
-                                            </DockPanel>
-                                        </Button>
-                                        <Button Alignment="Left">
-                                            <DockPanel>
-                                                <Icon FontSize="30" Dock="Top" Value="" />
-                                                <App.Text FontSize="14" Value="{downvotes}" />
-                                            </DockPanel>
-                                        </Button>
-                                        <Button Clicked="{details}" Alignment="CenterRight">
-                                            <Clicked>
-                                                <Change sidebarFade.Opacity="1" />
-                                            </Clicked>
-                                            <Icon Alignment="VerticalCenter" FontSize="30" Value="" />
-                                        </Button>
-                                    </Grid> -->
-                                </StackPanel>
-                            </DockPanel>
-                        </Each>                        
-                    </StackPanel>
-                </ScrollView>
+                <DockPanel Background="#FFF">
+                    <Rectangle ux:Name="indicator" LayoutMaster="tabTrd" Layer="Background" Color="#EEE">
+                        <LayoutAnimation>
+                            <Move RelativeTo="WorldPositionChange" X="1" Duration="0.4" Easing="BackIn"/>
+                        </LayoutAnimation>
+                    </Rectangle>
+                    <Grid Dock="Top" ColumnCount="2" Columns="1*, 1*" Height="50">
+                        <Rectangle Layer="Background" StrokeColor="#EEE" />
+                        <Panel ux:Name="tabTrd" HitTestMode="LocalBoundsAndChildren">
+                            <App.Text Value="Recent" />
+                            <Clicked>
+                                <Set Nav_.Active="trending" />
+                            </Clicked>
+                        </Panel>
+                        <Panel ux:Name="tabRec" HitTestMode="LocalBoundsAndChildren">
+                            <App.Text Value="Trending" />
+                            <Clicked>
+                                <Set Nav_.Active="recent" />
+                            </Clicked>
+                        </Panel>
+                    </Grid>
+                    <PageControl IsRouterOutlet="false" Dock="Fill" ActiveIndex="0" ux:Name="Nav_">
+                        <WhileFloat Value="{Property Nav_.ActiveIndex}" GreaterThanEqual="1">
+                            <Set indicator.LayoutMaster="tabRec" />
+                        </WhileFloat>
+                        <WhileFloat Value="{Property Nav_.ActiveIndex}" LessThanEqual="0">
+                            <Set indicator.LayoutMaster="tabTrd" />
+                        </WhileFloat>
+                        <ScrollView ux:Name="trending">
+                            <Scrolled To="Start">
+                                <Callback Handler="{getPosts}" />
+                            </Scrolled>
+                            <WhileFloat Value="{= abs(y({Property trending.ScrollPosition}))}" GreaterThanEqual="20">
+                                <ScrollTo Position="400" TargetNode="MainScroll" />
+                            </WhileFloat>
+                            <WhileFloat Value="{= abs(y({Property trending.ScrollPosition}))}" LessThan="20">
+                                <ScrollTo Position="0" TargetNode="MainScroll" />
+                            </WhileFloat>
+                            <StackPanel>
+                                <Rectangle Layer="Background" Color="#FFF" />
+                                <Each Items="{posts}">
+                                    <Deferred>
+                                        <DockPanel Margin="20, 40" ux:Name="page" Width="100%" Height="100%">
+                                            <Rectangle Layer="Background" StrokeColor="#FFF" />
+                                            <Panel Clicked="{details}" Height="200" HitTestMode="LocalBoundsAndChildren">
+                                                <Rectangle Layer="Background" Color="#25333D">
+                                                    <App.Img Data="{image}" IsAvatar="false" />
+                                                </Rectangle>
+                                                <Rectangle Layer="Overlay" Color="#25333DAA">
+                                                    <StackPanel Alignment="Center" Width="90%">
+                                                        <App.Header TextAlignment="Center" Alignment="Center" FontSize="18" TextColor="#fff" TextWrapping="Wrap" Value="{title}" />
+                                                        <DockPanel>
+                                                            <Match Value="{anonymous}">
+                                                                <Case Bool="true">
+                                                                    <App.Header TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="14" Value="Anonymous User" />
+                                                                </Case>
+                                                                <Case Bool="false">
+                                                                    <App.Header TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="14" Value="{author.username}" />
+                                                                </Case>
+                                                            </Match>
+                                                            <App.Text Dock="Bottom" TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="10" Value="{time}" />
+                                                        </DockPanel>
+                                                    </StackPanel>
+                                                </Rectangle>
+                                            </Panel>
+                                            <Panel Dock="Bottom" Clicked="{details}" Width="100%" HitTestMode="LocalBoundsAndChildren">
+                                                <App.Text TextAlignment="Left" MaxLength="200" TextWrapping="Wrap" FontSize="12" Alignment="Left" Value="{body}" />
+                                            </Panel>
+                                        </DockPanel>
+                                    </Deferred>
+                                    <WhileBusy>
+                                        <App.Text Value="Loading posts..." TextAlignment="Center" Alignment="VerticalCenter" />
+                                    </WhileBusy>
+                                </Each>
+                            </StackPanel>
+                        </ScrollView>
+                        <StackPanel ux:Name="recent" MinHeight="300">
+                            <App.Text Alignment="Center" TextAlignment="Center" Value="Comming Soon" />
+                        </StackPanel>
+                    </PageControl>
+                </DockPanel>
             </WhileCount>
         </DockPanel>
-    </EdgeNavigator>
-</App.Page>
+    </ScrollView>
+</Page>

@@ -1,9 +1,28 @@
 <Page ux:Class="LoginPage">
-	<!-- <ImageFill StretchMode="UniformToFill" File="../Assets/Images/bg_.jpg" /> -->
-	<Rectangle Color="#25333D" Layer="Background" />
-	<!-- <Rectangle Layer="Background" Color="#9B0D54" /> -->
 	<Router ux:Dependency="router" />
+	<Image Layer="Background" StretchMode="UniformToFill" File="../Assets/Images/Tour Guide 02.jpg" />
 	<JavaScript File="LoginPage.js"/>
+	<WhileTrue Value="{regFailed}">
+		<Panel Color="#9B0D54" Alignment="Top" Padding="5">
+			<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+				Oops, registration failed please check that you entered valid name and username or your network connection      
+			</App.Text>
+		</Panel>
+	</WhileTrue>
+	<WhileTrue Value="{loginFailed}">
+		<Panel Color="#9B0D54" Alignment="Top" Padding="5">
+			<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+				Oops, login failed please check that you entered valid username or your network connection      
+			</App.Text>
+		</Panel>
+	</WhileTrue>
+	<WhileTrue Value="{processing}">
+		<Panel Color="#004A70" Alignment="Top" Padding="5">
+			<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+				Your Request is being processed       
+			</App.Text>
+		</Panel>
+	</WhileTrue>
 	<DockPanel>
 		<Panel HitTestMode="LocalBoundsAndChildren" Clicked="{goHome}" Color="#9B0D5400" Dock="Top" Padding="5">
 			<Icon TextWrapping="Wrap"
@@ -11,64 +30,47 @@
 				&#xf237;
 			</Icon>
 		</Panel>
-		<WhileTrue Value="{regFailed}">
-			<Panel Color="#9B0D54" Alignment="Top" Padding="5">
-				<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
-					Oops, registration failed please check that you entered valid name and username or your network connection      
-				</App.Text>
-			</Panel>
-		</WhileTrue>
-		<WhileTrue Value="{loginFailed}">
-			<Panel Color="#9B0D54" Alignment="Top" Padding="5">
-				<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
-					Oops, login failed please check that you entered valid username or your network connection      
-				</App.Text>
-			</Panel>
-		</WhileTrue>
-		<WhileTrue Value="{processing}">
-			<Panel Color="#004A70" Alignment="Top" Padding="5">
-				<App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
-					Your Request is being processed       
-				</App.Text>
-			</Panel>
-		</WhileTrue>
 		<Match Value="{page}">
 			<Case String="Login">
-				<StackPanel Alignment="VerticalCenter">
-					<Grid CellSpacing="5" ColumnCount="2" Columns="5*, auto" Padding="5">
-						<Rectangle Padding="4, 1" Color="#25333D" StrokeColor="#fff" StrokeWidth="2">
-							<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="20"  PlaceholderText="Login with user name" Value="{username}" />
-						</Rectangle>
-						<Icon Clicked="{login}" Alignment="Center" FontSize="30" TextColor="#FFF" TextAlignment="Center" Value="&#xf11b;" />
-					</Grid>
-					<StackPanel Padding="5" Orientation="Horizontal">
-						<App.Text TextColor="#FFF" FontSize="13">
-							New here?
-						</App.Text>
-						<Button Clicked="{goRegister}" Text="register" />
+				<Deferred>
+					<StackPanel Alignment="VerticalCenter">
+						<Grid CellSpacing="5" ColumnCount="2" Columns="5*, auto" Padding="5">
+							<Rectangle Padding="4, 1" Color="#25333D66" StrokeColor="#fff" StrokeWidth="2">
+								<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="20"  PlaceholderText="Login with user name" Value="{username}" />
+							</Rectangle>
+							<Icon Clicked="{login}" Alignment="Center" FontSize="30" TextColor="#FFF" TextAlignment="Center" Value="&#xf11b;" />
+						</Grid>
+						<StackPanel ItemSpacing="10" Padding="5" Orientation="Horizontal">
+							<App.Text TextColor="#FFF" FontSize="13">
+								New here?
+							</App.Text>
+							<Button Clicked="{goRegister}" Text="register" />
+						</StackPanel>
 					</StackPanel>
-				</StackPanel>
+				</Deferred>
 			</Case> 
 			<Case String="Register">
-				<StackPanel Alignment="VerticalCenter">
-					<Grid CellSpacing="5" ColumnCount="1" Columns="1*" Padding="5">
-						<Rectangle ColumnSpan="2" Padding="4, 1" Color="#25333D" StrokeColor="#fff" StrokeWidth="2">
-							<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="25"  PlaceholderText="fullname" Value="{name}" />
-						</Rectangle>
-					</Grid>
-					<Grid CellSpacing="5" ColumnCount="2" Columns="5*, auto" Padding="5">
-						<Rectangle Padding="4, 1" Color="#25333D" StrokeColor="#fff" StrokeWidth="2">
-							<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="20"  PlaceholderText="username" Value="{username}" />
-						</Rectangle>
-						<Icon Clicked="{register}" Alignment="Center" FontSize="30" TextColor="#FFF" TextAlignment="Center" Value="&#xf11b;" />
-					</Grid>
-					<StackPanel Padding="5" Orientation="Horizontal">
-						<App.Text TextColor="#FFF" FontSize="13">
-							Already have an account?
-						</App.Text>
-						<Button Clicked="{goLogin}" Text="login" />
+				<Deferred>
+					<StackPanel Alignment="VerticalCenter">
+						<Grid CellSpacing="5" ColumnCount="1" Columns="1*" Padding="5">
+							<Rectangle ColumnSpan="2" Padding="4, 1" Color="#25333D66" StrokeColor="#fff" StrokeWidth="2">
+								<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="25"  PlaceholderText="fullname" Value="{name}" />
+							</Rectangle>
+						</Grid>
+						<Grid CellSpacing="5" ColumnCount="2" Columns="5*, auto" Padding="5">
+							<Rectangle Padding="4, 1" Color="#25333D66" StrokeColor="#fff" StrokeWidth="2">
+								<TextInput CaretColor="#ddd" TextColor="#fff" PlaceholderColor="#CCC" FontSize="20"  PlaceholderText="username" Value="{username}" />
+							</Rectangle>
+							<Icon Clicked="{register}" Alignment="Center" FontSize="30" TextColor="#FFF" TextAlignment="Center" Value="&#xf11b;" />
+						</Grid>
+						<StackPanel Padding="5" Orientation="Horizontal" ItemSpacing="10">
+							<App.Text TextColor="#FFF" FontSize="13">
+								Already have an account?
+							</App.Text>
+							<Button Clicked="{goLogin}" Text="login" />
+						</StackPanel>
 					</StackPanel>
-				</StackPanel>
+				</Deferred>
 			</Case>     
 		</Match>
 	</DockPanel>

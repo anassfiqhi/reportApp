@@ -1,5 +1,6 @@
-<TextView ux:Class="App.TextBox" Height="100%" MinHeight="100" Width="100%" TextColor="#25333D" CaretColor="#000" Padding="5" TextWrapping="Wrap">
+<TextView ux:Class="App.TextBox" Height="100%" MinHeight="100" Width="100%" TextColor="#25333D" Radius="5" CaretColor="#000" Padding="5" TextWrapping="Wrap">
     <string ux:Property="Text" />
     <string ux:Property="LineCol" />
-    <Rectangle StrokeColor="{ReadProperty LineCol}" Layer="Background" CornerRadius="5" />
+    <int ux:Property="Radius" />
+    <Rectangle Color="{ReadProperty LineCol}" Alignment="Bottom" Height="2" CornerRadius="{ReadProperty Radius}" />
 </TextView>

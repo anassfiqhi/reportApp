@@ -18,18 +18,18 @@ function goRegister() {
 
 function goHome() {
     storage.getUser()
-        .then(res => {
-            if (res.id) {
-                router.goto("feeds", res);
-            } else {
-                storage.setUser({name: 'Anonymous User', username: 'anonymous', 'avatar': 'https://www.gravatar.com/avatar'})
-                .then(resp => router.goto("feeds", resp))
-            }
-        })
-        .catch(err => {
-            storage.setUser({name: 'Anonymous User', username: 'anonymous', 'avatar': 'https://www.gravatar.com/avatar'})
-            .then(resp => router.goto("feeds", resp))
-        });
+    .then(res => {
+        if (res.id) {
+            router.goto("main", res);
+        } else {
+            router.goto("main", {});
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        router.goto("main", {});
+    })
+            
 }
 
 
@@ -37,16 +37,18 @@ function login() {
     processing.value = true;
     Fetch.login(username.value)
         .then(res => {
-            localStorage.setItem('id', res.id);
             storage.setUser(res)
-                .then(resp => router.goto("feeds", resp))
-                .catch(err => router.goto("feeds", res))
-            // router.goto("feeds", res)
+                .then(resp => router.goto("main", res))
+                .catch(err => {
+                    console.log(err);
+                    router.goto("main", res);
+                })
             processing.value = false;
         })
         .catch(err => {
             processing.value = false;
             loginFailed.value = true;
+            setTimeout(() => loginFailed.value = false, 1000)
         });
 }
 
@@ -54,16 +56,15 @@ function register() {
     processing.value = true;
     Fetch.signup(username.value, name.value)
         .then(res => {
-            localStorage.setItem('id', res.id);
             storage.setUser(res)
-                .then(resp => router.goto("feeds", resp))
-                .catch(err => router.goto("feeds", res))
-            // router.goto("feeds", res)
+                .then(resp => router.goto("main", res))
+                .catch(err => router.goto("main", res))
             processing.value = false;
         })
         .catch(err => {
             processing.value = false;
             regFailed.value = true;
+            setTimeout(() => regFailed.value = false, 1000)
         });
 }
 

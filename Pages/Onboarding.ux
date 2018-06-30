@@ -1,0 +1,79 @@
+<Page ux:Class="Onboarding">
+    <Router ux:Dependency="router" />
+    <Rectangle ux:Name="Fade" Layer="Overlay" Color="#0005" Opacity="0" HitTestMode="None" />
+    <Activated>
+        <Set Fade.Opacity="0" />
+    </Activated>
+    <Grid Alignment="BottomCenter" Width="20%" Margin="10" ColumnCount="3" Columns="1*,1*,1*" Layer="Overlay">
+        <Circle ux:Name="first" Height="10" Width="10" Color="#2F333D">
+            <Clicked>
+                <Set nav.Active="fst" />
+            </Clicked>
+        </Circle>
+        <Circle ux:Name="second" Height="10" Width="10" Color="#2F333D">
+            <Clicked>
+                <Set nav.Active="scd" />
+            </Clicked>
+        </Circle>
+        <Circle ux:Name="third" Height="10" Width="10" Color="#2F333D">
+            <Clicked>
+                <Set nav.Active="thd" />
+            </Clicked>
+        </Circle>
+    </Grid>
+    <PageControl IsRouterOutlet="false" ux:Name="nav">
+        <Page ux:Name="fst" Padding="0">
+            <Deferred>
+                <Image Layer="Background" StretchMode="UniformToFill" File="../Assets/Images/Tour Guide 01.jpg" />
+                <WhileActive>
+                    <Change first.Color="#FFF" />
+                    <Scale Target="first" Factor="1.3" />
+                </WhileActive>
+                <StackPanel Orientation="Vertical" Width="50%" Height="40%" Margin="0, 0, 0, 100" Alignment="BottomCenter">
+                    <App.Title TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Value="Lets Hit Corruption" />
+                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="Honesty, Intergrity, Transparency" />
+                </StackPanel>
+            </Deferred>
+        </Page>
+        <Page ux:Name="scd" Padding="0">
+            <Deferred>
+                <Image Layer="Background" StretchMode="UniformToFill" File="../Assets/Images/Tour Guide 02.jpg" />
+                <WhileActive>
+                    <Change second.Color="#FFF" />
+                    <Scale Target="second" Factor="1.3" />
+                </WhileActive>
+                <StackPanel Orientation="Vertical" Width="50%" Height="0%" Margin="0, 0, 0, 100" Alignment="BottomCenter">
+                    <App.Title TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Value="Stay Anonymous, Report Corruption" />
+                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="You need not sign in or register to make use of this platform" />
+                </StackPanel>
+            </Deferred>
+        </Page>
+        <Page ux:Name="thd" Padding="0">
+            <JavaScript>
+                var storage = require("modules/storage");
+                exports.goHome = function() {
+                    storage.writeBaseData()
+                        .then(res => router.goto("main", {}))
+                        .catch(err => router.goto("main", {}))
+                }
+            </JavaScript>
+            <Image Layer="Background" StretchMode="UniformToFill" File="../Assets/Images/Tour Guide 03.jpg" />
+            <WhileActive>
+                <Change third.Color="#FFF" />
+                <Scale Target="third" Factor="1.3" />
+            </WhileActive>
+            <Deferred>
+                <StackPanel Orientation="Vertical" Width="40%" Height="40%" Margin="0, 0, 0, 100" Alignment="BottomCenter">
+                    <App.Title TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Value="Join the Conversations" />
+                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="Add your voice in the fight against corruption" />
+                    <Rectangle Margin="0, 20, 0, 0" Clicked="{goHome}" CornerRadius="5" Alignment="HorizontalCenter" Width="100%" Padding="10" Height="40" Color="#FFF" >
+                        <App.Text Value="Get Started" TextColor="#25333D" FontSize="15" />
+                        <Clicked>
+                            <Set Fade.Opacity="1" />
+                        </Clicked>
+                    </Rectangle>
+                </StackPanel>
+            </Deferred>
+        </Page>
+    </PageControl>
+</Page>

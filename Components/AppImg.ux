@@ -1,21 +1,25 @@
 <WhileTrue Value="true" ux:Class="App.Img">
     <string ux:Property="Data" />
     <bool ux:Property="IsAvatar" />
+    <string ux:Property="Col" />
     <JavaScript>
         var Observable = require("FuseJS/Observable");
         var ImageTools = require("FuseJS/ImageTools");
         var img = Observable();
         var isUrl = Observable();
 
+
         function getImg(image) {
             if (image) {
-                if (image.startsWith('http')) {
+                 if (image.startsWith('http')) {
                     isUrl.value = true;
                     img.value = image;
                 } else {
                     isUrl.value = false;
                     ImageTools.getImageFromBase64(image)
-                        .then(imag_ => img.value = imag_.path)
+                        .then(imag_ => {
+                            img.value = imag_.path;
+                        })
                         .catch(err => console.log(err));
                 }
             }
@@ -32,12 +36,12 @@
         <Case Bool="true">
             <Match Value={isUrl}>
                 <Case Bool="true">
-                    <Circle>
+                    <Circle Color="#25333D">
                         <ImageFill Url="{img}"/>
                     </Circle>
                 </Case>
                 <Case Bool="false">
-                    <Circle>
+                    <Circle Color="#25333D">
                         <ImageFill File="{img}"/>
                     </Circle>
                 </Case>
@@ -46,13 +50,13 @@
         <Case Bool="false">
             <Match Value={isUrl}>
                 <Case Bool="true">
-                    <Rectangle>
-                        <ImageFill Url="{img}"/>
+                    <Rectangle Color="#25333D">
+                        <ImageFill StretchMode="UniformToFill" Url="{img}"/>
                     </Rectangle>
                 </Case>
                 <Case Bool="false">
-                    <Rectangle>
-                        <ImageFill File="{img}"/>
+                    <Rectangle Color="#25333D">
+                        <ImageFill StretchMode="UniformToFill" File="{img}"/>
                     </Rectangle>
                 </Case>
             </Match> 

@@ -1,25 +1,22 @@
-<App.Page ux:Class="FeedDetailPage">
-    <Router ux:Dependency="router" />
+<Page ux:Class="FeedDetailPage" Background="#FFF">
     <JavaScript>
         var Fetch = require("modules/fetcher");
-        // var FirebaseUser = require("Firebase/Authentication/User");
         var Share = require("FuseJS/Share");
         var Observable = require("FuseJS/Observable");
-        var post = this.Parameter;
-        var upvotes = this.Parameter.map(data => data.upvotes);
-        var downvotes = this.Parameter.map(data => data.downvotes)
-        var InterApp = require("FuseJS/InterApp");
+        var storage = require("modules/storage");
+        var post = Observable();
+        var nopost = Observable(true);
         var content = Observable();
         var comments = Observable();
+        var upvotes = Observable(0);
+        var commentCnt = Observable(0);
         var message = Observable();
         var errMessage = Observable();
         var processFailed = Observable(false);
         var notLoggedIn = Observable(false);
         var hasUpVoted = Observable(false);
-        var hasDownVoted = Observable(false);
 
         function addComment() {
-            // console.log(content.value);
             if (localStorage.getItem('id')) {
                 if (content.value) {
                     Fetch.addComment({
@@ -32,6 +29,7 @@
                         comments.insertAt(0, res);
                         content.value = "";
                         processFailed.value = false;
+                        commentCnt.value = commentCnt.value += 1; 
                     })
                     .catch(err => {
                         console.log(err);
@@ -45,16 +43,15 @@
             } else {
                 localStorage.setItem('content', content.value);
                 notLoggedIn.value = true;
-                setTimeout(() => router.goto("login"), 1000);
             }
         }
 
         function clearComments() {
             comments.clear();
+            commentCnt.value = 0;
         }
 
         function upvote() {
-            // console.log(content.value);
             if (!hasUpVoted.value) {
                 upvotes.value = upvotes.value + 1
                 hasUpVoted.value = true;
@@ -68,25 +65,14 @@
             }
         }
 
-
-        function downvote() {
-            if (!hasDownVoted.value) {
-                downvotes.value = downvotes.value + 1
-                hasDownVoted.value = true;
-                Fetch.downVote(true, post.value.id)
-                .then(res => {
-                    post.value.downvotes += 1
-                })
-                .catch(err => console.log(err))
-            }
-        }
-
         
         function getComments() {
+            clearComments();
             message.value = "loading comments"
             Fetch.getComments(post.value.id)
             .then(res => {
                 if (res.length) {
+                    commentCnt.value = res.length;
                     comments.replaceAll(res);
                 } else {
                     message.value = 'be the first to comment'
@@ -95,166 +81,104 @@
             .catch(err => message.value = 'be the first to comment')
         }
 
-
-        function back() {
-            router.goBack();
-        }
+        this.Parameter.onValueChanged(module, res => {
+            message.value = "Loading post..."
+            storage.getPostById(res)
+                .then(data => {
+                    post.value = data;
+                    upvotes.value = data.upvotes;
+                    setTimeout(() => getComments(), 500);
+                    nopost.value = false;
+                    message.value = ""
+                })
+                .catch(err => {
+                    Fetch.getPost(res)
+                        .then(data => {
+                            post.value = data;
+                            upvotes.value = data.upvotes;
+                            setTimeout(() => getComments(), 500);
+                            message.value = "Loading post...";
+                            nopost.value = false;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            message.value = "Ooopsy... a network error has occured please check that you have internet connection";
+                            nopost.value = true;
+                        }
+                    )
+                }
+            )
+        })
 
         module.exports = {
+            nopost: nopost,
             upvotes: upvotes,
-            downvotes: downvotes,
             message: message,
             post: post,
             content: content,
             comments: comments,
+            commentCnt: commentCnt,
             addComment: addComment,
-            return: back,
             getComments: getComments,
             upvote: upvote,
-            downvote: downvote,
             errMessage: errMessage,
             processFailed: processFailed,
             notLoggedIn: notLoggedIn,
             clearComments: clearComments,
-            shareFile: function() {
-                    Camera.takePicture(320,240).then(function(image) {
-                    Share.shareFile(image.path, "image/*", `${post.value.title} ${post.value.body}`);
-                });
-            },
             shareText: function() {
                 Share.shareText(`${post.value.title} ${post.value.body}`, "https://www.reportapp.com/");
-            },
-            shareToWhatsapp: function() {
-                InterApp.on("receivedUri", function(uri) {
-                    console.log("Launched with URI", uri);
-                });
-
-                InterApp.on("error", function(uri) {
-                    console.log("error", uri);
-                });
-
-                InterApp.launchUri(`whatsapp://send?text=${post.value.title} ${post.value.body}`);
             }
         }
     </JavaScript>
-    <Activated Handler="{clearComments}">
-        <Set commentBar.Visibility="Collapsed" />
-    </Activated>
-    <DockPanel>
-        <Grid Dock="Bottom" Padding="2" CellSpacing="0" Columns="1*,4*,1*" Height="50" ColumnCount="3">
-            <Rectangle Layer="Background" Color="#25333D"/>
-            <Button Dock="Left" Clicked="{return}">
-                <Icon Alignment="CenterLeft" TextColor="#CCC" Value="&#xf111;" FontSize="30" />
-            </Button>
-            <Rectangle />
-            <Grid CellSpacing="1" Columns="1*,1*," ColumnCount="2">
-                <Button Clicked="{shareToWhatsapp}">
-                    <Icon TextColor="#CCC" Value="&#xf37a;" FontSize="20" />
-                </Button>
-                <Button Clicked="{shareText}">
-                    <Mat.Icon TextColor="#CCC" Value="&#xe80d;" FontSize="20" />
-                </Button>
-            </Grid>
-        </Grid>
-        <DockPanel>
-            <DockPanel Dock="Top">
-                <DockPanel Padding="5" Dock="Top">
-                    <Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D">
+    <Match Value="{nopost}">
+        <Case Bool="true">
+            <App.Text Alignment="Center" TextAlignment="Center" FontSize="20" TextWrapping="Wrap" Value="{message}" />
+        </Case>
+        <Case Bool="false">
+            <DockPanel>
+                <ScrollView Padding="30, 70, 30, 10">
+                    <StackPanel>
+                        <App.Header TextColor="#318700" TextWrapping="Wrap" Value="{post.title}" TextAlignment="Center" Alignment="Center" FontSize="18" />
                         <Match Value="{post.anonymous}">
                             <Case Bool="true">
-                                <Image File="../Assets/Images/user.png"/>
+                                <App.Header TextColor="#25333D" TextAlignment="Center" Alignment="Center" TextWrapping="Wrap" FontSize="14" Value="Anonymous User" />
                             </Case>
                             <Case Bool="false">
-                                <App.Img Data="{post.author.avatar}" IsAvatar="true" />
+                                <App.Header TextColor="#25333D" TextAlignment="Center" Alignment="Center" FontSize="14" Value="{post.author.username}" />
                             </Case>
                         </Match>
-                    </Circle>
-                    <!--<Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D">
-                        <ImageFill Url="{post.author.avatar}"/>
-                    </Circle> -->
-                    <Grid Margin="5, 0, 0, 0" CellSpacing="5" Rows="1*,1*,1*" RowCount="3">
                         <Match Value="{post.anonymous}">
-                            <Case Bool="true">
-                                <App.Header TextColor="#FFF" Alignment="CenterLeft" FontSize="14" Value="Anonymous User" />
-                            </Case>
                             <Case Bool="false">
-                                <App.Header TextColor="#FFF" Alignment="CenterLeft" FontSize="14" Value="{post.author.name}" />
+                                <App.Text TextColor="#25333D" TextWrapping="Wrap" TextAlignment="Center" Alignment="Center" FontSize="12" Value="{post.loc}" />
                             </Case>
                         </Match>
-                        <App.Text TextColor="#FFF" Alignment="CenterLeft" FontSize="12" Value="{post.title}" />
-                        <App.Text TextColor="#FFF" Alignment="CenterLeft" FontSize="12" Value="{post.time}" />
-                    </Grid>
-                    <Rectangle Layer="Background" Color="#25333D" />
-                </DockPanel>
-            </DockPanel>
-            <ScrollView>
-                <StackPanel>
-                    <!-- <App.Header TextColor="#25333D" TextWrapping="Wrap" Value="{=toUpper({post.title})}" TextAlignment="Center" Alignment="Center" FontSize="30" /> -->
-                    <Panel Height="200">
-                        <Rectangle Layer="Background" Color="#25333D">
+                        <App.Text TextColor="#25333D" TextAlignment="Center" Alignment="Center" FontSize="12" Value="{post.time}" />
+                        <Rectangle Height="150" Width="97%" Margin="0, 15, 0, 15" Alignment="Center" Color="#25333D">
                             <App.Img Data="{post.image}" IsAvatar="false" />
                         </Rectangle>
-                        <Rectangle CornerRadius="20" Padding="10" Color="#25333D" Alignment="Center">
-                            <App.Header TextAlignment="Center" TextColor="#FFF" TextWrapping="Wrap" Value="{=toUpper({post.title})}" FontSize="15" />
-                        </Rectangle>
-                    </Panel>
-                    <StackPanel MinHeight="100">
-                        <App.Text Margin="5, 0" MaxLength="200" TextWrapping="Wrap" Opacity=".8" FontSize="20" Alignment="Left" Value="{post.body}" />
-                    </StackPanel>
-                    <DockPanel Height="50">
-                        <Rectangle Layer="Background" Color="#003D79"/>
-                        <Grid Columns="1*,1*,6*" ColumnCount="3">
-                            <Button Alignment="Center" Clicked="{upvote}">
-                                <DockPanel>
-                                    <Icon ux:Name="upVter" TextColor="#FFF" FontSize="25" Dock="Top" Value="&#xf33f;" />
-                                    <App.Text TextColor="#FFF" FontSize="10" Value="{upvotes}" />
-                                </DockPanel>
-                                <WhilePressed>
-                                    <Change upVter.TextColor="#007CBB" />
-                                </WhilePressed>
-                            </Button>
-                            <Button Alignment="Center" Clicked="{downvote}">
-                                <DockPanel>
-                                    <Icon TextColor="#FFF" ux:Name="dnVter" FontSize="25" Dock="Top" Value="&#xf33e;" />
-                                    <App.Text TextColor="#FFF" FontSize="10" Value="{downvotes}" />
-                                </DockPanel>
-                                <WhilePressed>
-                                    <Change dnVter.TextColor="#007CBB" />
-                                </WhilePressed>
-                            </Button>
-                            <Button Margin="10, 5" Alignment="Right" Text="View Comments">
-                                <!-- <Icon FontSize="25" Dock="Top" Value="&#xf1a1;" /> -->
-                                <Clicked Handler="{getComments}">
-                                    <Set commentBox.Value="true" />
-                                    <Set commentBar.Visibility="Visible" />
-                                    <!-- <NavigateToggle Target="commentBar" /> -->
-                                </Clicked>
-                            </Button>
-                        </Grid>
-                    </DockPanel>
-                    <Panel Color="#FFF" ux:Name="commentBar" Visibility="Collapsed" Width="100%">
-                        <Rectangle Layer="Background" Color="#FFF" />
-                        <DockPanel>
-                            <StackPanel Padding="5" Dock="Top" ItemSpacing="5">
-                                <WhileTrue Value="{notLoggedIn}">
-                                    <Panel Dock="Top" Padding="5">
-                                        <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
-                                        <App.Text TextColor="#9B0D54" Value="Please login to make posts" TextAlignment="Center" />
-                                    </Panel>
-                                </WhileTrue>
-                                <WhileTrue Value="{processFailed}">
-                                    <Panel Dock="Top" Padding="5">
-                                        <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
-                                        <App.Text TextColor="#9B0D54" Value="{errMessage}" TextAlignment="Center" />
-                                    </Panel>
-                                </WhileTrue>
-                                <App.TextBox LineCol="#CCC" Height="80%" Text="Your Comments" Value="{content}" />
-                                <Rectangle Alignment="Left" Clicked="{addComment}" Padding="5" Height="40" Color="#0095D3" >
-                                    <App.Header Value="POST COMMENT" TextColor="#FFF" FontSize="20" />
-                                    <Shadow />
-                                </Rectangle>
-                            </StackPanel>
-                            <WhileTrue ux:Name="commentBox" Value="false">
+                        <App.Text MinHeight="100" TextWrapping="Wrap" FontSize="15" Alignment="Left" Value="{post.body}" />
+                        <Panel Color="#FFF" ux:Name="commentBar" Visibility="Visible" Width="100%">
+                            <Rectangle Layer="Background" Color="#FFF" />
+                            <DockPanel>
+                                <StackPanel Padding="5" Dock="Top" ItemSpacing="5">
+                                    <WhileTrue Value="{notLoggedIn}">
+                                        <Panel Dock="Top" Padding="5">
+                                            <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
+                                            <App.Text TextColor="#9B0D54" Value="Please login to comment" TextAlignment="Center" />
+                                        </Panel>
+                                    </WhileTrue>
+                                    <WhileTrue Value="{processFailed}">
+                                        <Panel Dock="Top" Padding="5">
+                                            <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
+                                            <App.Text TextColor="#9B0D54" Value="{errMessage}" TextAlignment="Center" />
+                                        </Panel>
+                                    </WhileTrue>
+                                    <FormLabel Value="Comment" Margin="0" TextAlignment="Left" Alignment="Left" />
+                                    <App.TextBox Radius="0" LineCol="#000" Height="80%" Text="Your Comments" Value="{content}" />
+                                    <Rectangle Alignment="Right" CornerRadius="0" Clicked="{addComment}" Padding="10" Height="40" Color="#FDD006" >
+                                        <App.Text Value="POST COMMENT" TextColor="#000" FontSize="14" />
+                                    </Rectangle>
+                                </StackPanel>
                                 <WhileEmpty Items="{comments}">
                                     <App.Text MinHeight="200" Value="{message}" Alignment="Center" />
                                 </WhileEmpty>
@@ -263,9 +187,9 @@
                                         <StackPanel>
                                             <Each Items="{comments}">
                                                 <Deferred>
-                                                    <Panel Background="#FFF">
-                                                        <DropShadow />
-                                                        <Rectangle Color="#25333D" Alignment="TopLeft" Width="5" Height="30"/>
+                                                    <Panel>
+                                                        <Rectangle Color="#EEE" Alignment="Top" Height="1"/>
+                                                        <Rectangle Color="#25333D" Alignment="Left" Width="5"/>
                                                         <StackPanel Alignment="Left" Padding="5" ItemSpacing="3">
                                                             <App.Header Alignment="Left" TextColor="#25333D" Value="{author.name}" Margin="3,0" FontSize="15"/>
                                                             <App.Text Alignment="Left" TextColor="#25333D" Value="{time}" FontSize="10" Margin="3,0"/>
@@ -275,15 +199,48 @@
                                                         </StackPanel>
                                                     </Panel>
                                                 </Deferred>
+                                                <WhileBusy>
+                                                    <App.Text Value="Loading comments..." TextAlignment="Center" Alignment="VerticalCenter" />
+                                                </WhileBusy>
                                             </Each>
                                         </StackPanel>
                                     </ScrollView>
-                                </WhileCount>
-                            </WhileTrue>   
+                                </WhileCount> 
+                            </DockPanel>
+                        </Panel>
+                    </StackPanel>
+                </ScrollView>
+                <Grid Dock="Bottom" Padding="10" Alignment="Top" Columns="1*,1*,6*" ColumnCount="3">
+                    <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
+                    <Button Alignment="Center" HitTestMode="LocalBoundsAndChildren">
+                        <DockPanel>
+                            <Icon TextColor="#318700" FontSize="12" Dock="Left" Value="&#xf1a1;" />
+                            <App.Text TextColor="#318700" FontSize="12" Value="{commentCnt}" />
                         </DockPanel>
-                    </Panel>
-                </StackPanel>
-            </ScrollView>
-        </DockPanel>
-    </DockPanel>
-</App.Page>
+                    </Button>
+                    <Button Alignment="Center" Clicked="{upvote}" HitTestMode="LocalBoundsAndChildren">
+                        <DockPanel>
+                            <Icon ux:Name="upVter" TextColor="#318700" FontSize="12" Dock="Left" Value="&#xf233;" />
+                            <App.Text TextColor="#318700" FontSize="12" Value="{upvotes}" />
+                        </DockPanel>
+                        <WhilePressed>
+                            <Change upVter.TextColor="#007CBB" />
+                        </WhilePressed>
+                    </Button>
+                    <Grid Columns="2*,auto, 1*" ColumnCount="3" CellSpacing="1">
+                        <Match Value="{post.anonymous}">
+                            <Case Bool="true">
+                                <App.Header TextColor="#318700" TextAlignment="Right" Alignment="CenterRight" FontSize="10" Value="Anonymous User" />
+                            </Case>
+                            <Case Bool="false">
+                                <App.Header TextColor="#318700" TextAlignment="Right" Alignment="CenterRight" FontSize="10" Value="{post.author.username}" />
+                            </Case>
+                        </Match>
+                        <App.Text TextColor="#318700" Value="|" />
+                        <App.Text MaxLength="16" TextAlignment="Left" Alignment="CenterLeft" TextColor="#318700" FontSize="8" Value="{post.time}" />
+                    </Grid>
+                </Grid>
+            </DockPanel>
+        </Case>
+    </Match>
+</Page>

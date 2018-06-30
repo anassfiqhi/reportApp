@@ -1,0 +1,23 @@
+<Page ux:Class="About" Background="#FFF">
+    <Deferred>
+        <ScrollView Padding="0, 30, 0, 0">
+            <StackPanel Padding="30, 50" ItemSpacing="20">
+                <App.Header FontSize="15" TextWrapping="Wrap">
+                    There is a near universal concesus in Nigeria, among Nigerians and within the international community that corruption is endemic and all pervasive in the country. The scourge of corruption has assumed an existential threat to the country, becoming a major obstacle to human and natinal development.
+                </App.Header>
+                <App.Text FontSize="14" TextWrapping="Wrap">
+                    Thus, the Strenghtening Citizen's Resistance Against Prevelance of Corruption (SCRAP-C) through its Upright for Nigeria; Stand against corruption campaign aims to influence social norms and attitudes that help corruption thrive in Nigeria with a view to effect social change. The campaign leveraging on social capital and social networks to promote a corruption averse mentality.
+                </App.Text>
+                <DockPanel Padding="0">
+                    <App.Header FontSize="15" Dock="Top" Alignment="Left" TextAlignment="Left" Value="Goal:" />
+                    <App.Text FontSize="14" Margin="0" Dock="Fill" TextWrapping="Wrap">
+                        To contribute to a reduction in corruption as a result of changes in public attitudes that increasingly disapprove of corrupt activities.
+                    </App.Text>
+                </DockPanel>
+            </StackPanel>
+        </ScrollView>
+    </Deferred>
+    <WhileBusy>
+        <App.Text Value="Loading..." TextAlignment="Center" Alignment="VerticalCenter" />
+    </WhileBusy>
+</Page>

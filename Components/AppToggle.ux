@@ -1,0 +1,22 @@
+<Panel ux:Class="MyToggle" Width="80" Height="30" PrimaryColor="#FDD006" SecondaryColor="#25333D">
+    <float4 ux:Property="PrimaryColor" />
+    <float4 ux:Property="SecondaryColor" />
+    <bool ux:Property="IsActive" />
+    
+    <SwipeGesture ux:Name="swipe" Length="46" Direction="Right" Type="Active" IsActive="{Property IsActive}" />
+    <SwipingAnimation Source="swipe">
+        <Move Target="handle" X="46" />
+        <Change handle.Color="{ReadProperty SecondaryColor}" />
+        <Change background.Color="{ReadProperty PrimaryColor}" />
+    </SwipingAnimation>
+    
+    <Clicked>
+        <ToggleSwipeActive Target="swipe" />
+    </Clicked>
+    
+    <Circle ux:Name="handle" Width="28" Margin="3" Alignment="Left" Color="{ReadProperty PrimaryColor}">
+        <Shadow Size="1" Distance="1" Color="#0004" />
+    </Circle>
+    
+    <Rectangle CornerRadius="50" ux:Name="background" Layer="Background" Color="{ReadProperty SecondaryColor}" />
+</Panel>

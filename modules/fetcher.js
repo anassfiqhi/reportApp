@@ -3,7 +3,7 @@ var storage = require("./storage");
 var Environment = require('FuseJS/Environment');
 var url;
 
-if (Environment.desktop) {
+if (Environment.preview) {
   url = "http://127.0.0.1:1337";
 } else {
   url = "https://reportapp-dirisu.herokuapp.com";
@@ -28,7 +28,7 @@ module.exports = {
   },
   getUser: function (id) {
     return new Promise((resolve, reject) => {
-      fetch(`${url}/user/getuser/?id=${is}`, {
+      fetch(`${url}/user/getuser/?id=${id}`, {
           headers: {
             "Content-Type": "application/json"
           },
@@ -54,6 +54,17 @@ module.exports = {
   getPosts: function () {
     return new Promise((resolve, reject) => {
       fetch(`${url}/post/getposts`, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(resp => resolve(resp.json()))
+        .catch(err => reject(err));
+    });
+  },
+  getRecPosts: function (time) {
+    return new Promise((resolve, reject) => {
+      fetch(`${url}/post/getrecposts/?time=${time}`, {
           headers: {
             "Content-Type": "application/json"
           }
@@ -155,5 +166,29 @@ module.exports = {
         .then(resp => resolve(resp.json()))
         .catch(err => reject(err));
     });
-  }
+  },
+  getStats: function(id) {
+    return new Promise((resolve, reject) => {
+      fetch(`${url}/user/getuserstat/?id=${id}`, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => resolve(res.json()))
+      .catch(err => reject(err));
+    });
+  },
+  updateProfile: function(body) {
+    return new Promise((resolve, reject) => {
+      fetch(`${url}/user/updateprofile`, {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body),
+          method: 'PUT'
+        })
+        .then(resp => resolve(resp.json()))
+        .catch(err => reject(err));
+    });
+  },
 };

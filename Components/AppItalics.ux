@@ -1,3 +1,0 @@
-<Text HitTestMode="LocalBoundsAndChildren" Alignment="Center" ux:Class="App.Italic">
-    <Font File="../Assets/fonts/Quicksand-Italic.otf" />
-</Text>

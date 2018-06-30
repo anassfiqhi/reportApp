@@ -1,0 +1,124 @@
+<Page ux:Class="Report" Background="#FFF">
+    <JavaScript>
+        var Observable = require("FuseJS/Observable");
+        var isWebView = Observable(false);
+        var url = Observable();
+
+        function closeWebView() {
+            isWebView.value = false;
+        }
+
+        function openLeaks() {
+            url.value = 'https://leaks.ng/';
+            isWebView.value = true
+        }
+
+        function openReportSelf() {
+            url.value = 'http://reportyourself.org/';
+            isWebView.value = true
+        }
+
+        function openMinFin() {
+            url.value = 'http://whistle.finance.gov.ng/Pages/default.aspx';
+            isWebView.value = true
+        }
+
+        function openVac() {
+            url.value = 'http://voiceagainstcorruption.org/';
+            isWebView.value = true
+        }
+
+
+        module.exports = {
+            openLeaks: openLeaks,
+            openReportSelf: openReportSelf,
+            openMinFin: openMinFin,
+            openVac: openVac,
+            isWebView: isWebView,
+            url: url,
+            closeWebView: closeWebView,
+            // onPageLoaded: function(res) {
+                // title.value = JSON.parse(res.json).title.replace(/\s*/, "");
+                // return;
+            // }
+        }
+    </JavaScript>
+    <DockPanel>
+        <Rectangle Layer="Background" Color="#FFF"/>
+        <Match Value="{isWebView}">
+            <Case Bool="true">
+                <Deferred>
+                <DockPanel>
+                    <NativeViewHost>
+                        <WebView Dock="Fill" ux:Name="webview" Url="{url}">
+                            <!-- <PageLoaded>
+                                <EvaluateJS Handler="{onPageLoaded}">
+                                    var result = {
+                                        url : document.location.href,
+                                        title: document.title
+                                    };
+                                    return result;
+                                </EvaluateJS>
+                            </PageLoaded> -->
+                        </WebView>
+                        <App.Text Value="Loading {url}" Alignment="Center" TextColor="#000" FontSize="12" TextAlignment="Center" />
+                    </NativeViewHost>
+                    <Grid Dock="Bottom" Padding="5" CellSpacing="0" Columns="2*,2*,2*" Height="50" ColumnCount="3">
+                        <Rectangle Layer="Background" Color="#FFF"/>
+                        <Button HitTestMode="LocalBoundsAndChildren" Dock="Left">
+                            <Icon Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" Value="&#xf120;" FontSize="30" />
+                            <WhileCanGoBack NavigationContext="webview">
+                                <Clicked>
+                                    <GoBack TargetNode="webview"/>
+                                </Clicked>
+                            </WhileCanGoBack>
+                        </Button>
+                        <WhileTrue Value="{isWebView}">
+                            <Button Alignment="Center" Dock="Fill">
+                                <Icon Alignment="Center" TextAlignment="Center" Value="" TextColor="#25333D" FontSize="30" />
+                                <Clicked Handler="{closeWebView}" />
+                            </Button>
+                        </WhileTrue>
+                        <Button HitTestMode="LocalBoundsAndChildren" Dock="Right" Margin="5, 1">
+                            <Icon Alignment="CenterRight" TextAlignment="Right" Value="&#xf121;" TextColor="#25333D" FontSize="30" />
+                            <WhileCanGoForward NavigationContext="webview">
+                                <Clicked>
+                                    <GoForward TargetNode="webview"/>
+                                </Clicked>
+                            </WhileCanGoForward>
+                        </Button>
+                    </Grid>
+                </DockPanel>
+                </Deferred>
+            </Case>
+            <Case Bool="false">
+                <Grid Rows="1*, 1*" Columns="1*,1*" RowCount="2" ColumnCount="2">
+                    <Deferred>
+                        <Panel Clicked="{openLeaks}" HitTestMode="LocalBoundsAndChildren" Background="#FFF" Padding="2">
+                            <Rectangle Layer="Background" StrokeColor="#EEE" />
+                            <Image Width="90%" Alignment="Center" StretchMode="Uniform" File="../Assets/Images/LeaksngLogo.png"  />
+                        </Panel>
+                    </Deferred>
+                    <Deferred>
+                        <Panel Clicked="{openVac}" HitTestMode="LocalBoundsAndChildren" Background="#FFF" Padding="2">
+                            <Rectangle Layer="Background" StrokeColor="#EEE" />
+                            <Image Width="90%" Alignment="Center" StretchMode="Uniform" File="../Assets/Images/voicesagainstcorruption_logo.png"  />
+                        </Panel>
+                    </Deferred>
+                    <Deferred>
+                        <Panel Clicked="{openReportSelf}" HitTestMode="LocalBoundsAndChildren" Background="#FFF" Padding="2">
+                            <Rectangle Layer="Background" StrokeColor="#EEE" />
+                            <Image Width="90%" Alignment="Center" StretchMode="Uniform" File="../Assets/Images/logo.png"  />
+                        </Panel>
+                    </Deferred>
+                    <Deferred>
+                        <Panel Clicked="{openMinFin}" HitTestMode="LocalBoundsAndChildren" Background="#FFF" Padding="2">
+                            <Rectangle Layer="Background" StrokeColor="#EEE" />
+                            <Image Width="90%" Alignment="Center" StretchMode="Uniform" File="../Assets/Images/logo (1).png"  />
+                        </Panel>
+                    </Deferred>
+                </Grid>
+            </Case>
+        </Match>
+    </DockPanel>
+</Page>

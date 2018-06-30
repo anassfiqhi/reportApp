@@ -1,0 +1,24 @@
+<Page ux:Class="SplashPage">
+    <Router ux:Dependency="router"/>
+    <Image Layer="Background" StretchMode="Uniform" File="../Assets/Images/Logo.jpg" />
+    <JavaScript>
+        setTimeout(() => {
+            var storage = require("modules/storage");
+            storage.isFirstVisit()
+            .then(res => {
+                router.goto('onboarding');
+            })
+            .catch(err => {
+                storage.getUser()
+                .then(res => {
+                    if (res.id) {
+                        router.goto("main", res);
+                    } else {
+                        router.goto("main", {});
+                    }
+                })
+                .catch(err => router.goto("main", {}));
+            })
+        }, 500)
+    </JavaScript>
+</Page>

@@ -1,0 +1,233 @@
+<Page ux:Class="Profile" Background="#FFF">
+    <Router ux:Dependency="router" />
+    <JavaScript>
+        var Fetch = require("modules/fetcher");
+        var Observable = require("FuseJS/Observable");
+        var storage = require("modules/storage");
+        var user = Observable({name: 'Anonymous User', username: 'anonymous', 'avatar': 'https://www.gravatar.com/avatar'});
+        var hasId = Observable();
+        var email = Observable();
+        var name = Observable();
+        var city = Observable();
+        var state = Observable();
+        var country = Observable();
+        var processing = Observable(false);
+        var processfailed = Observable(false);
+        var message = Observable();
+        var stats = Observable({comments: 0, upvotes: 0, downvotes: 0, posts: 0});
+        var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+        function login() {
+            router.push("login");
+        }
+
+        function updateUser() {
+            processing.value = true;
+            message.value = "Updating profile..."
+            if (email.value && emailRegex.test(email.value)) {
+                if (user.value.id) {
+                    var data = {
+                        id: user.value.id,
+                        name: name.value,
+                        email: email.value,
+                        city: city.value,
+                        state: state.value,
+                        country: country.value
+                    }
+                    Fetch.updateProfile(data)
+                    .then(res => {
+                        user.value = res[0];
+                        processing.value = false;
+                        storage.setUser(res[0])
+                            .then(resp => '')
+                    })
+                    .catch(err => {
+                        processing.value = false;
+                        processfailed.value = true;
+                        message.value = "Profile could not be updated, due to a network failure";
+                        setTimeout(() => processfailed.value = false, 3000);
+                    });
+                }
+            } else {
+                processing.value = false;
+                processfailed.value = true;
+                message.value = "Sorry your email is invalid...";
+                setTimeout(() => processfailed.value = false, 3000);
+            }
+        }
+
+        function getStats() {
+            setTimeout(() => {
+                Fetch.getStats(user.value.id)
+                .then(res => {
+                    stats.value = res;
+                    storage.setStats(res)
+                    .then(success => '')
+                    .err(err => console.log(err))
+                })
+                .catch(err => {
+                    storage.getStats()
+                    .then(success => stats.value = success)
+                    .err(err => console.log(err))
+                });
+            }, 500)
+        }
+
+        this.Parameter.onValueChanged(module, resp => {
+            storage.getUser()
+                .then(res => {
+                    user.value = res;
+                    hasId.value = res.hasOwnProperty('id')
+                    email.value = res.email || '';
+                    name.value = res.name || '';
+                    city.value = res.city || '';
+                    state.value = res.state || '';
+                    country.value = res.country || '';
+                    getStats()
+                })
+                .catch(err => console.log(err));
+        })
+
+        module.exports = {
+            email: email,
+            name: name,
+            city: city,
+            state: state,
+            country: country,
+            user: user,
+            stats: stats,
+            hasId: hasId,
+            getStats: getStats,
+            updateUser: updateUser,
+            login: login,
+            processfailed: processfailed,
+            processing: processing,
+            message: message
+        }
+    </JavaScript>
+    
+    <!-- <Activated Handler="{getStats}" /> -->
+    <WhileTrue Value="{processfailed}">
+        <Panel Height="50" Color="#9B0D54" Alignment="Top" Padding="5">
+            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                {message}    
+            </App.Text>
+        </Panel>
+    </WhileTrue>
+    <WhileTrue Value="{processing}">
+        <Panel Height="50" Color="#004A70" Alignment="Top" Padding="5">
+            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                {message}       
+            </App.Text>
+        </Panel>
+    </WhileTrue>
+    <Rectangle ux:Name="indicator" LayoutMaster="proftab" Alignment="Top" Height="2" Color="#FDD006">
+        <LayoutAnimation>
+            <Move RelativeTo="WorldPositionChange" X="1" Duration="0.4" Easing="BackIn"/>
+        </LayoutAnimation>
+    </Rectangle>
+    <DockPanel>
+        <DockPanel>
+            <DockPanel Dock="Top" MinHeight="200" Padding="10">
+                <Rectangle Height="50%" Alignment="Top" Layer="Background" Color="#25333D" />
+                <Circle Height="60%" Width="60%" Layer="Overlay" Alignment="Center" Color="#25333D">
+                    <App.Img Data="{user.avatar}" IsAvatar="true" />
+                </Circle>
+                <DockPanel Margin="50, 5" Alignment="BottomLeft" Dock="Left">
+                    <App.Text TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="30" Value="{stats.posts}" />
+                    <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" TextAlignment="Center" FontSize="12" Value="Posts" />
+                </DockPanel>
+                <DockPanel Margin="5, 5, 50, 5" Alignment="BottomLeft" Dock="Right">
+                    <App.Text TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="30" Value="{stats.upvotes}" />
+                    <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" TextAlignment="Center" FontSize="12" Value="Upvotes" />
+                </DockPanel>
+            </DockPanel>
+            <Rectangle Alignment="Top" Height="1" Color="#EEE" />
+            <PageControl ux:Name="navigation">
+                <Page ux:Name="prof" Padding="0">
+                    <WhileActive Threshold="0.5">
+                        <Set indicator.LayoutMaster="proftab" />
+                    </WhileActive>
+                    <Deferred>
+                        <Grid CellSpacing="5" Padding="10" ColumnCount="2" Columns="1*,1*" RowCount="2" Rows="1*, 1*">
+                            <DockPanel Padding="20">
+                                <Circle Layer="Background" Color="#007CBB" />
+                                <App.Text TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="40" Value="{stats.posts}" />
+                                <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" TextAlignment="Center" FontSize="12" Value="POSTS" />
+                            </DockPanel>
+                            <DockPanel Padding="20">
+                                <Circle Color="#004D8A" Layer="Background" />
+                                <App.Text TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="40" Value="{stats.comments}" />
+                                <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" TextAlignment="Center" FontSize="12" Value="COMMENTS" />
+                            </DockPanel>
+                            <DockPanel Padding="20">
+                                <Circle Color="#C41261" Layer="Background" />
+                                <App.Text TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="40" Value="{stats.upvotes}" />
+                                <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" TextAlignment="Center" FontSize="12" Value="UPVOTES" />
+                            </DockPanel>
+                            <DockPanel Padding="20">
+                                <Circle Color="#FDD006" Layer="Background" />
+                                <App.Text TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="40" Value="{stats.downvotes}" />
+                                <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" TextAlignment="Center" FontSize="12" Value="DOWNVOTES" />
+                            </DockPanel>
+                        </Grid>
+                    </Deferred>
+                </Page>
+                <Page ux:Name="edit">
+                    <WhileActive Threshold="0.5">
+                        <Set indicator.LayoutMaster="edittab" />
+                    </WhileActive>
+                    <Deferred>
+                        <ScrollView>
+                            <StackPanel Padding="30" ItemSpacing="20">
+                                <FormLabel TextColor="#111" Alignment="Left">Name</FormLabel>                     
+                                <App.Input Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{name}" />
+                                <FormLabel TextColor="#111" Alignment="Left">Email</FormLabel>
+                                <App.Input InputHint="Email" AutoCorrectHint="Disabled" AutoCapitalizationHint="None" Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{email}"/>
+                                <FormLabel TextColor="#111" Alignment="Left">City</FormLabel>
+                                <App.Input Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{city}"/>
+                                <FormLabel TextColor="#111" Alignment="Left">State</FormLabel>
+                                <App.Input Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{state}"/>
+                                <FormLabel TextColor="#111" Alignment="Left">Country</FormLabel>
+                                <App.Input Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{country}"/>
+                                <Match Value="{hasId}">
+                                    <Case Bool="true">
+                                        <Rectangle Clicked="{updateUser}" Alignment="Left" Margin="0,10" Padding="5" Height="40" Color="#FDD006" >
+                                            <App.Text Value="Update Profile" TextColor="#25333D" FontSize="15" />
+                                        </Rectangle>
+                                    </Case>
+                                    <Case Bool="false">
+                                        <Rectangle Clicked="{login}" Alignment="Left" Margin="0,10" Padding="5" Height="40" Color="#FDD006AA" >
+                                            <App.Text Value="Login or Register" TextColor="#25333D" FontSize="15" />
+                                        </Rectangle>
+                                    </Case>
+                                </Match>
+                            
+                            </StackPanel>
+                        </ScrollView>
+                    </Deferred>
+                </Page>
+            </PageControl>
+        </DockPanel>
+        <Grid ux:Name="BottomBar" Dock="Bottom" ColumnCount="2" Columns="1*, 1*" Height="50">
+            <WhileKeyboardVisible>
+                <Change BottomBar.Visibility="Collapsed" />
+            </WhileKeyboardVisible>
+            <Panel ux:Name="proftab" HitTestMode="LocalBoundsAndChildren">
+                <App.Text Value="Details" />
+                <Clicked>
+                    <Set navigation.Active="prof" />
+                </Clicked>
+            </Panel>
+            <Panel ux:Name="edittab" HitTestMode="LocalBoundsAndChildren">
+                <App.Text Value="Profile Edit" />
+                <Clicked>
+                    <Set navigation.Active="edit" />
+                </Clicked>
+            </Panel>
+        </Grid>
+    </DockPanel>
+    <WhileBusy>
+        <App.Text Value="Loading..." TextAlignment="Center" Alignment="VerticalCenter" />
+    </WhileBusy>
+</Page>

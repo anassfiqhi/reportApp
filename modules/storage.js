@@ -1,11 +1,35 @@
 var fs = require("FuseJS/FileSystem");
 var path = `${fs.dataDirectory}/posts.tmp`;
+var user = `${fs.dataDirectory}/user.tmp`;
+var baseData = `${fs.dataDirectory}/base.tmp`;
+var stats = `${fs.dataDirectory}/stats.tmp`;
 
 module.exports = {
+  isFirstVisit: function() {
+    return new Promise((resolve, reject) => {
+      fs.exists(baseData)
+      .then(function(x) {
+        if (x) {
+          reject(x)
+        } else {
+          resolve(true);
+        }
+      }, function(error) {
+        resolve(true);
+      });
+    })
+  },
+  writeBaseData: function() {
+    return new Promise((resolve, reject) => {
+      fs.writeTextToFile(baseData, JSON.stringify({'firstVisit': false}))
+      .then(success => resolve(success))
+      .catch(err => reject(err))
+    })
+  },
   addPosts: function(data) {
     return new Promise((resolve, reject) => {
       fs
-        .writeTextToFile(path, JSON.stringify(data) || '')
+        .writeTextToFile(path, JSON.stringify(data) || '{}')
         .then(success => {
           resolve(success);
         })
@@ -20,48 +44,68 @@ module.exports = {
           resolve(JSON.parse(data));
         })
         .catch(err => reject(err));
-    })
+    });
+  },
+  getPostById: function(id) {
+    return new Promise((resolve, reject) => {
+      fs
+        .readTextFromFile(path)
+        .then(data => {
+          resolve(JSON.parse(data).filter(res => res.id === id)[0]);
+        })
+        .catch(err => reject(err));
+    });
   },
   setUser: function (data) {
     return new Promise((resolve, reject) => {
-      localStorage.setItem('user', JSON.stringify(data))
-      resolve(JSON.parse(localStorage.getItem('user')));
-    });
-  },
-  setId: function (data) {
-    return new Promise((resolve, reject) => {
-      localStorage.setItem('id', data);
-      resolve(localStorage.getItem('id'));
-    });
-  },
-  getId: function () {
-    return new Promise((resolve, reject) => {
-      if (localStorage.getItem('id')) {
-        resolve(localStorage.getItem('id'));
-      } else {
-        reject(false);
-      }
+      fs
+        .writeTextToFile(user, JSON.stringify(data) || '{}')
+        .then(success => resolve(success))
+        .catch(err => reject(err))
     });
   },
   getUser: function () {
     return new Promise((resolve, reject) => {
-      if (localStorage.getItem('user')) {
-        resolve(JSON.parse(localStorage.getItem('user')));
-      } else {
-        reject(false);
-      }
+      fs
+        .readTextFromFile(user)
+        .then(data => {
+          resolve(JSON.parse(data));
+        })
+        .catch(err => reject(err));
     });
   },
   userDataExists: function () {
     return new Promise((resolve, reject) => {
-      if (localStorage.getItem('user')) {
-        resolve(true);
-      } else {
+      fs.exists(user)
+      .then(function(x) {
+        if (x) {
+          resolve(x)
+        } else {
+          reject(false);
+        }
+      }, function(error) {
         reject(false);
-      }
+      });
+    });
+  },
+  setStats: function (data) {
+    return new Promise((resolve, reject) => {
+      fs.writeTextToFile(stats, JSON.stringify(data) || {})
+      .then(success => resolve(success))
+      .catch(err => reject(err))
+    })
+  },
+  getStats: function () {
+    return new Promise((resolve, reject) => {
+      fs
+        .readTextFromFile(stats)
+        .then(data => {
+          resolve(JSON.parse(data));
+        })
+        .catch(err => reject(err));
     });
   },
   clearData: function () {
-    return Promise.all([fs.delete(userPath), fs.delete(basePath)]);
+    return Promise.all([fs.delete(user), fs.delete(path), fs.delete(stats)]);
   }
 };

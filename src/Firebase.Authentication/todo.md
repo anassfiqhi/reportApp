@@ -1,9 +1,0 @@
-- Add current provider √
-- Add announce signin √
-- Make announce logout any currently logged in provider √
-- Check for signin before signing out :|
-- Is reauth just sent to everyone? no you have to target it
-- make reauth use current provider √
-- remove 'Allo' :D
-- hookup errors in example
-- remove debug-log

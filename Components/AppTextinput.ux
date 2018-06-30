@@ -8,6 +8,6 @@
         <Change this.Padding="2" />
     </WhileTrue>
     <WhileFalse Value="{ReadProperty Underline}">
-        <Rectangle Layer="Background" CornerRadius="{ReadProperty Radius}" StrokeColor="{ReadProperty BgCol}" />
+        <Rectangle Layer="Background" CornerRadius="{ReadProperty Radius}" StrokeWidth="2" StrokeColor="{ReadProperty BgCol}" />
     </WhileFalse>
 </TextInput>
