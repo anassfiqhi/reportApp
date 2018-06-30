@@ -105,8 +105,6 @@
             message: message
         }
     </JavaScript>
-    
-    <!-- <Activated Handler="{getStats}" /> -->
     <WhileTrue Value="{processfailed}">
         <Panel Height="50" Color="#9B0D54" Alignment="Top" Padding="5">
             <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
@@ -131,7 +129,7 @@
             <DockPanel Dock="Top" MinHeight="200" Padding="10">
                 <Rectangle Height="50%" Alignment="Top" Layer="Background" Color="#25333D" />
                 <Circle Height="60%" Width="60%" Layer="Overlay" Alignment="Center" Color="#25333D">
-                    <ImageFill Url="{user.avatar}" StretchMode="UniformToFill" />
+                    <ImageFill Url="{user.avatar}" />
                 </Circle>
                 <DockPanel Margin="50, 5" Alignment="BottomLeft" Dock="Left">
                     <App.Text TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="30" Value="{stats.posts}" />
@@ -143,7 +141,13 @@
                 </DockPanel>
             </DockPanel>
             <Rectangle Alignment="Top" Height="1" Color="#EEE" />
-            <PageControl ux:Name="navigation">
+            <PageControl IsRouterOutlet="false" ux:Name="navigation">
+                <WhileFloat Value="{Property navigation.ActiveIndex}" GreaterThanEqual="1">
+                            <Set indicator.LayoutMaster="edittab" />
+                </WhileFloat>
+                <WhileFloat Value="{Property navigation.ActiveIndex}" LessThanEqual="0">
+                    <Set indicator.LayoutMaster="proftab" />
+                </WhileFloat>
                 <Page ux:Name="prof" Padding="0">
                     <WhileActive Threshold="0.5">
                         <Set indicator.LayoutMaster="proftab" />

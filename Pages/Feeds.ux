@@ -27,9 +27,9 @@
         </WhilePressed>
     </Circle>
     <ScrollView ux:Name="MainScroll" LayoutMode="PreserveVisual">
-        <DockPanel Height="200%">
+        <DockPanel Height="500%">
             <Rectangle Layer="Background" Color="#FFF" HitTestMode="None" />
-            <DockPanel Height="25%" ux:Name="hero" Background="#1C5120" Dock="Top" Margin="0">
+            <DockPanel Height="11%" ux:Name="hero" Background="#1C5120" Dock="Top" Margin="0">
                 <Image StretchMode="UniformToFill" Layer="Background" File="../Assets/Images/Tour Guide 01.jpg" />
                 <Rectangle Dock="Fill">
                     <Grid Alignment="BottomCenter" Width="20%" Margin="10" ColumnCount="3" Columns="1*,1*,1*" Layer="Overlay">

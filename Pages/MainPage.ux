@@ -201,7 +201,7 @@
                 </StackPanel>
             </ScrollView>
         </DockPanel>
-        <DockPanel Edge="Top" Dock="Top" Padding="20, 5" Alignment="Top" ux:Name="topBar">
+        <DockPanel Background="#3D8B3700" Edge="Top" Dock="Top" Padding="20, 5" Alignment="Top" ux:Name="topBar">
             <Rectangle Layer="Background" Color="#3D8B3700"  ux:Name="topBg" />
             <Button HitTestMode="LocalBoundsAndChildren" Dock="Left">
                 <Icon ux:Name="Burger" Value="" FontSize="30" TextColor="#FFF" />
@@ -227,6 +227,9 @@
                     <Change Burger.TextColor="#FFF" />
                     <Change add.TextColor="#FFF" />
                 </ActivatingAnimation>
+                <ExitingAnimation>
+                    <Change Target="topBg.Color" Value="#3D8B3700" />
+                </ExitingAnimation>
                 <WhileFloat Value="{Property feeds.PageY}" GreaterThanEqual="200">
                     <Change Target="topBg.Color" Value="#3D8B37" Duration="1" />
                 </WhileFloat>
@@ -284,7 +287,7 @@
                     <Change title.TextColor="#FFF" />
                     <Change Burger.TextColor="#FFF" />
                     <Change add.TextColor="#FFF" />
-                    <Change topBg.Color="#FFFFFF00" />
+                    <Change topBg.Opacity="0" />
                 </ActivatingAnimation>
                 <WhileActive>
                     <NavigateToggle Target="topBar" />
