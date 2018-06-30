@@ -135,6 +135,13 @@
             <App.Text Alignment="Center" TextAlignment="Center" FontSize="20" TextWrapping="Wrap" Value="{message}" />
         </Case>
         <Case Bool="false">
+            <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 20, 20" Alignment="BottomRight" Padding="12" Layer="Overlay">
+                <Icon TextAlignment="Center" Alignment="Center" ux:Name="add" Value="&#xf2f1;" TextColor="#FFF" FontSize="25" />
+                <Clicked Handler="{shareText}" />
+                <WhilePressed>
+                    <Scale Factor="0.8" />
+                </WhilePressed>
+            </Circle>
             <DockPanel>
                 <ScrollView Padding="30, 70, 30, 10">
                     <StackPanel>
