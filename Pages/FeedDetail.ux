@@ -135,8 +135,8 @@
             <App.Text Alignment="Center" TextAlignment="Center" FontSize="20" TextWrapping="Wrap" Value="{message}" />
         </Case>
         <Case Bool="false">
-            <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 20, 20" Alignment="BottomRight" Padding="12" Layer="Overlay">
-                <Icon TextAlignment="Center" Alignment="Center" ux:Name="add" Value="&#xf2f1;" TextColor="#FFF" FontSize="25" />
+            <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 20, 50" Alignment="BottomRight" Padding="10" Layer="Overlay">
+                <Mat.Icon TextAlignment="Center" Alignment="Center" ux:Name="add" Value="&#xe80d;" TextColor="#FFF" FontSize="25" />
                 <Clicked Handler="{shareText}" />
                 <WhilePressed>
                     <Scale Factor="0.8" />

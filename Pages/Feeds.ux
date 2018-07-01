@@ -27,9 +27,9 @@
         </WhilePressed>
     </Circle>
     <ScrollView ux:Name="MainScroll" LayoutMode="PreserveVisual">
-        <DockPanel Height="500%">
+        <DockPanel MinHeight="1000%">
             <Rectangle Layer="Background" Color="#FFF" HitTestMode="None" />
-            <DockPanel Height="11%" ux:Name="hero" Background="#1C5120" Dock="Top" Margin="0">
+            <DockPanel Height="5%" ux:Name="hero" Background="#1C5120" Dock="Top" Margin="0">
                 <Image StretchMode="UniformToFill" Layer="Background" File="../Assets/Images/Tour Guide 01.jpg" />
                 <Rectangle Dock="Fill">
                     <Grid Alignment="BottomCenter" Width="20%" Margin="10" ColumnCount="3" Columns="1*,1*,1*" Layer="Overlay">
@@ -114,17 +114,21 @@
                         <WhileFloat Value="{Property Nav_.ActiveIndex}" LessThanEqual="0">
                             <Set indicator.LayoutMaster="tabTrd" />
                         </WhileFloat>
-                        <ScrollView ux:Name="trending">
-                            <Scrolled To="Start">
+                        <StackPanel ux:Name="trending">
+                            <!-- LayoutMode="PreserveVisual" -->
+                            <!-- <Scrolled To="End">
                                 <Callback Handler="{getPosts}" />
-                            </Scrolled>
-                            <WhileFloat Value="{= abs(y({Property trending.ScrollPosition}))}" GreaterThanEqual="20">
-                                <ScrollTo Position="400" TargetNode="MainScroll" />
-                            </WhileFloat>
-                            <WhileFloat Value="{= abs(y({Property trending.ScrollPosition}))}" LessThan="20">
                                 <ScrollTo Position="0" TargetNode="MainScroll" />
-                            </WhileFloat>
-                            <StackPanel>
+                                <ScrollTo Position="0" TargetNode="trending" />
+                            </Scrolled>
+                            <WhileFloat Value="{= abs(y({Property trending.ScrollPosition}))}" GreaterThanEqual="60">
+                                <ScrollTo Position="400" TargetNode="MainScroll" />
+                            </WhileFloat> -->
+                            <!-- <WhileFloat Value="{= abs(y({Property trending.ScrollPosition}))}" LessThan="40">
+                                <ScrollTo Position="0" TargetNode="MainScroll" />
+                                <ScrollTo Position="0" TargetNode="trending" />
+                            </WhileFloat> -->
+                            <!-- <StackPanel> -->
                                 <Rectangle Layer="Background" Color="#FFF" />
                                 <Each Items="{posts}">
                                     <Deferred>
@@ -160,8 +164,8 @@
                                         <App.Text Value="Loading posts..." TextAlignment="Center" Alignment="VerticalCenter" />
                                     </WhileBusy>
                                 </Each>
-                            </StackPanel>
-                        </ScrollView>
+                            <!-- </StackPanel> -->
+                        </StackPanel>
                         <StackPanel ux:Name="recent" MinHeight="300">
                             <App.Text Alignment="Center" TextAlignment="Center" Value="Comming Soon" />
                         </StackPanel>

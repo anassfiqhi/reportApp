@@ -37,8 +37,8 @@ function getRecentPosts() {
             });
 
     } else {
-        getPosts();
         console.log('illicit request');
+        getPosts();
     }
 }
 
