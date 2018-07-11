@@ -1,0 +1,91 @@
+<Page ux:Class="Suggestions" Background="#FFF">
+    <JavaScript>
+        var Observable = require("FuseJS/Observable");
+        var Fetch = require("modules/fetcher");
+        var name = Observable();
+        var email = Observable();
+        var title = Observable();
+        var content = Observable();
+        var message = Observable('');
+        var processing = Observable();
+        var failed = Observable();
+        var success = Observable();
+
+        var addSuggestion = function() {
+            failed.value = false;
+            processing.value = true;
+            if (name.value && email.value && title.value && content.value) {
+                if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value)) {
+                    Fetch.addSuggestion({
+                        contributor: name.value,
+                        email: email.value,
+                        subject: title.value,
+                        suggestion: content.value
+                    })
+                    .then(data => {
+                        processing.value = false;
+                        message.value = 'Your suggestion has been delivered';
+                        success.value = true;
+                        setTimeout(() => {
+                            success.value = false
+                            name.value = '';                            
+                            email.value = '';                            
+                            title.value = '';                            
+                            content.value = '';                            
+                        }, 8000)
+                    })
+                } else {
+                    processing.value = false;
+                    failed.value = true;
+                    message.value = 'The provided email is invalid';
+                }
+            } else {
+                processing.value = false;
+                failed.value = true;
+                message.value = 'All fields are required';
+            }
+        }
+
+        module.exports = {
+            name, email, title, content, message, processing, success, failed, addSuggestion
+        }
+    </JavaScript>
+    <WhileTrue Value="{failed}">
+        <Panel Color="#9B0D54" Margin="0, 70" Alignment="Top" Padding="5" Layer="Overlay">
+            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                {message}      
+            </App.Text>
+        </Panel>
+    </WhileTrue>
+    <WhileTrue Value="{processing}">
+        <Panel Color="#004A70"  Margin="0, 60" Alignment="Top" Padding="5" Layer="Overlay">
+            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                Your Suggestion is being added..
+            </App.Text>
+        </Panel>
+    </WhileTrue>
+    <WhileTrue Value="{success}">
+        <Panel Color="#38B249"  Margin="0, 60" Alignment="Top" Padding="5" Layer="Overlay">
+            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                {message}
+            </App.Text>
+        </Panel>
+    </WhileTrue>
+    <Deferred>
+        <ScrollView>
+            <StackPanel Padding="30, 100, 30, 20" ItemSpacing="20">                  
+                <App.Input Value="{name}" Height="50" PlaceholderText="Name" PlaceholderColor="#CCC" Radius="0" TextColor="#25333D" Underline="true" CaretColor="#DDD" LineCol="#555" />
+                <App.Input Value="{email}" InputHint="Email" Height="50" PlaceholderText="Email" PlaceholderColor="#CCC" Radius="0" TextColor="#25333D" Underline="true" CaretColor="#DDD" LineCol="#555" />
+                <App.Input Value="{title}" Height="50" PlaceholderText="Subject" PlaceholderColor="#CCC" Radius="0" TextColor="#25333D" Underline="true" CaretColor="#DDD" LineCol="#555" />
+                <FormLabel TextColor="#CCC" Alignment="Left" FontSize="15">Content</FormLabel>
+                <App.TextBox Value="{content}" Radius="0" MinHeight="3%" LineCol="#555" />
+                <Rectangle Clicked="{addSuggestion}" Margin="0, 50, 0, 0" Width="80%" Padding="10, 5" CornerRadius="5" Height="35" Color="#E8C11C" >
+                    <App.Text Value="SUBMIT" TextAlignment="Center" TextColor="#25333D" FontSize="14" />
+                </Rectangle>
+            </StackPanel>
+        </ScrollView>
+    </Deferred>
+    <WhileBusy>
+        <App.Text Value="Loading..." TextAlignment="Center" Alignment="VerticalCenter" />
+    </WhileBusy>
+</Page>

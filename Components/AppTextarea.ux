@@ -2,5 +2,5 @@
     <string ux:Property="Text" />
     <string ux:Property="LineCol" />
     <int ux:Property="Radius" />
-    <Rectangle Color="{ReadProperty LineCol}" Alignment="Bottom" Height="2" CornerRadius="{ReadProperty Radius}" />
+    <Rectangle Color="{ReadProperty LineCol}" Alignment="Bottom" Height="1" CornerRadius="{ReadProperty Radius}" />
 </TextView>

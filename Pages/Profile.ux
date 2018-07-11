@@ -126,19 +126,12 @@
     </Rectangle>
     <DockPanel>
         <DockPanel>
-            <DockPanel Dock="Top" MinHeight="200" Padding="10">
-                <Rectangle Height="50%" Alignment="Top" Layer="Background" Color="#25333D" />
-                <Circle Height="60%" Width="60%" Layer="Overlay" Alignment="Center" Color="#25333D">
+            <DockPanel ux:Name="Hero" Background="#4D4E4E" Dock="Top" Height="50%" Padding="10, 30">
+                <Rectangle Alignment="Top" Layer="Background" Color="#4D4E4E" />
+                <Circle Height="40%" Width="40%" Alignment="Center" Color="#25333D">
                     <ImageFill Url="{user.avatar}" />
                 </Circle>
-                <DockPanel Margin="50, 5" Alignment="BottomLeft" Dock="Left">
-                    <App.Text TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="30" Value="{stats.posts}" />
-                    <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" TextAlignment="Center" FontSize="12" Value="Posts" />
-                </DockPanel>
-                <DockPanel Margin="5, 5, 50, 5" Alignment="BottomLeft" Dock="Right">
-                    <App.Text TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="30" Value="{stats.upvotes}" />
-                    <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" TextAlignment="Center" FontSize="12" Value="Upvotes" />
-                </DockPanel>
+                <App.Header Alignment="TopCenter" Dock="Bottom" TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="20" Value="{user.name}" />
             </DockPanel>
             <Rectangle Alignment="Top" Height="1" Color="#EEE" />
             <PageControl IsRouterOutlet="false" ux:Name="navigation">
@@ -153,26 +146,26 @@
                         <Set indicator.LayoutMaster="proftab" />
                     </WhileActive>
                     <Deferred>
-                        <Grid CellSpacing="5" Padding="10" ColumnCount="2" Columns="1*,1*" RowCount="2" Rows="1*, 1*">
-                            <DockPanel Padding="20">
-                                <Circle Layer="Background" Color="#007CBB" />
-                                <App.Text TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="40" Value="{stats.posts}" />
-                                <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" TextAlignment="Center" FontSize="12" Value="POSTS" />
+                        <Grid ColumnCount="2" Columns="1*,1*" RowCount="2" Rows="1*,1*">
+                            <DockPanel Background="#E8C11C" Padding="20">
+                                <Rectangle Layer="Background" Alignment="Right" Color="#333" Height="80%" Width="1" />
+                                <App.Header TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="40" Value="{stats.posts}" />
+                                <App.Header TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" TextAlignment="Center" FontSize="12" Value="POSTS" />
                             </DockPanel>
-                            <DockPanel Padding="20">
-                                <Circle Color="#004D8A" Layer="Background" />
-                                <App.Text TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="40" Value="{stats.comments}" />
-                                <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" TextAlignment="Center" FontSize="12" Value="COMMENTS" />
+                            <DockPanel Background="#E8C11C" Padding="20">
+                                <App.Header TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="40" Value="{stats.comments}" />
+                                <App.Header TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" TextAlignment="Center" FontSize="12" Value="COMMENTS" />
                             </DockPanel>
-                            <DockPanel Padding="20">
-                                <Circle Color="#C41261" Layer="Background" />
-                                <App.Text TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="40" Value="{stats.upvotes}" />
-                                <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" TextAlignment="Center" FontSize="12" Value="UPVOTES" />
+                            <DockPanel Background="#E8C11C" Padding="20">
+                                <Rectangle Layer="Background" Alignment="Right" Color="#333" Height="80%" Width="1" />
+                                <Rectangle Layer="Background" Alignment="Top" Color="#333" Width="80%" Height="1" />
+                                <App.Header TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="40" Value="{stats.upvotes}" />
+                                <App.Header TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" TextAlignment="Center" FontSize="12" Value="UPVOTES" />
                             </DockPanel>
-                            <DockPanel Padding="20">
-                                <Circle Color="#FDD006" Layer="Background" />
-                                <App.Text TextWrapping="Wrap" TextColor="#FFF" TextAlignment="Center" FontSize="40" Value="{stats.downvotes}" />
-                                <App.Text TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" TextAlignment="Center" FontSize="12" Value="DOWNVOTES" />
+                            <DockPanel Background="#E8C11C" Padding="20">
+                                <Rectangle Layer="Background" Alignment="Top" Color="#333" Width="80%" Height="1" />
+                                <App.Header TextWrapping="Wrap" TextColor="#25333D" TextAlignment="Center" FontSize="40" Value="{stats.downvotes}" />
+                                <App.Header TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" TextAlignment="Center" FontSize="12" Value="DOWNVOTES" />
                             </DockPanel>
                         </Grid>
                     </Deferred>
@@ -180,6 +173,7 @@
                 <Page ux:Name="edit">
                     <WhileActive Threshold="0.5">
                         <Set indicator.LayoutMaster="edittab" />
+                        <Change Hero.Height="30%" />
                     </WhileActive>
                     <Deferred>
                         <ScrollView>

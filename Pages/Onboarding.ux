@@ -31,7 +31,7 @@
                 </WhileActive>
                 <StackPanel Orientation="Vertical" Width="50%" Height="40%" Margin="0, 0, 0, 100" Alignment="BottomCenter">
                     <App.Title TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Value="Lets Hit Corruption" />
-                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="Honesty, Intergrity, Transparency" />
+                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="Honesty, Integrity, Transparency" />
                 </StackPanel>
             </Deferred>
         </Page>
@@ -44,7 +44,7 @@
                 </WhileActive>
                 <StackPanel Orientation="Vertical" Width="50%" Height="0%" Margin="0, 0, 0, 100" Alignment="BottomCenter">
                     <App.Title TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Value="Stay Anonymous, Report Corruption" />
-                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="You need not sign in or register to make use of this platform" />
+                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="You do not need to sign in or register to make use of this feature" />
                 </StackPanel>
             </Deferred>
         </Page>

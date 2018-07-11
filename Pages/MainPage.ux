@@ -8,7 +8,7 @@
             </ActivatingAnimation>
             <Deferred>
                 <DockPanel>
-                    <DockPanel Dock="Top" Padding="5">
+                    <DockPanel Dock="Top" Padding="30, 5, 5, 5">
                         <Rectangle Layer="Background" Color="#FFF" />
                         <Circle Dock="Left" Height="48" Width="48" Alignment="CenterLeft" Color="#FDD006">
                             <ImageFill Url="{user.avatar}" />
@@ -23,23 +23,31 @@
                         <StackPanel>
                             <DockPanel ux:Name="Home" Height="50" Clicked="{gotoHome}" HitTestMode="LocalBoundsAndChildren" Padding="5">
                                 <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
-                                <Icon TextColor="#25333D" FontSize="30" Dock="Left" Value="&#xf237;" />
+                                <Icon TextColor="#FFF" FontSize="30" Dock="Left" Value="&#xf237;" />
                                 <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15" Value="HOME" />
                                 <Clicked>
                                     <NavigateToggle Target="sidebar1" />
                                 </Clicked>
                             </DockPanel>
+                            <DockPanel ux:Name="Post" Height="50" Clicked="{gotoHome}" HitTestMode="LocalBoundsAndChildren" Padding="5">
+                                <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
+                                <Icon TextColor="#FFF" FontSize="30" Dock="Left" Value="&#xf237;" />
+                                <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15" Value="ANONYMOUS REPORTING" />
+                                <Clicked>
+                                    <NavigateToggle Target="sidebar2" />
+                                </Clicked>
+                            </DockPanel>
                             <DockPanel ux:Name="Rep" Height="50" Clicked="{gotoReport}" HitTestMode="LocalBoundsAndChildren" Padding="5">
                                 <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
-                                <Icon TextColor="#25333D" FontSize="30" Dock="Left" Value="&#xf2b1;" />
-                                <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15" Value="REPORT" />
+                                <Icon TextColor="#FFF" FontSize="30" Dock="Left" Value="&#xf2b1;" />
+                                <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15" Value="AFFILIATE REPORTING" />
                                 <Clicked>
                                     <NavigateToggle Target="sidebar1" />
                                 </Clicked>
                             </DockPanel>
                             <DockPanel ux:Name="Prof" Height="50" Clicked="{gotoProfile}" HitTestMode="LocalBoundsAndChildren" Padding="5">
                                 <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
-                                <Icon TextColor="#25333D" FontSize="30" Dock="Left" Value="" />
+                                <Icon TextColor="#FFF" FontSize="30" Dock="Left" Value="" />
                                 <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15" Value="PROFILE" />
                                 <Clicked>
                                     <NavigateToggle Target="sidebar1" />
@@ -47,7 +55,7 @@
                             </DockPanel>
                             <DockPanel ux:Name="Top" Height="50" Clicked="{gotoTop}" HitTestMode="LocalBoundsAndChildren" Padding="5">
                                 <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
-                                <Icon TextColor="#25333D" FontSize="30" Dock="Left" Value="&#xf178;" />
+                                <Icon TextColor="#FFF" FontSize="30" Dock="Left" Value="&#xf178;" />
                                 <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15" Value="TOP CONTRIBUTORS" />
                                 <Clicked>
                                     <NavigateToggle Target="sidebar1" />
@@ -55,8 +63,26 @@
                             </DockPanel>
                             <DockPanel ux:Name="Abt" Height="50" Clicked="{gotoAbout}" HitTestMode="LocalBoundsAndChildren" Padding="5">
                                 <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
-                                <Icon TextColor="#25333D" FontSize="30" Dock="Left" Value="" />
+                                <Icon TextColor="#FFF" FontSize="30" Dock="Left" Value="" />
                                 <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15" Value="ABOUT UPRIGHT" />
+                                <Clicked>
+                                    <NavigateToggle Target="sidebar1" />
+                                </Clicked>
+                            </DockPanel>
+                            <DockPanel ux:Name="Terms" Height="50" Clicked="{ gotoTnC}" HitTestMode="LocalBoundsAndChildren" Padding="5">
+                                <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
+                                <Icon TextColor="#FFF" FontSize="30" Dock="Left" Value="" />
+                                <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15"
+                                    Value="TERMS AND CONDITIONS" />
+                                <Clicked>
+                                    <NavigateToggle Target="sidebar1" />
+                                </Clicked>
+                            </DockPanel>
+                            <DockPanel ux:Name="Sugg" Height="50" Clicked="{gotoSugg}" HitTestMode="LocalBoundsAndChildren" Padding="5">
+                                <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
+                                <Icon TextColor="#FFF" FontSize="30" Dock="Left" Value="" />
+                                <App.Text Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="15" 
+                                    Value="MAKE A SUGGESTION" />
                                 <Clicked>
                                     <NavigateToggle Target="sidebar1" />
                                 </Clicked>
@@ -64,7 +90,7 @@
                         </StackPanel>
                     </ScrollView>
                     <Rectangle Height="1" Alignment="Bottom" Color="#EEE"/>
-                    <DockPanel Height="50" Clicked="{signOut}" Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Padding="5">
+                    <DockPanel Height="50" Clicked="{signOut}" Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Padding="30, 5, 5, 5">
                         <Match Value="{hasId}">
                             <Case Bool="true">
                                 <Icon TextColor="#25333D" FontSize="30" Dock="Left" Value="" />
@@ -95,7 +121,7 @@
             </WhileInactive>
             <DockPanel Dock="Top">
                 <Rectangle Layer="Background" Color="#FFF" />
-                <App.Header Dock="Left" FontSize="20" Margin="10" Value="Add a Post" TextColor="#25333D" TextAlignment="Right" />
+                <App.Header FontSize="20" Margin="10" Value="New Post" TextColor="#25333D" TextAlignment="Center" />
                 <DockPanel Dock="Right">
                     <Button Margin="5, 1" Dock="Fill">
                         <Icon TextAlignment="Center" Value="" TextColor="#25333D" FontSize="30" />
@@ -109,7 +135,7 @@
             <Rectangle Alignment="Top" Height="1" Color="#EEE" />
             <DockPanel Layer="Overlay" Visibility="Collapsed" Height="100%" Margin="0" ux:Name="camera">
                 <Rectangle Color="#25333D" Layer="Background" />
-                <Rectangle Dock="Top" Height="50" Color="#9B0D54">
+                <Rectangle Dock="Top" Height="50" Color="#4D4E4E">
                     <App.Text TextColor="#FFF" Value="Close" />
                     <Clicked>
                         <Set camera.Visibility="Collapsed" />
@@ -117,47 +143,64 @@
                     </Clicked>
                 </Rectangle>
                 <NativeViewHost>
+                    <WhileTrue Value="{isRecording}">
+                        <App.Text Alignment="TopRight" Color="#FFF" Layer="Overlay" Value="{counter}" FontSize="40" />
+                    </WhileTrue>
                     <CameraView ux:Name="_cameraView" />
                 </NativeViewHost>
-                <Rectangle Dock="Bottom" Color="#003D79" Height="50">
+                <!-- <Rectangle Dock="Bottom" Color="#003D79" Height="50">
                     <Clicked Handler="{capturePhoto}" />
                     <App.Text TextColor="#FFF" Value="Take Photo" />
-                </Rectangle>
-                <!-- <Grid Dock="Bottom" ColumnCount="2" Columns="1*,1*" Height="50">
-                    <Rectangle Color="#007CBB">
+                </Rectangle> -->
+                <Grid Dock="Bottom" ColumnCount="2" Columns="1*,1*" Height="50">
+                    <Rectangle Color="#E8C11C">
                         <Clicked Handler="{capturePhoto}" />
-                        <App.Text TextColor="#FFF" Value="Take Photo" />
+                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf162;" />
                     </Rectangle>
-                    <Rectangle Color="#FDD006">
-                        <Clicked Handler="{openGallery}" />
-                        <App.Text TextColor="#FFF" Value="Gallery" />
-                    </Rectangle>
-                </Grid> -->
+                    <Match Value="{isRecording}">
+                        <Case Bool="true">
+                            <Rectangle Color="#38B249">
+                                <Clicked Handler="{stopRecording}" />
+                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf323;" />
+                            </Rectangle>
+                        </Case>
+                        <Case Bool="false">
+                            <Rectangle Color="#38B249">
+                                <Clicked Handler="{startRecording}" />
+                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf36e;" />
+                            </Rectangle>
+                        </Case>
+                    </Match>
+                </Grid>
             </DockPanel>
             <ScrollView Visibility="Visible" ux:Name="Form" AllowedScrollDirections="Vertical" Opacity="1">
                 <StackPanel MinHeight="700" ux:Name="Editor" Padding="5" ItemSpacing="5">
-                    <WhileTrue ux:Name="addedMessage" Value="{addedPost}">
-                        <Panel Dock="Top" Padding="5">
-                            <Rectangle CornerRadius="5" Layer="Background" Color="#007CBB33" StrokeColor="#007CBB" />
-                            <App.Text TextColor="#007CBB" Value="Your post has been added" TextAlignment="Center" />
-                        </Panel>
-                    </WhileTrue>
-                    <WhileTrue Value="{notLoggedIn}">
-                        <Panel Dock="Top" Padding="5">
-                            <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
-                            <App.Text TextColor="#9B0D54" Value="Please login to add a post" TextAlignment="Center" />
-                        </Panel>
-                    </WhileTrue>
                     <WhileTrue Value="{processFailed}">
-                        <Panel Dock="Top" Padding="5">
-                            <Rectangle CornerRadius="5" Layer="Background" Color="#9B0D5433" StrokeColor="#9B0D54" />
-                            <App.Text TextColor="#9B0D54" Value="{errMessage}" TextAlignment="Left" TextWrapping="NoWrap" />
+                        <Panel Color="#9B0D54"   Margin="0, 0" Alignment="Top" Padding="5" Layer="Overlay">
+                            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                                {errMessage}      
+                            </App.Text>
                         </Panel>
                     </WhileTrue>
                     <WhileTrue Value="{processing}">
-                        <Panel Dock="Top" Padding="5">
-                            <Rectangle CornerRadius="5" Layer="Background" Color="#007CBB33" StrokeColor="#007CBB" />
-                            <App.Text TextColor="#007CBB" Value="Sending post..." TextAlignment="Center" />
+                        <Panel Color="#004A70"  Margin="0, 0" Alignment="Top" Padding="5" Layer="Overlay">
+                            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                                Uploading post...
+                            </App.Text>
+                        </Panel>
+                    </WhileTrue>
+                    <WhileTrue ux:Name="addedMessage" Value="{addedPost}">
+                        <Panel Color="#38B249"  Margin="0, 0" Alignment="Top" Padding="5" Layer="Overlay">
+                            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                                Your post has been added
+                            </App.Text>
+                        </Panel>
+                    </WhileTrue>
+                    <WhileTrue Value="{notLoggedIn}">
+                        <Panel Color="#FDD006"  Margin="0, 0" Alignment="Top" Padding="5" Layer="Overlay">
+                            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                                Please you need to login to add posts unanonimously
+                            </App.Text>
                         </Panel>
                     </WhileTrue>
                     <Match Value="{hasImg}">
@@ -171,32 +214,70 @@
                             </Image>
                         </Case>
                         <Case Bool="false">
-                            <DockPanel Width="100%">
-                                <App.Text Value="Take a picture" TextAlignment="Left" Alignment="CenterLeft" />
+                            <Grid Alignment="Center" Width="70%" Columns="1*,1*,1*" ColumnCount="3">
+                                <Icon Dock="Right" TextColor="#E8C11C" FontSize="40" Value="&#xf338;" />
                                 <Icon Dock="Right" TextColor="#25333D" FontSize="40" Value="&#xf163;" />
+                                <Icon Dock="Right" TextColor="#25333D" FontSize="40" Value="&#xf36e;" />
                                 <Clicked>
-                                <Set Form.Visibility="Collapsed" />
-                                <Set camera.Visibility="Visible" />
+                                    <Set Form.Visibility="Collapsed" />
+                                    <Set camera.Visibility="Visible" />
                                 </Clicked>
+                            </Grid>
+                        </Case>
+                    </Match>
+                    <Match Value="{isVideo}">
+                        <Case Bool="true">
+                            <DockPanel>
+                                <Rectangle Alignment="Left" ux:Name="progressBar" Dock="Top" Fill="#E8C11CAA" Width="0%" Height="4" />
+                                <Video Height="200" ux:Name="video" File="{img}" Dock="Fill" IsLooping="true" StretchMode="UniformToFill">
+                                    <ProgressAnimation>
+                                        <Change progressBar.Width="100" />
+                                    </ProgressAnimation>
+                                    <App.Text TextColor="#FFF" FontSize="10" Alignment="Center">Click to change video</App.Text>
+                                    <Clicked>
+                                        <Set Form.Visibility="Collapsed" />
+                                        <Set camera.Visibility="Visible" />
+                                    </Clicked>
+                                    <Image Layer="Background" Color="#DDD" Opacity="0.5" File="../Assets/Images/Logo.jpg" />
+                                </Video>
+                                <Grid Dock="Bottom" ColumnCount="3" RowCount="1">
+                                    <Rectangle Height="40" Color="#E8C11CAA">
+                                        <Clicked>
+                                            <Play Target="video" />
+                                        </Clicked>
+                                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf2be;" />
+                                    </Rectangle>
+                                    <Rectangle Height="40" Color="#E8C11CAA">
+                                        <Clicked>
+                                            <Pause Target="video" />
+                                        </Clicked>
+                                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf2ad;" />
+                                    </Rectangle>
+                                    <Rectangle Height="40" Color="#E8C11CAA">
+                                        <Clicked>
+                                            <Stop Target="video" />
+                                        </Clicked>
+                                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf323;" />
+                                    </Rectangle>
+                                </Grid>
                             </DockPanel>
                         </Case>
                     </Match>
-                    <Rectangle Height="2" Color="#000" />
-                    <FormLabel TextColor="#111" Alignment="Left">Title</FormLabel>                     
-                    <App.Input Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{title}" />
-                    <FormLabel TextColor="#111" Alignment="Left">Content</FormLabel>
-                    <App.TextBox Radius="0" LineCol="#000" Text="Content" Value="{content}"/>
+                    <Rectangle Height="5" Color="#FFF" />                  
+                    <App.Input Height="50" PlaceholderText="title" PlaceholderColor="#CCC" Margin="30" Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{title}" />
+                    <FormLabel Margin="30, 0, 30, 0" FontSize="14" TextColor="#CCC" Alignment="Left">Content</FormLabel>
+                    <App.TextBox MinHeight="3" Margin="30, 0, 30, 0" Radius="0" LineCol="#000" Text="Content" Value="{content}"/>
                     <App.Input Visibility="Collapsed" ux:Name="anon" Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{isAnon}" />
-                    <DockPanel Margin="0, 30" Alignment="Right">
-                        <FormLabel FontSize="15" Margin="5" Dock="Left" TextColor="#111" Alignment="CenterRight">Anonymous</FormLabel>
+                    <DockPanel Margin="0, 30, 0, 0" Alignment="Center">
+                        <FormLabel FontSize="12" Margin="0, 0, 20, 0" Dock="Left" TextColor="#111" Alignment="CenterRight">Anonymous</FormLabel>
                         <MyToggle ux:Name="toggle">
                             <Clicked>
                                 <Set anon.Value="{Property toggle.IsActive}"/>
                             </Clicked>
                         </MyToggle>
                     </DockPanel>
-                    <Rectangle Alignment="Right" Clicked="{addPost}" Padding="10, 5" Height="35" Color="#FDD006" >
-                        <App.Text Value="Submit" TextAlignment="Center" TextColor="#25333D" FontSize="14" />
+                    <Rectangle Clicked="{addPost}" Margin="0, 30, 0, 0" Width="60%" Padding="10, 5" CornerRadius="5" Height="35" Color="#E8C11C" >
+                        <App.Text Value="SUBMIT" TextAlignment="Center" TextColor="#25333D" FontSize="14" />
                     </Rectangle>
                 </StackPanel>
             </ScrollView>
@@ -209,14 +290,27 @@
                     <NavigateToggle Target="sidebar1" />
                 </Clicked>
             </Button>
-            <App.Title ux:Name="title" Alignment="Center" TextAlignment="Center" TextColor="#FFF" FontSize="20" Value="{pagetitle}" />
+            <App.Header ux:Name="title" Alignment="Center" TextAlignment="Center" TextColor="#FFF" FontSize="20" Value="{pagetitle}" />
             <Button HitTestMode="LocalBoundsAndChildren" Alignment="CenterRight" Dock="Right">
-                <Icon ux:Name="add" Value="&#xf2c3;" TextColor="#FFF" FontSize="32" />
+                <Icon ux:Name="add" Value="&#xf2eb;" TextColor="#FFF" FontSize="32" />
                 <Clicked>
-                    <NavigateToggle Target="sidebar2" />
+                    <NavigateToggle Target="sidebar3" />
                 </Clicked>
             </Button>
         </DockPanel>
+        <Panel Background="#F8ECBB" Edge="Bottom" Dock="Top" ux:Name="sidebar3" Height="100%">
+            <Icon Value="&#xf10c;" FontSize="40" TextColor="#333" Alignment="TopCenter">
+                <Clicked>
+                    <NavigateToggle Target="sidebar3" />
+                </Clicked>
+            </Icon>
+            <StackPanel Alignment="Center" ItemSpacing="40" Width="70%" >
+                <App.Input Radius="0" Height="40" TextColor="#FFF" Underline="true" CaretColor="#333" LineCol="#AAA"  />
+                <Rectangle Width="70%" Padding="10, 5" CornerRadius="5" Height="35" Color="#E8C11C" >
+                    <App.Text Value="Search" TextAlignment="Center" TextColor="#25333D" FontSize="14" />
+                </Rectangle>
+            </StackPanel>
+        </Panel>
         <Navigator ux:Name="subnav" DefaultPath="feeds">
             <Rectangle ux:Name="shadow" Layer="Overlay" Color="#0005" Visibility="Collapsed" />
             <FeedPage ux:Template="feeds" router="router" nav="subnav">
@@ -269,7 +363,7 @@
         
             <About ux:Template="about">
                 <ActivatingAnimation>
-                    <Change title.Value="About Us" />
+                    <Change title.Value="About The Campaign" />
                     <Change title.TextColor="#25333D" />
                     <Change Burger.TextColor="#25333D" />
                     <Change add.TextColor="#25333D" />
@@ -283,7 +377,7 @@
         
             <Profile ux:Template="profile" router="router" Freeze="WhileNavigating">
                 <ActivatingAnimation>
-                    <Change title.Value="{user.name}" />
+                    <Change title.Value="Profile" />
                     <Change title.TextColor="#FFF" />
                     <Change Burger.TextColor="#FFF" />
                     <Change add.TextColor="#FFF" />
@@ -297,7 +391,7 @@
         
             <Report ux:Template="report" Freeze="WhileNavigating">
                 <ActivatingAnimation>
-                    <Change title.Value="Report" />
+                    <Change title.Value="Affiliate Reporting" />
                     <Change title.TextColor="#25333D" />
                     <Change Burger.TextColor="#25333D" />
                     <Change add.TextColor="#25333D" />
@@ -307,6 +401,32 @@
                     <NavigateToggle Target="topBar" />
                 </WhileActive>
             </Report>
+
+            <Terms ux:Template="terms" Freeze="WhileNavigating">
+                <ActivatingAnimation>
+                    <Change title.Value="Terms and Conditions" />
+                    <Change title.TextColor="#25333D" />
+                    <Change Burger.TextColor="#25333D" />
+                    <Change add.TextColor="#25333D" />
+                    <Change topBg.Color="#FFFFFF" />
+                </ActivatingAnimation>
+                <WhileActive>
+                    <NavigateToggle Target="topBar" />
+                </WhileActive>
+            </Terms>
+
+            <Suggestions ux:Template="suggestions" Freeze="WhileNavigating">
+                <ActivatingAnimation>
+                    <Change title.Value="Suggestions" />
+                    <Change title.TextColor="#25333D" />
+                    <Change Burger.TextColor="#25333D" />
+                    <Change add.TextColor="#25333D" />
+                    <Change topBg.Color="#FFFFFF" />
+                </ActivatingAnimation>
+                <WhileActive>
+                    <NavigateToggle Target="topBar" />
+                </WhileActive>
+            </Suggestions>
         </Navigator>
     </EdgeNavigator>
 </Page>

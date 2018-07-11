@@ -17,32 +17,34 @@
         var hasUpVoted = Observable(false);
 
         function addComment() {
-            if (localStorage.getItem('id')) {
-                if (content.value) {
-                    Fetch.addComment({
-                        body: content.value,
-                        post: post.value.id,
-                        author: localStorage.getItem('id')
-                    })
-                    .then(res => {
-                        localStorage.removeItem('content')
-                        comments.insertAt(0, res);
-                        content.value = "";
-                        processFailed.value = false;
-                        commentCnt.value = commentCnt.value += 1; 
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        processFailed.value = true;
-                        errMessage.value = 'You may have lost your connection';
-                    });
-                } else {
-                    processFailed.value = true;
-                    errMessage.value = 'Please provide content';
-                }
+            var Environment = require('FuseJS/Environment');
+            var id_;
+
+            if (Environment.preview) {
+                id_ = "5b3a2ed3cf700c29aca27458";
             } else {
-                localStorage.setItem('content', content.value);
-                notLoggedIn.value = true;
+                id_ = "5b3a2ddbdfecff00149ab29c";
+            }
+            if (content.value) {
+                Fetch.addComment({
+                    body: content.value,
+                    post: post.value.id,
+                    author: localStorage.getItem('id') || id_
+                })
+                .then(res => {
+                    comments.insertAt(0, res);
+                    content.value = "";
+                    processFailed.value = false;
+                    commentCnt.value = commentCnt.value += 1; 
+                })
+                .catch(err => {
+                    console.log(err);
+                    processFailed.value = true;
+                    errMessage.value = 'You may have lost your connection';
+                });
+            } else {
+                processFailed.value = true;
+                errMessage.value = 'Please provide content';
             }
         }
 
@@ -81,6 +83,29 @@
             .catch(err => message.value = 'be the first to comment')
         }
 
+        function parseRes(post) {
+            return {
+                "comments": post.comments,
+                "author": post.author,
+                "upvotes": post.upvotes,
+                "downvotes": post.downvotes,
+                "title": post.title,
+                "body": post.body,
+                "time": post.time,
+                "loc": post.loc,
+                "lat": post.lat,
+                "long": post.long,
+                "image": post.image,
+                "anonymous": post.anonymous,
+                "from_twitter": post.from_twitter,
+                "urls": post.urls,
+                "featured": post.featured,
+                "hasVideo": post.hasOwnProperty("hasVideo") ? post.hasVideo : false,
+                "createdAt": post.createdAt,
+                "id": post.id
+            };
+        }
+
         this.Parameter.onValueChanged(module, res => {
             message.value = "Loading post..."
             storage.getPostById(res)
@@ -94,7 +119,7 @@
                 .catch(err => {
                     Fetch.getPost(res)
                         .then(data => {
-                            post.value = data;
+                            post.value = parseRes(data);
                             upvotes.value = data.upvotes;
                             setTimeout(() => getComments(), 500);
                             message.value = "Loading post...";
@@ -135,13 +160,23 @@
             <App.Text Alignment="Center" TextAlignment="Center" FontSize="20" TextWrapping="Wrap" Value="{message}" />
         </Case>
         <Case Bool="false">
-            <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 20, 50" Alignment="BottomRight" Padding="10" Layer="Overlay">
+            <!-- <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 20, 50" Alignment="BottomRight" Padding="10" Layer="Overlay">
                 <Mat.Icon TextAlignment="Center" Alignment="Center" ux:Name="add" Value="&#xe80d;" TextColor="#FFF" FontSize="25" />
                 <Clicked Handler="{shareText}" />
                 <WhilePressed>
                     <Scale Factor="0.8" />
                 </WhilePressed>
-            </Circle>
+            </Circle> -->
+            <Rectangle Alignment="BottomCenter" Color="#E8C11C" HitTestMode="LocalBoundsAndChildren" Layer="Overlay" Margin="0, 0, 0, 50" Width="200" Padding="30, 5" CornerRadius="5" Height="35" >
+                <Grid Width="60%" Alignment="HorizontalCenter" ColumnCount="2" CellSpacing="5" Columns="auto, 1*">
+                    <Mat.Icon Alignment="CenterRight" TextAlignment="Right" Value="&#xe80d;" TextColor="#25333D" FontSize="15" />
+                    <App.Text Value="Share" Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="14" />
+                </Grid>
+                <Clicked Handler="{shareText}" />
+                <WhilePressed>
+                    <Scale Factor="0.8" />
+                </WhilePressed>
+            </Rectangle>
             <DockPanel>
                 <ScrollView Padding="30, 70, 30, 10">
                     <StackPanel>
@@ -160,9 +195,44 @@
                             </Case>
                         </Match>
                         <App.Text TextColor="#25333D" TextAlignment="Center" Alignment="Center" FontSize="12" Value="{post.time}" />
-                        <Rectangle Height="150" Width="97%" Margin="0, 15, 0, 15" Alignment="Center" Color="#25333D">
-                            <ImageFill Url="{post.image}" StretchMode="UniformToFill" />
-                        </Rectangle>
+                        <Match Value="{post.hasVideo}">
+                            <Case Bool="true">
+                                <DockPanel>
+                                    <Rectangle Alignment="Left" ux:Name="progressBar" Dock="Top" Fill="#E8C11CAA" Width="0%" Height="4" />
+                                    <Video Height="200" ux:Name="video" File="{post.image}" Dock="Fill" IsLooping="true" StretchMode="UniformToFill">
+                                        <ProgressAnimation>
+                                            <Change progressBar.Width="100" />
+                                        </ProgressAnimation>
+                                        <Image Layer="Background" Color="#DDD" Opacity="0.5" File="../Assets/Images/Logo.jpg" />
+                                    </Video>
+                                    <Grid Dock="Bottom" ColumnCount="3" RowCount="1">
+                                        <Rectangle Height="40" Color="#E8C11CAA">
+                                            <Clicked>
+                                                <Play Target="video" />
+                                            </Clicked>
+                                            <Icon FontSize="30" TextColor="#FFF" Value="&#xf2be;" />
+                                        </Rectangle>
+                                        <Rectangle Height="40" Color="#E8C11CAA">
+                                            <Clicked>
+                                                <Pause Target="video" />
+                                            </Clicked>
+                                            <Icon FontSize="30" TextColor="#FFF" Value="&#xf2ad;" />
+                                        </Rectangle>
+                                        <Rectangle Height="40" Color="#E8C11CAA">
+                                            <Clicked>
+                                                <Stop Target="video" />
+                                            </Clicked>
+                                            <Icon FontSize="30" TextColor="#FFF" Value="&#xf323;" />
+                                        </Rectangle>
+                                    </Grid>
+                                </DockPanel>
+                            </Case>
+                            <Case Bool="false">
+                                <Rectangle Height="150" Width="97%" Margin="0, 15, 0, 15" Alignment="Center" Color="#25333D">
+                                    <ImageFill Url="{post.image}" StretchMode="UniformToFill" />
+                                </Rectangle>
+                            </Case>
+                        </Match>
                         <App.Text MinHeight="100" TextWrapping="Wrap" FontSize="15" Alignment="Left" Value="{post.body}" />
                         <Panel Color="#FFF" ux:Name="commentBar" Visibility="Visible" Width="100%">
                             <Rectangle Layer="Background" Color="#FFF" />
@@ -181,7 +251,7 @@
                                         </Panel>
                                     </WhileTrue>
                                     <FormLabel Value="Comment" Margin="0" TextAlignment="Left" Alignment="Left" />
-                                    <App.TextBox Radius="0" LineCol="#000" Height="80%" Text="Your Comments" Value="{content}" />
+                                    <App.TextBox Radius="0" LineCol="#000" MinHeight="80" Text="Your Comments" Value="{content}" />
                                     <Rectangle Alignment="Right" CornerRadius="0" Clicked="{addComment}" Padding="10" Height="40" Color="#FDD006" >
                                         <App.Text Value="POST COMMENT" TextColor="#000" FontSize="14" />
                                     </Rectangle>

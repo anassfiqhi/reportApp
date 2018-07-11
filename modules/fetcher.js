@@ -53,7 +53,7 @@ module.exports = {
   },
   getPosts: function () {
     return new Promise((resolve, reject) => {
-      fetch(`${url}/post/getposts`, {
+      fetch(`${url}/post?featured=false&limit=50&sort=createdAt%20DESC`, {
           headers: {
             "Content-Type": "application/json"
           }
@@ -73,12 +73,47 @@ module.exports = {
         .catch(err => reject(err));
     });
   },
+  getTrendingPosts: function () {
+    return new Promise((resolve, reject) => {
+      fetch(`${url}/post/getTrendingPosts`, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(resp => resolve(resp.json()))
+        .catch(err => reject(err));
+    });
+  },
+  getFeaturedPosts: function () {
+    return new Promise((resolve, reject) => {
+      fetch(`${url}/post/getFeaturedPosts`, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(resp => resolve(resp.json()))
+        .catch(err => reject(err));
+    });
+  },
   getPost: function (id) {
     return new Promise((resolve, reject) => {
       fetch(`${url}/post/getpost/?id=${id}`, {
           headers: {
             "Content-Type": "application/json"
           }
+        })
+        .then(resp => resolve(resp.json()))
+        .catch(err => reject(err));
+    });
+  },
+  addSuggestion: function (body) {
+    return new Promise((resolve, reject) => {
+      fetch(`${url}/suggestions`, {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body),
+          method: 'POST'
         })
         .then(resp => resolve(resp.json()))
         .catch(err => reject(err));

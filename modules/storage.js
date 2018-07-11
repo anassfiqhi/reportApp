@@ -1,5 +1,7 @@
 var fs = require("FuseJS/FileSystem");
 var path = `${fs.dataDirectory}/posts.tmp`;
+var featured = `${fs.dataDirectory}/featuredposts.tmp`;
+var trending = `${fs.dataDirectory}/trendingposts.tmp`;
 var user = `${fs.dataDirectory}/user.tmp`;
 var baseData = `${fs.dataDirectory}/base.tmp`;
 var stats = `${fs.dataDirectory}/stats.tmp`;
@@ -36,10 +38,50 @@ module.exports = {
         .catch(err => reject(err));
     })
   },
+  addFeaturedPosts: function(data) {
+    return new Promise((resolve, reject) => {
+      fs
+        .writeTextToFile(featured, JSON.stringify(data) || '{}')
+        .then(success => {
+          resolve(success);
+        })
+        .catch(err => reject(err));
+    })
+  },
+  addTrendingPosts: function(data) {
+    return new Promise((resolve, reject) => {
+      fs
+        .writeTextToFile(trending, JSON.stringify(data) || '{}')
+        .then(success => {
+          resolve(success);
+        })
+        .catch(err => reject(err));
+    })
+  },
   getPosts: function() {
     return new Promise((resolve, reject) => {
       fs
         .readTextFromFile(path)
+        .then(data => {
+          resolve(JSON.parse(data));
+        })
+        .catch(err => reject(err));
+    });
+  },
+  getFeaturedPosts: function() {
+    return new Promise((resolve, reject) => {
+      fs
+        .readTextFromFile(featured)
+        .then(data => {
+          resolve(JSON.parse(data));
+        })
+        .catch(err => reject(err));
+    });
+  },
+  getTrendingPosts: function() {
+    return new Promise((resolve, reject) => {
+      fs
+        .readTextFromFile(trending)
         .then(data => {
           resolve(JSON.parse(data));
         })
@@ -53,7 +95,23 @@ module.exports = {
         .then(data => {
           resolve(JSON.parse(data).filter(res => res.id === id)[0]);
         })
-        .catch(err => reject(err));
+        .catch(err => {
+          fs
+            .readTextFromFile(featured)
+            .then(data => {
+              resolve(JSON.parse(data).filter(res => res.id === id)[0]);
+            })
+            .catch(err => {
+              fs
+                .readTextFromFile(trending)
+                .then(data => {
+                  resolve(JSON.parse(data).filter(res => res.id === id)[0]);
+                })
+                .catch(err => {
+                  reject(err);
+                });
+            });
+        });
     });
   },
   setUser: function (data) {
@@ -106,6 +164,6 @@ module.exports = {
     });
   },
   clearData: function () {
-    return Promise.all([fs.delete(user), fs.delete(path), fs.delete(stats)]);
+    return Promise.all([fs.delete(user), fs.delete(stats)]);
   }
 };

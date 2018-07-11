@@ -1,7 +1,8 @@
 <Page ux:Class="About" Background="#FFF">
     <Deferred>
-        <ScrollView Padding="0, 30, 0, 0">
-            <StackPanel Padding="30, 50" ItemSpacing="20">
+        <ScrollView>
+            <StackPanel Padding="30, 40, 30, 20" ItemSpacing="20">
+                <Image Height="200" StretchMode="UniformToFill" File="../Assets/Images/Logo.jpg" />
                 <App.Header FontSize="15" TextWrapping="Wrap">
                     There is a near universal concesus in Nigeria, among Nigerians and within the international community that corruption is endemic and all pervasive in the country. The scourge of corruption has assumed an existential threat to the country, becoming a major obstacle to human and natinal development.
                 </App.Header>

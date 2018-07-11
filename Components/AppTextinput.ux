@@ -4,7 +4,7 @@
     <string ux:Property="BgCol" />
     <float ux:Property="Radius" />
     <WhileTrue Value="{ReadProperty Underline}">
-        <Rectangle Alignment="Bottom" Height="2" Color="{ReadProperty LineCol}" />
+        <Rectangle Alignment="Bottom" Height="1" Color="{ReadProperty LineCol}" />
         <Change this.Padding="2" />
     </WhileTrue>
     <WhileFalse Value="{ReadProperty Underline}">

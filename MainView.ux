@@ -6,12 +6,12 @@
         <Navigator ux:Name="nav" DefaultPath="splash">
             <SplashPage ux:Template="splash" router="router"/>
             <Main ux:Template="main" router="router">
-                    <Android.StatusBarConfig ux:Name="statusBar" Color="#1C5120" IsVisible="True" />
-                    <iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
+                <Android.StatusBarConfig ux:Name="statusBar" Color="#1C5120" IsVisible="True" />
+                <iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
             </Main>
-            <LoginPage ux:Template="login" router="router">
+            <LoginPage ux:Template="login" router="router" Freeze="WhileNavigating">
                 <WhileActive>
-                    <Android.StatusBarConfig Color="#FFF" IsVisible="False" />
+                    <Android.StatusBarConfig Color="#FFF" IsVisible="True" />
                     <iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
                 </WhileActive>
             </LoginPage>
@@ -23,4 +23,5 @@
             </Onboarding>
         </Navigator>
     </ClientPanel>
+    <BottomBarBackground Background="#1C5120" />
 </App>

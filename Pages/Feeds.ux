@@ -9,21 +9,12 @@
             <HomeScreen Type="CallIntent" />
         </OnBackButton>
     </WhileActive>
-    <Circle Color="#FDD006" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 10, 80" Alignment="BottomRight" Padding="12" Layer="Overlay">
-        <Icon TextAlignment="Center" Alignment="Center" ux:Name="refresh" Value="&#xf2d5;" TextColor="#FFF" FontSize="25" />
+    <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 10, 20" Alignment="BottomRight" Padding="12" Layer="Overlay">
+        <Icon TextAlignment="Center" Alignment="Center" ux:Name="add" Value="&#xf2d5;" TextColor="#FFF" FontSize="25" />
         <Clicked Handler="{getPosts}" />
         <WhilePressed>
             <Scale Factor="0.8" />
             <Rotate Degrees="80" />
-        </WhilePressed>
-    </Circle>
-    <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 30, 20" Alignment="BottomRight" Padding="12" Layer="Overlay">
-        <Icon TextAlignment="Center" Alignment="Center" ux:Name="add" Value="&#xf113;" TextColor="#FFF" FontSize="25" />
-        <Clicked>
-            <ScrollTo Position="0" TargetNode="MainScroll" />
-        </Clicked>
-        <WhilePressed>
-            <Scale Factor="0.8" />
         </WhilePressed>
     </Circle>
     <ScrollView ux:Name="MainScroll" LayoutMode="PreserveVisual">
@@ -32,24 +23,26 @@
             <DockPanel Height="5%" ux:Name="hero" Background="#1C5120" Dock="Top" Margin="0">
                 <Image StretchMode="UniformToFill" Layer="Background" File="../Assets/Images/Tour Guide 01.jpg" />
                 <Rectangle Dock="Fill">
-                    <Grid Alignment="BottomCenter" Width="20%" Margin="10" ColumnCount="3" Columns="1*,1*,1*" Layer="Overlay">
+                    <Grid Alignment="BottomCenter" Width="40%" Margin="10" ColumnCount="5" Columns="1*,1*,1*,1*,1*" Layer="Overlay">
                         <Circle ux:Name="first" Height="10" Width="10" Color="#333" />
                         <Circle ux:Name="second" Height="10" Width="10" Color="#333" />
                         <Circle ux:Name="third" Height="10" Width="10" Color="#333" />
+                        <Circle ux:Name="fourth" Height="10" Width="10" Color="#333" />
+                        <Circle ux:Name="fifth" Height="10" Width="10" Color="#333" />
                     </Grid>
-                    <WhileEmpty Items="{posts}">
+                    <WhileCount Items="{Fposts}" LessThan="5">
                         <Panel Alignment="Center">
-                            <App.Text TextAlignment="Center" TextColor="#FFF">{message}</App.Text>
+                            <App.Text TextAlignment="Center" TextColor="#FFF">Featured Posts</App.Text>
                         </Panel>
-                    </WhileEmpty>
-                    <WhileCount Items="{posts}" GreaterThan="3">
+                    </WhileCount>
+                    <WhileCount Items="{Fposts}" GreaterThan="4">
                         <Deferred>
                             <PageControl IsRouterOutlet="false" ux:Name="featured" ActiveIndex="0">
                                 <StackPanel Margin="0, 20, 0, 0" ux:Name="pg1" Alignment="Center" >
                                     <WhileActive>
-                                        <Change first.Color="#FFF" />
+                                        <Change first.Color="#FFF" Duration="0.5" />
                                     </WhileActive>
-                                    <With Data="{posts[0]}">
+                                    <With Data="{Fposts[0]}">
                                         <App.Header Clicked="{details}" TextColor="#FFF" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Value="{title}" />
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{body}" />
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
@@ -57,9 +50,9 @@
                                 </StackPanel>
                                 <StackPanel Margin="0, 20, 0, 0" ux:Name="pg2" Alignment="Center" >
                                     <WhileActive>
-                                        <Change second.Color="#FFF" />
+                                        <Change second.Color="#FFF" Duration="0.5" />
                                     </WhileActive>
-                                    <With Data="{posts[1]}">
+                                    <With Data="{Fposts[1]}">
                                         <App.Header Clicked="{details}" TextColor="#FFF" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Value="{title}" />
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{body}" />
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
@@ -67,9 +60,29 @@
                                 </StackPanel>
                                 <StackPanel Margin="0, 20, 0, 0" ux:Name="pg3" Alignment="Center">
                                     <WhileActive>
-                                        <Change third.Color="#FFF" />
+                                        <Change third.Color="#FFF" Duration="0.5" />
                                     </WhileActive>
-                                    <With Data="{posts[2]}">
+                                    <With Data="{Fposts[2]}">
+                                        <App.Header Clicked="{details}" TextColor="#FFF" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Value="{title}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{body}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
+                                    </With>
+                                </StackPanel>
+                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg4" Alignment="Center">
+                                    <WhileActive>
+                                        <Change fourth.Color="#FFF" Duration="0.5" />
+                                    </WhileActive>
+                                    <With Data="{Fposts[3]}">
+                                        <App.Header Clicked="{details}" TextColor="#FFF" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Value="{title}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{body}" />
+                                        <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
+                                    </With>
+                                </StackPanel>
+                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg5" Alignment="Center">
+                                    <WhileActive>
+                                        <Change fifth.Color="#FFF" Duration="0.5" />
+                                    </WhileActive>
+                                    <With Data="{Fposts[4]}">
                                         <App.Header Clicked="{details}" TextColor="#FFF" FontSize="20" TextWrapping="Wrap" TextAlignment="Center" Value="{title}" />
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{body}" />
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
@@ -115,29 +128,67 @@
                             <Set indicator.LayoutMaster="tabTrd" />
                         </WhileFloat>
                         <StackPanel ux:Name="trending">
-                            <!-- LayoutMode="PreserveVisual" -->
-                            <!-- <Scrolled To="End">
-                                <Callback Handler="{getPosts}" />
-                                <ScrollTo Position="0" TargetNode="MainScroll" />
-                                <ScrollTo Position="0" TargetNode="trending" />
-                            </Scrolled>
-                            <WhileFloat Value="{= abs(y({Property trending.ScrollPosition}))}" GreaterThanEqual="60">
-                                <ScrollTo Position="400" TargetNode="MainScroll" />
-                            </WhileFloat> -->
-                            <!-- <WhileFloat Value="{= abs(y({Property trending.ScrollPosition}))}" LessThan="40">
-                                <ScrollTo Position="0" TargetNode="MainScroll" />
-                                <ScrollTo Position="0" TargetNode="trending" />
-                            </WhileFloat> -->
-                            <!-- <StackPanel> -->
-                                <Rectangle Layer="Background" Color="#FFF" />
-                                <Each Items="{posts}">
+                            <Rectangle Layer="Background" Color="#FFF" />
+                            <Each Items="{posts}">
+                                <Deferred>
+                                    <DockPanel Margin="20, 40" ux:Name="page" Width="100%" Height="100%">
+                                        <Rectangle Layer="Background" StrokeColor="#FFF" />
+                                        <Panel Clicked="{details}" Height="200" HitTestMode="LocalBoundsAndChildren">
+                                            <Rectangle Layer="Background" Color="#25333D">
+                                                <ImageFill Url="{image}" StretchMode="UniformToFill" />
+                                            </Rectangle>
+                                            <Rectangle Layer="Overlay" Color="#25333DAA">
+                                                <StackPanel Alignment="Center" Width="90%">
+                                                    <App.Header TextAlignment="Center" Alignment="Center" FontSize="18" TextColor="#fff" TextWrapping="Wrap" Value="{title}" />
+                                                    <DockPanel>
+                                                        <Match Value="{anonymous}">
+                                                            <Case Bool="true">
+                                                                <App.Header TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="14" Value="Anonymous User" />
+                                                            </Case>
+                                                            <Case Bool="false">
+                                                                <App.Header TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="14" Value="{author.username}" />
+                                                            </Case>
+                                                        </Match>
+                                                        <App.Text Dock="Bottom" TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="10" Value="{time}" />
+                                                    </DockPanel>
+                                                </StackPanel>
+                                            </Rectangle>
+                                        </Panel>
+                                        <Panel Dock="Bottom" Clicked="{details}" Width="100%" HitTestMode="LocalBoundsAndChildren">
+                                            <App.Text TextAlignment="Left" MaxLength="200" TextWrapping="Wrap" FontSize="12" Alignment="Left" Value="{body}" />
+                                        </Panel>
+                                    </DockPanel>
+                                </Deferred>
+                                <WhileBusy>
+                                    <App.Text Value="Loading posts..." TextAlignment="Center" Alignment="VerticalCenter" />
+                                </WhileBusy>
+                            </Each>
+                        </StackPanel>
+                        <StackPanel ux:Name="recent" MinHeight="300">
+                            <Rectangle Layer="Background" Color="#FFF" />
+                            <WhileCount Items="{Tposts}" LessThan="1">
+                                <App.Text Value="Trending posts..." TextAlignment="Center" Alignment="VerticalCenter" />
+                            </WhileCount>
+                            <WhileCount Items="{Tposts}" GreaterThan="0">
+                                <Each Items="{Tposts}">
                                     <Deferred>
                                         <DockPanel Margin="20, 40" ux:Name="page" Width="100%" Height="100%">
                                             <Rectangle Layer="Background" StrokeColor="#FFF" />
-                                            <Panel Clicked="{details}" Height="200" HitTestMode="LocalBoundsAndChildren">
-                                                <Rectangle Layer="Background" Color="#25333D">
-                                                    <ImageFill Url="{image}" StretchMode="UniformToFill" />
-                                                </Rectangle>
+                                            <Panel Clicked="{details}" Height="280" HitTestMode="LocalBoundsAndChildren">
+                                                <Match Value="{hasVideo}">
+                                                    <Case Bool="true">
+                                                        <DockPanel Height="100%">
+                                                            <Video ux:Name="video" File="{image}" Dock="Fill" IsLooping="true" StretchMode="UniformToFill">
+                                                                <Image Layer="Background" Color="#DDD" Opacity="0.5" File="../Assets/Images/Logo.jpg" />
+                                                            </Video>
+                                                        </DockPanel>
+                                                    </Case>
+                                                    <Case Bool="false">
+                                                        <Rectangle Layer="Background" Color="#25333D">
+                                                           <ImageFill Url="{image}" StretchMode="UniformToFill" />
+                                                        </Rectangle>
+                                                    </Case>
+                                                </Match>
                                                 <Rectangle Layer="Overlay" Color="#25333DAA">
                                                     <StackPanel Alignment="Center" Width="90%">
                                                         <App.Header TextAlignment="Center" Alignment="Center" FontSize="18" TextColor="#fff" TextWrapping="Wrap" Value="{title}" />
@@ -164,10 +215,7 @@
                                         <App.Text Value="Loading posts..." TextAlignment="Center" Alignment="VerticalCenter" />
                                     </WhileBusy>
                                 </Each>
-                            <!-- </StackPanel> -->
-                        </StackPanel>
-                        <StackPanel ux:Name="recent" MinHeight="300">
-                            <App.Text Alignment="Center" TextAlignment="Center" Value="Comming Soon" />
+                            </WhileCount>
                         </StackPanel>
                     </PageControl>
                 </DockPanel>

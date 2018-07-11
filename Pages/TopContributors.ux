@@ -1,19 +1,22 @@
 <Page ux:Class="TopContributors" Background="#FFF">
     <DockPanel>
-        <ScrollView Padding="0, 60, 0, 0">
+        <Rectangle Alignment="Left" Width="4" Color="#37B34A" Height="100%" />
+        <ScrollView Dock="Fill" Padding="0, 60, 0, 0">
             <StackPanel>
                 <Each Count="10">
                     <Deferred>
                         <DockPanel Padding="20" Dock="Top" Height="70">
                             <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
-                            <Circle Height="60" Width="60" Alignment="VerticalCenter" Dock="Left" Color="#25333D">                        
+                            <Circle Height="40" Width="40" Alignment="VerticalCenter" Dock="Left" Color="#25333D">                        
                                 <Image File="../Assets/Images/user.png"/>
                             </Circle>
                             <Grid Alignment="VerticalCenter" Margin="5, 0, 0, 0" CellSpacing="5" Columns="2*,1*" ColumnCount="2">
                                 <App.Header TextColor="#25333D" TextAlignment="Left" Alignment="VerticalCenter" FontSize="14" Value="Samuel Agbonkpolo" />
                                 <StackPanel Alignment="CenterRight" Orientation="Horizontal">
                                     <Each Count="5">
-                                        <Icon Value="&#xf318;" TextColor="#FDD006" />
+                                        <Deferred>
+                                            <Icon Value="&#xf318;" TextColor="#F3AB01" />
+                                        </Deferred>
                                     </Each>
                                 </StackPanel>
                             </Grid>
@@ -27,7 +30,7 @@
         </ScrollView>
         <Rectangle Dock="Bottom" Height="50">
             <Rectangle Layer="Background" Color="#FFF"/>
-            <App.Text Value="Scroll to top to refresh" TextColor="#25333D" />
+            <App.Text Value="SCROLL UP TO REFRESH" TextColor="#888" />
         </Rectangle>
     </DockPanel>
 </Page>
