@@ -38,7 +38,7 @@
                     <WhileCount Items="{Fposts}" GreaterThan="4">
                         <Deferred>
                             <PageControl IsRouterOutlet="false" ux:Name="featured" ActiveIndex="0">
-                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg1" Alignment="Center" >
+                                <StackPanel Margin="20" ux:Name="pg1" Alignment="Center" >
                                     <WhileActive>
                                         <Change first.Color="#FFF" Duration="0.5" />
                                     </WhileActive>
@@ -48,7 +48,7 @@
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
                                     </With>
                                 </StackPanel>
-                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg2" Alignment="Center" >
+                                <StackPanel Margin="20" ux:Name="pg2" Alignment="Center" >
                                     <WhileActive>
                                         <Change second.Color="#FFF" Duration="0.5" />
                                     </WhileActive>
@@ -58,7 +58,7 @@
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
                                     </With>
                                 </StackPanel>
-                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg3" Alignment="Center">
+                                <StackPanel Margin="20" ux:Name="pg3" Alignment="Center">
                                     <WhileActive>
                                         <Change third.Color="#FFF" Duration="0.5" />
                                     </WhileActive>
@@ -68,7 +68,7 @@
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
                                     </With>
                                 </StackPanel>
-                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg4" Alignment="Center">
+                                <StackPanel Margin="20" ux:Name="pg4" Alignment="Center">
                                     <WhileActive>
                                         <Change fourth.Color="#FFF" Duration="0.5" />
                                     </WhileActive>
@@ -78,7 +78,7 @@
                                         <App.Text TextColor="#FFF" MaxLength="200" TextWrapping="Wrap" FontSize="14" TextAlignment="Center" Value="{time}" />
                                     </With>
                                 </StackPanel>
-                                <StackPanel Margin="0, 20, 0, 0" ux:Name="pg5" Alignment="Center">
+                                <StackPanel Margin="20" ux:Name="pg5" Alignment="Center">
                                     <WhileActive>
                                         <Change fifth.Color="#FFF" Duration="0.5" />
                                     </WhileActive>
@@ -94,19 +94,18 @@
                 </Rectangle>
             </DockPanel>
             <WhileEmpty Items="{posts}">
-                <Panel Alignment="Center" Background="#FFF">
+                <Panel Alignment="TopCenter" Background="#FFF">
                     <App.Text TextAlignment="Center">{message}</App.Text>
                 </Panel>
             </WhileEmpty>
             <WhileCount Items="{posts}" GreaterThan="0">
-                <DockPanel Background="#FFF">
-                    <Rectangle ux:Name="indicator" LayoutMaster="tabTrd" Layer="Background" Color="#EEE">
+                <DockPanel Background="#EEE">
+                    <Rectangle ux:Name="indicator" LayoutMaster="tabTrd" Layer="Background" Color="#FFF">
                         <LayoutAnimation>
                             <Move RelativeTo="WorldPositionChange" X="1" Duration="0.4" Easing="BackIn"/>
                         </LayoutAnimation>
                     </Rectangle>
                     <Grid Dock="Top" ColumnCount="2" Columns="1*, 1*" Height="50">
-                        <Rectangle Layer="Background" StrokeColor="#EEE" />
                         <Panel ux:Name="tabTrd" HitTestMode="LocalBoundsAndChildren">
                             <App.Text Value="Recent" />
                             <Clicked>
@@ -127,16 +126,23 @@
                         <WhileFloat Value="{Property Nav_.ActiveIndex}" LessThanEqual="0">
                             <Set indicator.LayoutMaster="tabTrd" />
                         </WhileFloat>
-                        <StackPanel ux:Name="trending">
+                        <StackPanel MinHeight="800" Height="100%" ux:Name="trending">
                             <Rectangle Layer="Background" Color="#FFF" />
                             <Each Items="{posts}">
                                 <Deferred>
                                     <DockPanel Margin="20, 40" ux:Name="page" Width="100%" Height="100%">
                                         <Rectangle Layer="Background" StrokeColor="#FFF" />
                                         <Panel Clicked="{details}" Height="200" HitTestMode="LocalBoundsAndChildren">
-                                            <Rectangle Layer="Background" Color="#25333D">
-                                                <ImageFill Url="{image}" StretchMode="UniformToFill" />
-                                            </Rectangle>
+                                            <Match Value="{hasVideo}">
+                                                <Case Bool="true">
+                                                   <Rectangle Layer="Background" Color="#000" Opacity="0.5" />
+                                                </Case>
+                                                <Case Bool="false">
+                                                    <Rectangle Layer="Background" Color="#25333D">
+                                                        <ImageFill MemoryPolicy="UnloadUnused" Url="{image}" StretchMode="UniformToFill" />
+                                                    </Rectangle>
+                                                </Case>
+                                            </Match>
                                             <Rectangle Layer="Overlay" Color="#25333DAA">
                                                 <StackPanel Alignment="Center" Width="90%">
                                                     <App.Header TextAlignment="Center" Alignment="Center" FontSize="18" TextColor="#fff" TextWrapping="Wrap" Value="{title}" />
@@ -167,7 +173,7 @@
                         <StackPanel ux:Name="recent" MinHeight="300">
                             <Rectangle Layer="Background" Color="#FFF" />
                             <WhileCount Items="{Tposts}" LessThan="1">
-                                <App.Text Value="Trending posts..." TextAlignment="Center" Alignment="VerticalCenter" />
+                                <App.Text Value="Trending posts" TextAlignment="Center" Alignment="VerticalCenter" />
                             </WhileCount>
                             <WhileCount Items="{Tposts}" GreaterThan="0">
                                 <Each Items="{Tposts}">
@@ -177,15 +183,11 @@
                                             <Panel Clicked="{details}" Height="280" HitTestMode="LocalBoundsAndChildren">
                                                 <Match Value="{hasVideo}">
                                                     <Case Bool="true">
-                                                        <DockPanel Height="100%">
-                                                            <Video ux:Name="video" File="{image}" Dock="Fill" IsLooping="true" StretchMode="UniformToFill">
-                                                                <Image Layer="Background" Color="#DDD" Opacity="0.5" File="../Assets/Images/Logo.jpg" />
-                                                            </Video>
-                                                        </DockPanel>
+                                                        <Rectangle Layer="Background" Color="#000" Opacity="0.5" />
                                                     </Case>
                                                     <Case Bool="false">
                                                         <Rectangle Layer="Background" Color="#25333D">
-                                                           <ImageFill Url="{image}" StretchMode="UniformToFill" />
+                                                           <ImageFill MemoryPolicy="UnloadUnused" Url="{image}" StretchMode="UniformToFill" />
                                                         </Rectangle>
                                                     </Case>
                                                 </Match>

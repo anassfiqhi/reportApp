@@ -16,6 +16,29 @@ function gotoDetails(args) {
     router.pushRelative(nav, "feedDetail", args.data.id);
 }
 
+function parseRes(post) {
+    return {
+        "comments": post.comments,
+        "author": post.author,
+        "upvotes": post.upvotes,
+        "downvotes": post.downvotes,
+        "title": post.title,
+        "body": post.body,
+        "time": post.time,
+        "loc": post.loc,
+        "lat": post.lat,
+        "long": post.long,
+        "image": post.image,
+        "anonymous": post.anonymous,
+        "from_twitter": post.from_twitter,
+        "urls": post.urls,
+        "featured": post.featured,
+        "hasVideo": post.image.endsWith('.mp4'),
+        "createdAt": post.createdAt,
+        "id": post.id
+    };
+}
+
 function getRecentPosts() {
     if (hasRequestedPosts.value === false && (posts.value !== undefined && posts.toArray().length !== 0 )) {
         hasRequestedPosts.value = true;
@@ -24,90 +47,27 @@ function getRecentPosts() {
             .then(function(result) {
                 if (result[0].length) {
                     noPosts.value = false;
-                    var newPosts = result[0].map(post => {
-                        return {
-                            "comments": post.comments,
-                            "author": post.author,
-                            "upvotes": post.upvotes,
-                            "downvotes": post.downvotes,
-                            "title": post.title,
-                            "body": post.body,
-                            "time": post.time,
-                            "loc": post.loc,
-                            "lat": post.lat,
-                            "long": post.long,
-                            "image": post.image,
-                            "anonymous": post.anonymous,
-                            "from_twitter": post.from_twitter,
-                            "urls": post.urls,
-                            "featured": post.featured,
-                            "hasVideo": post.hasOwnProperty("hasVideo") ? post.hasVideo : false,
-                            "createdAt": post.createdAt,
-                            "id": post.id
-                        };
-                    });
+                    var newPosts = result[0].map(post => parseRes(post));
                     posts.insertAll(0, newPosts);
                     storage.addPosts(posts.value)
                         .then(res => '')
                         .catch(err => console.log(err));
                 }
                 if (result[1].length) {
-                    var trendyPosts = result[1].map(post => {
-                        return {
-                            "comments": post.comments,
-                            "author": post.author,
-                            "upvotes": post.upvotes,
-                            "downvotes": post.downvotes,
-                            "title": post.title,
-                            "body": post.body,
-                            "time": post.time,
-                            "loc": post.loc,
-                            "lat": post.lat,
-                            "long": post.long,
-                            "image": post.image,
-                            "anonymous": post.anonymous,
-                            "from_twitter": post.from_twitter,
-                            "urls": post.urls,
-                            "featured": post.featured,
-                            "hasVideo": post.hasOwnProperty("hasVideo") ? post.hasVideo : false,
-                            "createdAt": post.createdAt,
-                            "id": post.id
-                        };
-                    });
+                    var trendyPosts = result[1].map(post => parseRes(post));
                     Tposts.replaceAll(trendyPosts);
-                    storage.addTrendingPosts(result[1])
+                    storage.addTrendingPosts(trendyPosts)
                         .then(res => '')
                         .catch(err => console.log(err));
                 }
                 if (result[2].length) {
-                    var featPosts = result[2].map(post => {
-                        return {
-                            "comments": post.comments,
-                            "author": post.author,
-                            "upvotes": post.upvotes,
-                            "downvotes": post.downvotes,
-                            "title": post.title,
-                            "body": post.body,
-                            "time": post.time,
-                            "loc": post.loc,
-                            "lat": post.lat,
-                            "long": post.long,
-                            "image": post.image,
-                            "anonymous": post.anonymous,
-                            "from_twitter": post.from_twitter,
-                            "urls": post.urls,
-                            "featured": post.featured,
-                            "hasVideo": post.hasOwnProperty("hasVideo") ? post.hasVideo : false,
-                            "createdAt": post.createdAt,
-                            "id": post.id
-                        };
-                    });
+                    var featPosts = result[2].map(post => parseRes(post));
                     Fposts.replaceAll(featPosts);
-                    storage.addFeaturedPosts(result[2])
+                    storage.addFeaturedPosts(featPosts)
                         .then(res => '')
                         .catch(err => console.log(err));
                 }
-                console.dir(result);
+                // console.dir(result);
                 hasRequestedPosts.value = false;
             }).catch(err => {
                 hasRequestedPosts.value = false;
@@ -128,86 +88,23 @@ function getPosts() {
             hasRequestedPosts.value = false;
             if (result[0].length) {
                 noPosts.value = false;
-                var newPosts = result[0].map(post => {
-                    return {
-                        "comments": post.comments,
-                        "author": post.author,
-                        "upvotes": post.upvotes,
-                        "downvotes": post.downvotes,
-                        "title": post.title,
-                        "body": post.body,
-                        "time": post.time,
-                        "loc": post.loc,
-                        "lat": post.lat,
-                        "long": post.long,
-                        "image": post.image,
-                        "anonymous": post.anonymous,
-                        "from_twitter": post.from_twitter,
-                        "urls": post.urls,
-                        "featured": post.featured,
-                        "hasVideo": post.hasOwnProperty("hasVideo") ? post.hasVideo : false,
-                        "createdAt": post.createdAt,
-                        "id": post.id
-                    };
-                });
+                var newPosts = result[0].map(post => parseRes(post));
                 posts.replaceAll(newPosts);
-                storage.addPosts(result[0])
+                storage.addPosts(newPosts)
                     .then(res => '')
                     .catch(err => console.log(err));
             }
             if (result[1].length) {
-                var trendyPosts = result[1].map(post => {
-                    return {
-                        "comments": post.comments,
-                        "author": post.author,
-                        "upvotes": post.upvotes,
-                        "downvotes": post.downvotes,
-                        "title": post.title,
-                        "body": post.body,
-                        "time": post.time,
-                        "loc": post.loc,
-                        "lat": post.lat,
-                        "long": post.long,
-                        "image": post.image,
-                        "anonymous": post.anonymous,
-                        "from_twitter": post.from_twitter,
-                        "urls": post.urls,
-                        "featured": post.featured,
-                        "hasVideo": post.hasOwnProperty("hasVideo") ? post.hasVideo : false,
-                        "createdAt": post.createdAt,
-                        "id": post.id
-                    };
-                });
+                var trendyPosts = result[1].map(post => parseRes(post));
                 Tposts.replaceAll(trendyPosts);
-                storage.addTrendingPosts(result[1])
+                storage.addTrendingPosts(trendyPosts)
                     .then(res => '')
                     .catch(err => console.log(err));
             }
             if (result[2].length) {
-                var featPosts = result[2].map(post => {
-                    return {
-                        "comments": post.comments,
-                        "author": post.author,
-                        "upvotes": post.upvotes,
-                        "downvotes": post.downvotes,
-                        "title": post.title,
-                        "body": post.body,
-                        "time": post.time,
-                        "loc": post.loc,
-                        "lat": post.lat,
-                        "long": post.long,
-                        "image": post.image,
-                        "anonymous": post.anonymous,
-                        "from_twitter": post.from_twitter,
-                        "urls": post.urls,
-                        "featured": post.featured,
-                        "hasVideo": post.hasOwnProperty("hasVideo") ? post.hasVideo : false,
-                        "createdAt": post.createdAt,
-                        "id": post.id
-                    };
-                });
+                var featPosts = result[2].map(post => parseRes(post));
                 Fposts.replaceAll(featPosts);
-                storage.addFeaturedPosts(result[2])
+                storage.addFeaturedPosts(featPosts)
                     .then(res => '')
                     .catch(err => console.log(err));
             }

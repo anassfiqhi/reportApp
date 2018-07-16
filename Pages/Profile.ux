@@ -173,7 +173,7 @@
                 <Page ux:Name="edit">
                     <WhileActive Threshold="0.5">
                         <Set indicator.LayoutMaster="edittab" />
-                        <Change Hero.Height="30%" />
+                        <Change Hero.Height="30%" Duration="1" />
                     </WhileActive>
                     <Deferred>
                         <ScrollView>

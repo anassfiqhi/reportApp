@@ -5,10 +5,13 @@
     "FuseJS",
     "Fuse.Share",
     "Fuse.GeoLocation",
+    "Fuse.Scripting",
+    "Fuse.Reactive",
     // "Fuse.CameraRoll",
     "Fuse.ImageTools",
     "Fuse.Controls.CameraView",
-    "Fuse.FileSystem"
+    "Fuse.FileSystem",
+    "Fuse.Audio"
   ],
   "Android": {
     "ApplicationLabel": "Upright_NG",
@@ -29,7 +32,9 @@
   },
   "Includes": [
     "*",
-    "HomeScreen.uno",
+    "*.uxl",
+    "*.uno",
+    "Recorder.java:Java:Android",
     "Assets/*:Bundle",
     "modules/*.js:Bundle"
   ]

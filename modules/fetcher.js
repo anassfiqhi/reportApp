@@ -106,6 +106,17 @@ module.exports = {
         .catch(err => reject(err));
     });
   },
+  searchPost: function (title) {
+    return new Promise((resolve, reject) => {
+      fetch(`${url}/post/?where={"title": {"contains": "${title}"}}&sort=upvotes%20DESC&limit=10`, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(resp => resolve(resp.json()))
+        .catch(err => reject(err));
+    });
+  },
   addSuggestion: function (body) {
     return new Promise((resolve, reject) => {
       fetch(`${url}/suggestions`, {

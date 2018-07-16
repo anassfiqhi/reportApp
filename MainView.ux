@@ -1,8 +1,8 @@
 <App Background="#FFF">
     <Router ux:Name="router"/>
     <Image Layer="Background" StretchMode="Uniform" File="Assets/Images/Logo.jpg" />
-    <ClientPanel>
-        <Rectangle Layer="Background" Color="#FFF" />
+    <Recorder ux:Global="Recorder" />
+    <ClientPanel Background="#FFF">
         <Navigator ux:Name="nav" DefaultPath="splash">
             <SplashPage ux:Template="splash" router="router"/>
             <Main ux:Template="main" router="router">
@@ -11,13 +11,13 @@
             </Main>
             <LoginPage ux:Template="login" router="router" Freeze="WhileNavigating">
                 <WhileActive>
-                    <Android.StatusBarConfig Color="#FFF" IsVisible="True" />
+                    <Android.StatusBarConfig Color="#000" IsVisible="True" />
                     <iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
                 </WhileActive>
             </LoginPage>
             <Onboarding ux:Template="onboarding" router="router">
                 <WhileActive>
-                    <Android.StatusBarConfig Color="#FFF" IsVisible="False" />
+                    <Android.StatusBarConfig Color="#1c5120" IsVisible="False" />
                     <iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
                 </WhileActive>
             </Onboarding>
