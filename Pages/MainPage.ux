@@ -1,206 +1,370 @@
 <Page ux:Class="Main" Background="#3D8B37">
     <Router ux:Dependency="router" />
     <JavaScript File="MainPage.js" />
+    <Circle Color="#3D8B37" Width="70" ux:Name="addBtn" Visibility="Collapsed" Height="70" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 10, 20" Alignment="BottomRight" Padding="5" Layer="Overlay">
+        <Icon TextAlignment="Center" Alignment="Center" Value="&#xf2c2;" TextColor="#FFF" FontSize="30" />
+        <Clicked>
+            <NavigateToggle Target="sidebar2" />
+        </Clicked>
+        <WhilePressed>
+            <Scale Factor="0.8" />
+        </WhilePressed>
+    </Circle>
     <EdgeNavigator>
         <DockPanel Background="#FFF" ux:Name="sidebar2" Edge="Right" Height="100%" Width="100%">
+            <WhileTrue ux:Name="failure" Value="{processFailed}">
+                <Panel Layer="Overlay" Color="Red" Margin="5, 10" Alignment="Top" Padding="5">
+                    <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                        {errMessage}      
+                    </App.Text>
+                </Panel>
+            </WhileTrue>
+            <WhileTrue ux:Name="inprogress" Value="{processing}">
+                <Rectangle StrokeColor="#004A7000" Layer="Overlay" Margin="5, 10" Height="10" Alignment="Top" Padding="0">
+                    <Rectangle Alignment="Left" Height="100%" Width="{width}" Layer="Overlay" Fill="#004A70" ux:Name="progress" />
+                </Rectangle>
+            </WhileTrue>
+            <WhileTrue ux:Name="addedMessage" Value="{addedPost}">
+                <Set successOverlay.Visibility="Visible" />
+                <Panel ux:Name="successOverlay" Margin="0, 0" Background="#FFF" Padding="5" Layer="Overlay">
+                    <Button Layer="Overlay" Alignment="TopRight" Margin="5">
+                        <Icon TextAlignment="Center" ux:Name="clsBtnTu" Value="" TextColor="#25333D" FontSize="30" />
+                        <WhilePressed>
+                            <Set successOverlay.Visibility="Collapsed" />
+                        </WhilePressed>
+                    </Button>
+                    <DockPanel Alignment="VerticalCenter" Height="70%">
+                        <Mat.Icon TextAlignment="Center" TextColor="#38B249" FontSize="200" Value ="&#xe86c;" />
+                        <App.Header Dock="Bottom" ux:Name="successText" TextWrapping="Wrap" TextAlignment="Center" TextColor="#25333D" FontSize="25">
+                            Post Submitted for Approval      
+                        </App.Header>
+                    </DockPanel>
+                </Panel>
+                <WhileTrue Value="{ReadProperty toggle.IsActive}">
+                    <Change successOverlay.Background="#25333D" />
+                    <Change successText.TextColor="#FFF" />
+                    <Change clsBtnTu.TextColor="#FFF" />
+                </WhileTrue>
+            </WhileTrue>
+            <WhileTrue ux:Name="illicit" Value="{notLoggedIn}">
+                <Panel Color="#FDD006" Layer="Overlay" Margin="5, 10" Alignment="Top" Padding="5">
+                    <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
+                        Please you need to login to add posts unanonimously
+                    </App.Text>
+                </Panel>
+            </WhileTrue>
             <ActivatingAnimation>
                 <Change shadow.Visibility="Visible" />
+                <Change addBtn.Opacity="0" />
+                <Change addBtn.HitTestMode="None" />
+                <Set textIco.TextColor="#E8C11C" />
             </ActivatingAnimation>
             <WhileInactive>
                 <Set camera.Visibility="Collapsed" />
                 <Set Form.Visibility="Visible" />
-                <Set addedMessage.Value="false" />
             </WhileInactive>
-            <Button Layer="Overlay" Alignment="BottomCenter" Margin="5">
-                <Icon TextAlignment="Center" Value="" TextColor="#25333D" FontSize="30" />
+            <Button ux:Name="cls2Btn" Layer="Overlay" Alignment="TopRight" Margin="5">
+                <Icon TextAlignment="Center" ux:Name="clser" Value="" TextColor="#25333D" FontSize="30" />
                 <Clicked>
                     <NavigateToggle Target="sidebar2" />
-                    <Set addedMessage.Value="false" />
                 </Clicked>
             </Button>
-            <Panel Dock="Top" Background="#FFF">
-                <App.Header Dock="Fill" FontSize="20" Margin="10" Value="New Post" TextColor="#25333D" TextAlignment="Center" />
+            <WhileTrue Value="{ReadProperty toggle.IsActive}">
+                <Change sidebar2.Background="#25333D" />
+                <Change titleText.TextColor="#FFF" />
+                <Change camIco.TextColor="#FFF" />
+                <Change vidIco.TextColor="#FFF" />
+                <Change audIco.TextColor="#FFF" />
+                <Change clser.TextColor="#FFF" />
+                <Change title2.TextColor="#FFF" />
+                <Change content2.TextColor="#FFF" />
+            </WhileTrue>
+            <Panel Dock="Top">
+                <App.Header ux:Name="titleText" Dock="Fill" FontSize="20" Margin="10" Value="New Post" TextColor="#25333D" TextAlignment="Center" />
             </Panel>
             <Rectangle Alignment="Top" Height="1" Color="#EEE" />
             <DockPanel Layer="Overlay" Visibility="Collapsed" Height="100%" Margin="0" ux:Name="camera">
-                <Circle HitTestMode="LocalBoundsAndChildren" Layer="Overlay" Alignment="TopRight" Height="50" Width="50" Padding="5" Margin="0, 20, 20, 0" Color="Red">
-                    <Icon FontSize="20" TextColor="#FFF" Value="" />
-                    <Clicked>
-                        <Set camera.Visibility="Collapsed" />
-                        <Set Form.Visibility="Visible" />
-                    </Clicked>
-                </Circle>
+                <WhileTrue Value="{takePic_}">
+                    <WhileTrue ux:Name="confImg" Value="{hasCapturedImg}">
+                        <Change _cameraView.Visibility="Collapsed" />
+                        <NativeViewHost Dock="Fill" Layer="Overlay" Height="100%">
+                            <DockPanel ux:Name="prevArea" Background="#25333D" Height="100%" Layer="Overlay" Margin="0" Padding="0">
+                                <Circle Color="#3D8B37" Width="50" Height="50" HitTestMode="LocalBoundsAndChildren" Margin="20, 0, 0, 20" Alignment="BottomLeft" Padding="5" Layer="Overlay">
+                                    <Icon TextAlignment="Center" Alignment="Center" Value="&#xf17b;" TextColor="#FFF" FontSize="20" />
+                                    <Clicked Handler="{confirmImg}">
+                                        <Scale Factor="0.8" />
+                                        <Set camera.Visibility="Collapsed" />
+                                        <Set Form.Visibility="Visible" />
+                                        <Set _cameraView.Visibility="Visible" />
+                                    </Clicked>
+                                </Circle>
+                                <Circle Color="Red" Width="50" Height="50" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 20, 20" Alignment="BottomRight" Padding="5" Layer="Overlay">
+                                    <Icon TextAlignment="Center" Alignment="Center" Value="" TextColor="#FFF" FontSize="20" />
+                                    <Clicked Handler="{discardImg}">
+                                        <Scale Factor="0.8" />
+                                        <Set _cameraView.Visibility="Visible" />
+                                    </Clicked>
+                                </Circle>
+                                <Rectangle Alignment="VerticalCenter" Fill="#25333D" Height="300" Width="100%">
+                                    <Image Layer="Background" StretchMode="UniformToFill"  MemoryPolicy="UnloadUnused" ux:Name="prevImg" File="{tempImg}" />
+                                </Rectangle>
+                            </DockPanel>
+                        </NativeViewHost>
+                    </WhileTrue>
+                </WhileTrue>
+                <WhileTrue Value="{capVid_}">
+                    <Change _cameraView.Visibility="Visible" />
+                </WhileTrue>
+                <WhileVisible>
+                    <Change cls2Btn.Visibility="Collapsed" />
+                </WhileVisible>
                 <Rectangle Color="#25333D" Layer="Background" />
                 <NativeViewHost Height="90%" Background="#000">
+                    <Circle HitTestMode="LocalBoundsAndChildren" Layer="Overlay" Alignment="TopLeft" Height="50" Width="50" Padding="5" Margin="20, 20, 00, 0" Color="Red">
+                        <Icon FontSize="20" TextColor="#FFF" Value="" />
+                        <Clicked>
+                            <Set camera.Visibility="Collapsed" />
+                            <Set Form.Visibility="Visible" />
+                        </Clicked>
+                    </Circle>
                     <WhileTrue Value="{isRecording}">
-                        <App.Text Alignment="TopRight" Color="#FFF" Layer="Overlay" Value="{counter}" FontSize="40" />
+                        <App.Text Alignment="TopRight" Color="#FFF" Layer="Overlay" Value="{counter}" FontSize="40" Margin="0, 20, 20, 0" />
                     </WhileTrue>
-                    <CameraView Height="100%" Margin="0, 50, 0, 0" ux:Name="_cameraView" />
-                    <WhileTrue Value="{isRecordingAudio}">
-                        <App.Text Value="{counter}" TextColor="#FFF" ux:Name="cnter" Visibility="Collapsed" />
-                        <Change _cameraView.Visibility="Collapsed" Duration="1.5" />
-                        <DockPanel Margin="20,0">
-                            <App.Text Value="0:00" TextColor="#FFF" Dock="Left" />
-                            <Slider ux:Name="recordr" Width="80%" HitTestMode="None" Layer="Overlay" Value="{ReadProperty cnter.Value}" Maximum="300000" Minimum="0" />
-                            <App.Text Value="5:00" TextColor="#FFF" Dock="Right" />
-                        </DockPanel>
-                        <App.Text Value="{ReadProperty recordr.Value}" TextColor="#FFF"  />
-                    </WhileTrue>
+                    <CameraView Height="700" Margin="0, 50, 0, 0" ux:Name="_cameraView" />
                 </NativeViewHost>
-                <Grid Dock="Bottom" Height="10%" ColumnCount="5" Columns="1*,1*,1*,1*,1*">
+                <Grid Dock="Bottom" Height="10%" ColumnCount="3" Columns="1*,2*,1*">
                     <Rectangle Layer="Background" Fill="#000" />
-                    <Rectangle>
-                        <Clicked Handler="{capturePhoto}" />
-                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf162;" />
-                    </Rectangle>
-                    <Match Value="{isRecordingAudio}">
-                        <Case Bool="true">
-                            <Rectangle>
-                                <Clicked Handler="{stopAudio}" />
-                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf323;" />
-                            </Rectangle>
-                        </Case>
-                        <Case Bool="false">
-                            <Rectangle>
-                                <Clicked Handler="{recordAudio}" />
-                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf28c;" />
-                            </Rectangle>
-                        </Case>
-                    </Match>
-                    <Match Value="{isRecording}">
-                        <Case Bool="true">
-                            <Rectangle>
-                                <Clicked Handler="{stopRecording}" />
-                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf323;" />
-                            </Rectangle>
-                        </Case>
-                        <Case Bool="false">
-                            <Rectangle>
-                                <Clicked Handler="{startRecording}" />
-                                <!-- <Clicked Handler="{sampleBuffer}" /> -->
-                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf36e;" />
-                            </Rectangle>
-                        </Case>
-                    </Match>
-                    <Rectangle>
+                    <Rectangle HitTestMode="LocalBoundsAndChildren">
                         <Clicked Handler="{changeCameraFacing}" />
                         <Icon FontSize="30" TextColor="#FFF" Value="&#xf2dc;" />
                     </Rectangle>
-                    <Rectangle>
+                    <WhileTrue Value="{takePic_}">
+                        <Circle HitTestMode="LocalBoundsAndChildren" Margin="5" Fill="#FFF" Padding="5">
+                            <Clicked Handler="{capturePhoto}" >
+                                <WhileTrue Value="{hasImg}">
+                                    <Set camera.Visibility="Collapsed" />
+                                    <Set Form.Visibility="Visible" />
+                                </WhileTrue>
+                            </Clicked>
+                            <Mat.Icon TextColor="#25333D" FontSize="30" Value="&#xe3af;" />
+                        </Circle>
+                    </WhileTrue>
+                    <WhileTrue Value="{capVid_}">
+                        <Match Value="{isRecording}">
+                            <Case Bool="true">
+                                <Circle HitTestMode="LocalBoundsAndChildren" Margin="5" Fill="Red" Padding="5">
+                                    <Clicked Handler="{stopRecording}">
+                                        <WhileTrue Value="{isVideo}">
+                                            <Set camera.Visibility="Collapsed" />
+                                            <Set Form.Visibility="Visible" />
+                                        </WhileTrue>
+                                    </Clicked>
+                                    <Mat.Icon TextColor="#FFF" FontSize="30" Value="&#xe047;" />
+                                </Circle>
+                            </Case>
+                            <Case Bool="false">
+                                <Circle HitTestMode="LocalBoundsAndChildren" Margin="5" Fill="#FFF" Padding="5">
+                                    <Clicked Handler="{startRecording}" />
+                                    <Mat.Icon TextColor="#25333D" FontSize="30" Value="&#xe04b;" />
+                                </Circle>
+                            </Case>
+                        </Match>
+                    </WhileTrue>
+                    <Rectangle HitTestMode="LocalBoundsAndChildren">
                         <Clicked Handler="{changeFlashMode}" />
-                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf1fa;" />
+                        <Mat.Icon FontSize="30" TextColor="#FFF" Value="&#xe3e5;" />
                     </Rectangle>
                 </Grid>
             </DockPanel>
             <ScrollView Visibility="Visible" ux:Name="Form" AllowedScrollDirections="Vertical" Opacity="1">
                 <StackPanel MinHeight="700" ux:Name="Editor" Padding="5" ItemSpacing="5">
-                    <WhileTrue ux:Name="failure" Value="{processFailed}">
-                        <Panel Color="#9B0D54"   Margin="0, 0" Alignment="Top" Padding="5" Layer="Overlay">
-                            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
-                                {errMessage}      
-                            </App.Text>
-                        </Panel>
-                    </WhileTrue>
-                    <WhileTrue ux:Name="inprogress" Value="{processing}">
-                        <Panel Color="#004A70"  Margin="0, 0" Alignment="Top" Padding="5" Layer="Overlay">
-                            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
-                                Uploading post...
-                            </App.Text>
-                        </Panel>
-                    </WhileTrue>
-                    <WhileTrue ux:Name="addedMessage" Value="{addedPost}">
-                        <Panel Color="#38B249"  Margin="0, 0" Alignment="Top" Padding="5" Layer="Overlay">
-                            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
-                                Your post has been added
-                            </App.Text>
-                        </Panel>
-                    </WhileTrue>
-                    <WhileTrue ux:Name="illicit" Value="{notLoggedIn}">
-                        <Panel Color="#FDD006"  Margin="0, 0" Alignment="Top" Padding="5" Layer="Overlay">
-                            <App.Text TextWrapping="Wrap" TextAlignment="Center" TextColor="#FFF" FontSize="13">
-                                Please you need to login to add posts unanonimously
-                            </App.Text>
-                        </Panel>
-                    </WhileTrue>
-                    <Grid HitTestMode="LocalBoundsAndChildren" Alignment="Center" Width="70%" Columns="1*,1*,1*,1*" ColumnCount="4">
-                        <Icon Dock="Right" TextColor="#E8C11C" FontSize="40" Value="&#xf338;" />
-                        <Icon Dock="Right" TextColor="#25333D" FontSize="40" Value="&#xf163;" />
-                        <Icon Dock="Right" TextColor="#25333D" FontSize="40" Value="&#xf36e;" />
-                        <Icon Dock="Right" TextColor="#25333D" FontSize="40" Value="&#xf28c;" />
-                        <Clicked>
-                            <Set Form.Visibility="Collapsed" />
-                            <Set camera.Visibility="Visible" />
-                        </Clicked>
+                    <Grid HitTestMode="LocalBoundsAndChildren" Alignment="Center" Width="80%" Columns="1*,1*,1*,1*" ColumnCount="4">
+                        <Mat.Icon ux:Name="textIco" TextColor="#707272" FontSize="40" Value="&#xe264;">
+                            <Clicked>
+                                <Set textIco.TextColor="#E8C11C" />
+                                <Set camIco.TextColor="#707272" />
+                                <Set vidIco.TextColor="#707272" />
+                                <Set audIco.TextColor="#707272" />
+                                <Set optCtrl.ActiveIndex ="0" />
+                            </Clicked>
+                        </Mat.Icon>
+                        <Mat.Icon ux:Name="camIco" TextColor="#707272" FontSize="40" Value="&#xe412;">
+                            <Clicked>
+                                <Set textIco.TextColor="#707272" />
+                                <Set camIco.TextColor="#E8C11C" />
+                                <Set vidIco.TextColor="#707272" />
+                                <Set audIco.TextColor="#707272" />
+                                <Set optCtrl.ActiveIndex="1" />
+                            </Clicked>
+                        </Mat.Icon>
+                        <Mat.Icon ux:Name="audIco" TextColor="#707272" FontSize="40" Value="&#xe029;">
+                            <Clicked>
+                                <Set textIco.TextColor="#707272" />
+                                <Set camIco.TextColor="#707272" />
+                                <Set vidIco.TextColor="#707272" />
+                                <Set audIco.TextColor="#E8C11C" />
+                                <Set optCtrl.ActiveIndex="2" />
+                            </Clicked>
+                        </Mat.Icon>
+                        <Mat.Icon ux:Name="vidIco" TextColor="#707272" FontSize="40" Value="&#xe04b;">
+                            <Clicked>
+                                <Set textIco.TextColor="#707272" />
+                                <Set camIco.TextColor="#707272" />
+                                <Set vidIco.TextColor="#E8C11C" />
+                                <Set audIco.TextColor="#707272" />
+                                <Set optCtrl.ActiveIndex="3" />
+                            </Clicked>
+                        </Mat.Icon>
                     </Grid>
-                    <Match Value="{hasImg}">
-                        <Case Bool="true">
-                            <Image Alignment="Center" Height="200" File="{img}">
-                                <App.Text TextColor="#FFF" FontSize="10" Alignment="Center">Click to change image</App.Text>
-                                <Clicked>
-                                <Set Form.Visibility="Collapsed" />
-                                <Set camera.Visibility="Visible" />
-                                </Clicked>
-                            </Image>
-                        </Case>
-                    </Match>
-                    <Match Value="{isVideo}">
-                        <Case Bool="true">
-                            <DockPanel>
-                                <Rectangle Layer="Background" Color="#000" Opacity="0.5" />
-                                <Rectangle Alignment="Left" ux:Name="progressBar" Dock="Top" Fill="#E8C11CAA" Width="0%" Height="4" />
-                                <Video Height="200" ux:Name="video" File="{vid}" Dock="Fill" IsLooping="true" StretchMode="UniformToFill">
-                                    <ProgressAnimation>
-                                        <Change progressBar.Width="100" />
-                                    </ProgressAnimation>
-                                </Video>
-                                <Grid Dock="Bottom" ColumnCount="3" RowCount="1">
-                                    <Rectangle Height="40" Color="#E8C11CAA">
+                    <PageControl ActiveIndex="0" ux:Name="optCtrl" IsRouterOutlet="False">
+                        <Rectangle Height="0" Width="0" ux:Name="basePg" />
+                        <Panel ux:Name="camPg">
+                            <Activated Handler="{takePic}" />
+                            <Match Value="{hasImg}">
+                                <Case Bool="true">
+                                    <Rectangle HitTestMode="LocalBoundsAndChildren" Fill="#70727233" Height="200" Width="90%">
+                                        <App.Text TextColor="#FFF" FontSize="10" Alignment="Center">Click to change image</App.Text>
+                                        <Image Layer="Background" StretchMode="UniformToFill" Height="200" Width="400" File="{img}" />
                                         <Clicked>
-                                            <Play Target="video" />
+                                            <Set Form.Visibility="Collapsed" />
+                                            <Set camera.Visibility="Visible" />
                                         </Clicked>
-                                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf2be;" />
                                     </Rectangle>
-                                    <Rectangle Height="40" Color="#E8C11CAA">
+                                </Case>
+                                <Case Bool="false">
+                                    <Rectangle HitTestMode="LocalBoundsAndChildren" Fill="#70727233" Height="200" Width="90%">
+                                        <Mat.Icon TextColor="#70727299" FontSize="100" Value="&#xe412;" />
+                                        <App.Text TextColor="#70727299" FontSize="10" Alignment="BottomCenter" Margin="0, 10">Click here to take photo</App.Text>
                                         <Clicked>
-                                            <Pause Target="video" />
+                                            <Set Form.Visibility="Collapsed" />
+                                            <Set camera.Visibility="Visible" />
                                         </Clicked>
-                                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf2ad;" />
                                     </Rectangle>
-                                    <Rectangle Height="40" Color="#E8C11CAA">
-                                        <Clicked>
+                                </Case>
+                            </Match>
+                        </Panel>
+                        <DockPanel ux:Name="audPg">
+                            <Match Value="{isAudio}">
+                                <Case Bool="true">
+                                    <DockPanel>
+                                        <Rectangle Layer="Background" Color="#000" Opacity="0.5" />
+                                        <WhileNavigating>
+                                            <Stop Target="postaudio" />
+                                        </WhileNavigating>
+                                        <Video Height="100" ux:Name="postaudio" File="{aud}" Dock="Fill" StretchMode="UniformToFill">
+                                            <Image StretchMode="UniformToFill" File="../Assets/Images/waveform.png" Layer="Background" />
+                                            <ProgressAnimation>
+                                                <Change progressBar2.Width="100" />
+                                            </ProgressAnimation>
+                                            <WhileLoading>
+                                                <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" Alignment="Center" FontSize="12" Value="Loading Recording..." />
+                                            </WhileLoading>
+                                            <WhileFailed>
+                                                <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" Alignment="Center" FontSize="12" Value="Failed to load recording" />
+                                            </WhileFailed>
+                                            <Rectangle Layer="Overlay" Alignment="Left" ux:Name="progressBar2" Fill="#E8C11CAA" Opacity="0.6" Width="0%" Height="100%" />
+                                        </Video>
+                                        <Grid Dock="Bottom" ColumnCount="3" RowCount="1">
+                                            <WhileNavigating>
+                                                <Stop Target="postaudio" />
+                                            </WhileNavigating>
+                                            <Rectangle HitTestMode="LocalBoundsAndChildren" Height="40" Color="#E8C11CAA">
+                                                <Clicked>
+                                                    <Play Target="postaudio" />
+                                                </Clicked>
+                                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf2be;" />
+                                            </Rectangle>
+                                            <Rectangle HitTestMode="LocalBoundsAndChildren" Height="40" Color="#E8C11CAA">
+                                                <Clicked>
+                                                    <Pause Target="postaudio" />
+                                                </Clicked>
+                                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf2ad;" />
+                                            </Rectangle>
+                                            <Rectangle HitTestMode="LocalBoundsAndChildren" Height="40" Color="#E8C11CAA">
+                                                <Clicked>
+                                                    <Stop Target="postaudio" />
+                                                </Clicked>
+                                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf323;" />
+                                            </Rectangle>
+                                        </Grid>
+                                    </DockPanel>
+                                </Case>
+                            </Match>
+                            <Grid Dock="Bottom" CellSpacing="5" Alignment="Center" Width="70%" Margin="0, 40" ColumnCount="4" Columns="1*,1*,1*,2*">
+                                <WhileTrue Value="{isRecordingAudio}">
+                                    <Change recBtn.Fill="#E8C11C" />
+                                </WhileTrue>
+                                <Circle HitTestMode="LocalBoundsAndChildren" ux:Name="recBtn" Fill="#70727299" Height="50" Width="50" Padding="5">
+                                    <Clicked Handler="{recordAudio}" />
+                                    <Mat.Icon TextColor="#FFF" FontSize="25" Value="&#xe029;" />
+                                </Circle>
+                                <Circle HitTestMode="LocalBoundsAndChildren" ux:Name="stopBtn" Fill="#70727299" Height="50" Width="50" Padding="5">
+                                    <Clicked Handler="{stopAudio}" />
+                                    <Mat.Icon TextColor="#FFF" FontSize="25" Value="&#xe047;" />
+                                </Circle>
+                                <Rectangle/>
+                                <App.Header FontSize="20" Alignment="CenterRight" Value="{counter}" />
+                            </Grid>
+                        </DockPanel>
+                        <Panel ux:Name="vidPg">
+                            <Activated Handler="{capVid}" />
+                            <Match Value="{isVideo}">
+                                <Case Bool="true">
+                                    <DockPanel>
+                                        <WhileNavigating>
                                             <Stop Target="video" />
+                                        </WhileNavigating>
+                                        <Rectangle Layer="Background" Color="#000" Opacity="0.5" />
+                                        <Rectangle Alignment="Left" ux:Name="progressBar" Dock="Top" Fill="#E8C11CAA" Width="0%" Height="4" />
+                                        <Video HitTestMode="LocalBoundsAndChildren" Height="200" ux:Name="video" File="{vid}" Dock="Fill" IsLooping="true" StretchMode="UniformToFill">
+                                            <ProgressAnimation>
+                                                <Change progressBar.Width="100" />
+                                            </ProgressAnimation>
+                                            <App.Text TextColor="#FFF" FontSize="10" Alignment="Center">Click to change video</App.Text>
+                                            <Clicked>
+                                                <Set Form.Visibility="Collapsed" />
+                                                <Set camera.Visibility="Visible" />
+                                            </Clicked>
+                                        </Video>
+                                        <Grid Dock="Bottom" ColumnCount="3" RowCount="1">
+                                            <Rectangle HitTestMode="LocalBoundsAndChildren" Height="40" Color="#E8C11CAA">
+                                                <Clicked>
+                                                    <Play Target="video" />
+                                                </Clicked>
+                                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf2be;" />
+                                            </Rectangle>
+                                            <Rectangle HitTestMode="LocalBoundsAndChildren" Height="40" Color="#E8C11CAA">
+                                                <Clicked>
+                                                    <Pause Target="video" />
+                                                </Clicked>
+                                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf2ad;" />
+                                            </Rectangle>
+                                            <Rectangle HitTestMode="LocalBoundsAndChildren" Height="40" Color="#E8C11CAA">
+                                                <Clicked>
+                                                    <Stop Target="video" />
+                                                </Clicked>
+                                                <Icon FontSize="30" TextColor="#FFF" Value="&#xf323;" />
+                                            </Rectangle>
+                                        </Grid>
+                                    </DockPanel>
+                                </Case>
+                                <Case Bool="false">
+                                    <Rectangle HitTestMode="LocalBoundsAndChildren" Fill="#70727233" Height="200" Width="90%">
+                                        <Mat.Icon TextColor="#70727299" FontSize="100" Value="&#xe04b;" />
+                                        <App.Text TextColor="#70727299" FontSize="10" Alignment="BottomCenter" Margin="0, 10">Click here to record video</App.Text>
+                                        <Clicked>
+                                            <Set Form.Visibility="Collapsed" />
+                                            <Set camera.Visibility="Visible" />
                                         </Clicked>
-                                        <Icon FontSize="30" TextColor="#FFF" Value="&#xf323;" />
                                     </Rectangle>
-                                </Grid>
-                            </DockPanel>
-                        </Case>
-                    </Match>
-                    <Match Value="{isAudio}">
-                        <Case Bool="true">
-                            <Panel Margin="20">
-                                <Button Alignment="Center" Margin="10">
-                                    <Match Value="{playing}">
-                                        <Case Bool="true">
-                                            <Icon Value="&#xf2ad;" FontSize="100" >
-                                                <Clicked Handler="{playSound}" />
-                                            </Icon>
-                                        </Case>
-                                        <Case Bool="false">
-                                            <Icon Value="&#xf2be;" FontSize="100" >
-                                                <Clicked Handler="{playSound}" />
-                                            </Icon>
-                                        </Case>
-                                    </Match>
-                                </Button>
-                            </Panel>
-                        </Case>
-                    </Match>
-                    <Rectangle Height="5" Color="#FFF" />                  
-                    <App.Input Height="50" PlaceholderText="title" PlaceholderColor="#CCC" Margin="30" Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{title}" />
+                                </Case>
+                            </Match>
+                        </Panel>
+                    </PageControl>               
+                    <App.Input ux:Name="title2" Height="50" PlaceholderText="title" PlaceholderColor="#CCC" Margin="30" Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{title}" />
                     <FormLabel Margin="30, 0, 30, 0" FontSize="14" TextColor="#CCC" Alignment="Left">Content</FormLabel>
-                    <App.TextBox MinHeight="3" Margin="30, 0, 30, 0" Radius="0" LineCol="#000" Text="Content" Value="{content}"/>
-                    <App.Input Visibility="Collapsed" ux:Name="anon" Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{isAnon}" />
+                    <App.TextBox ux:Name="content2" TextColor="#111" MinHeight="3" Margin="30, 0, 30, 0" Radius="0" LineCol="#000" Text="Content" Value="{content}"/>
+                    <App.Input Visibility="Collapsed" ux:Name="anon" Value="{isAnon}" />
                     <DockPanel Margin="0, 30, 0, 0" Alignment="Center">
                         <FormLabel FontSize="12" Margin="0, 0, 20, 0" Dock="Left" TextColor="#111" Value="Anonymous ({isAnon})" Alignment="CenterRight"/>
                         <MyToggle IsActive="{Property anon.Value}" ux:Name="toggle">
@@ -209,7 +373,7 @@
                             </Clicked>
                         </MyToggle>
                     </DockPanel>
-                    <Rectangle Clicked="{addPost}" Margin="0, 30, 0, 0" Width="60%" Padding="10, 5" CornerRadius="5" Height="35" Color="#E8C11C" >
+                    <Rectangle HitTestMode="LocalBoundsAndChildren" Clicked="{addPost}" Margin="0, 30, 0, 0" Width="60%" Padding="10, 5" CornerRadius="5" Height="35" Color="#E8C11C" >
                         <App.Text Value="SUBMIT" TextAlignment="Center" TextColor="#25333D" FontSize="14" />
                         <WhilePressed>
                             <Scale Factor="0.8" />
@@ -394,6 +558,7 @@
                     <Change title.Value="Upright" />
                     <Change title.TextColor="#FFF" />
                     <Change Burger.TextColor="#FFF" />
+                    <Change addBtn.Visibility="Visible" />
                     <Change add.TextColor="#FFF" />
                 </ActivatingAnimation>
                 <ExitingAnimation>
@@ -408,7 +573,7 @@
             </FeedPage>
         
         
-            <FeedDetailPage ux:Template="feedDetail">
+            <FeedDetailPage ux:Template="feedDetail" Freeze="WhileNavigating">
                 <ActivatingAnimation>
                     <Change title.Value="Post" />
                     <Change title.TextColor="#25333D" />
@@ -436,7 +601,7 @@
             </TopContributors>
         
         
-            <About ux:Template="about">
+            <About ux:Template="about" Freeze="WhileNavigating">
                 <ActivatingAnimation>
                     <Change title.Value="About The Campaign" />
                     <Change title.TextColor="#25333D" />

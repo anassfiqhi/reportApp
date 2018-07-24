@@ -12,15 +12,15 @@ import android.os.Environment;
 public class Recorder {
     private static Recorder instance = null;
     MediaRecorder uprightRecorder;
-    MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayer, mediaPlayer2;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_kk-mm-ss");
     String outputPath;
     Boolean playing = false;
+    Boolean playingRecord = false;
 
 
 
     public Recorder() {
-        uprightRecorder = new MediaRecorder();
         mediaPlayer = new MediaPlayer();
     }
 
@@ -43,6 +43,7 @@ public class Recorder {
     public void Start() {
         try {
             outputPath = createOutputPath();
+            uprightRecorder = new MediaRecorder();
             uprightRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
             uprightRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             uprightRecorder.setOutputFile(outputPath);
@@ -56,33 +57,55 @@ public class Recorder {
         }
     }
 
-    public void Stop() {
+    public String Stop() {
         try {
             uprightRecorder.stop();
             uprightRecorder.reset();
             uprightRecorder.release();
+            return outputPath;
         } catch (Exception e) {
             e.printStackTrace();
+            return e.toString();
         } 
        
     }
 
     public String Play() {
         try {
-            if (playing == false) {
+            // if (playing == false) {
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mediaPlayer.setDataSource(outputPath);
                 mediaPlayer.prepare();
                 mediaPlayer.start();
                 playing = true;
                 return outputPath;
-            } else {
-                mediaPlayer.stop();
-                return "stopped playing";
-            }
+            // } else {
+            //     mediaPlayer.pause();
+            //     playing = false;
+            //     return outputPath;
+            // }
         } catch (Exception e) {
             e.printStackTrace();
             return "recording failed";
+        }
+    }
+
+    public void PlaySound(String source, String action) {
+        try {
+            if (action == "play") {
+                mediaPlayer2.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mediaPlayer2.setDataSource(source);
+                mediaPlayer2.prepare();
+                mediaPlayer2.start();
+            } 
+            if (action == "pause") {
+                mediaPlayer2.pause();
+            }
+            if (action == "stop") {
+                mediaPlayer2.stop();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

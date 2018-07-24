@@ -8,6 +8,7 @@
     "Fuse.Scripting",
     "Fuse.Reactive",
     // "Fuse.CameraRoll",
+    "Fuse.LocalNotifications",
     "Fuse.ImageTools",
     "Fuse.Controls.CameraView",
     "Fuse.FileSystem",

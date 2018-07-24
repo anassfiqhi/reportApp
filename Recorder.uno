@@ -19,12 +19,16 @@ public class Recorder: NativeModule {
 	}
 
 	object StopRecording(Context c, object[] args) {
-		StopRecording();
-        return null;
+        return StopRecording();
 	}
 
 	object PlayRecording(Context c, object[] args) {
 		return PlayRecording();
+	}
+
+	object PlaySound(Context c, object[] args) {
+		PlaySound(args[0] as string, args[1] as string);
+		return null;
 	}
 
     [Foreign(Language.Java)]
@@ -39,14 +43,15 @@ public class Recorder: NativeModule {
 	}
 
 	[Foreign(Language.Java)]
-	static extern(Android) void StopRecording()
+	static extern(Android) string StopRecording()
 	@{
 		com.dirisu.reportapp.Recorder recorder = com.dirisu.reportapp.Recorder.getInstance();
-		recorder.Stop();
+		return recorder.Stop();
 	@}
 
-	static extern(!Android) void StopRecording() {
+	static extern(!Android) string StopRecording() {
 		debug_log("Recording not supported on this platform.");
+		return "Mediaplayer not supported on this platform.";
 	}
 
 	[Foreign(Language.Java)]
@@ -59,6 +64,17 @@ public class Recorder: NativeModule {
 	static extern(!Android) string PlayRecording() {
 		debug_log("Mediaplayer not supported on this platform.");
         return "Mediaplayer not supported on this platform.";
+	}
+
+	[Foreign(Language.Java)]
+	static extern(Android) void PlaySound(String src, String Action)
+	@{
+		com.dirisu.reportapp.Recorder player_ = com.dirisu.reportapp.Recorder.getInstance();
+		player_.PlaySound(src, Action);
+	@}
+
+	static extern(!Android) void PlaySound(String src, String Action) {
+		debug_log("Mediaplayer not supported on this platform.");
 	}
 
 }

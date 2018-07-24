@@ -1,4 +1,6 @@
 <Page ux:Class="FeedPage" Background="#3D8B37" PageY="{= abs(y({Property MainScroll.ScrollPosition}))}">
+    <Rectangle ux:Name="feedOver" HitTestMode="None" Layer="Overlay" Opacity="0" Fill="#25333D" />
+    <SolidColor ux:Name="color" Color="#3D8B37"/>
     <object ux:Property="Post" />
     <float ux:Property="PageY" />
     <JavaScript File="Feeds.js" />
@@ -9,18 +11,48 @@
             <HomeScreen Type="CallIntent" />
         </OnBackButton>
     </WhileActive>
-    <Circle Color="#3D8B37" HitTestMode="LocalBoundsAndChildren" Margin="0, 0, 10, 20" Alignment="BottomRight" Padding="12" Layer="Overlay">
-        <Icon TextAlignment="Center" Alignment="Center" ux:Name="add" Value="&#xf2d5;" TextColor="#FFF" FontSize="25" />
-        <Clicked Handler="{getPosts}" />
-        <WhilePressed>
-            <Scale Factor="0.8" />
-            <Rotate Degrees="80" />
-        </WhilePressed>
-    </Circle>
     <ScrollView ux:Name="MainScroll" LayoutMode="PreserveVisual">
-        <DockPanel MinHeight="1000%">
+        <Scrolled To="Start" Within="104" Handler="{decreaseLimit}" />
+		<Scrolled ux:Name="atEnd" To="End" Within="104" Handler="{increaseLimit}">
+            <Change Target="feedOver.Opacity">
+                <Keyframe Value="0.2" TimeDelta="0.25"/>
+                <Keyframe Value="0.4" TimeDelta="0.25"/>
+                <Keyframe Value="0.6" TimeDelta="0.25"/>
+                <Keyframe Value="0.4" TimeDelta="0.25"/>
+                <Keyframe Value="0.2" TimeDelta="0.25"/>
+                <Keyframe Value="0" TimeDelta="0.25"/>
+            </Change>
+        </Scrolled>
+        <PullToReload ReloadHandler="{getPosts}">
+            <!-- Pulling="{getPosts}" -->
+            <Timeline ux:Name="redFlash">
+                <Change color.Color="#FFF" Duration="1"/>
+            </Timeline>
+            <Timeline ux:Name="pinkFlash">
+                <Change color.Color="#25333D" Duration="1"/>
+            </Timeline>
+            <Timeline ux:Name="greenFlash">
+                <Change color.Color="#FDD006" Duration="1"/>
+            </Timeline>
+            <Timeline ux:Name="blueFlash">
+                <Change color.Color="#3D8BBB" Duration="1"/>
+            </Timeline>
+            <State ux:Binding="Pulling">
+                <Cycle Target="redFlash.Progress" Low="0" High="1" Frequency="1" />
+            </State>
+            <State ux:Binding="PulledPastThreshold">
+                <Cycle Target="pinkFlash.Progress" Low="0" High="1" Frequency="1" />
+            </State>
+            <State ux:Binding="Loading">
+                <Cycle Target="greenFlash.Progress" Low="0" High="1" Frequency="1" />
+            </State>
+            <State ux:Binding="Rest">
+                <Cycle Target="blueFlash.Progress" Low="0" High="1" Frequency="1" />
+            </State>
+        </PullToReload>
+        <StackPanel>
             <Rectangle Layer="Background" Color="#FFF" HitTestMode="None" />
-            <DockPanel Height="5%" ux:Name="hero" Background="#1C5120" Dock="Top" Margin="0">
+            <DockPanel Height="400" ux:Name="hero" Background="#1C5120" Dock="Top" Margin="0">
                 <Image StretchMode="UniformToFill" Layer="Background" File="../Assets/Images/Tour Guide 01.jpg" />
                 <Rectangle Dock="Fill">
                     <Grid Alignment="BottomCenter" Width="40%" Margin="10" ColumnCount="5" Columns="1*,1*,1*,1*,1*" Layer="Overlay">
@@ -31,9 +63,20 @@
                         <Circle ux:Name="fifth" Height="10" Width="10" Color="#333" />
                     </Grid>
                     <WhileCount Items="{Fposts}" LessThan="5">
-                        <Panel Alignment="Center">
-                            <App.Text TextAlignment="Center" TextColor="#FFF">Featured Posts</App.Text>
-                        </Panel>
+                        <Match Value="{noFPosts}">
+                            <Case Bool="false">
+                                <DockPanel Alignment="Center">
+                                    <Mat.Icon FontSize="100" TextAlignment="Center" TextColor="#FFF" Value="&#xe5d5;" />
+                                    <App.Text TextAlignment="Center" TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" Value="Loading..." />
+                                </DockPanel>
+                            </Case>
+                            <Case Bool="true">
+                                <DockPanel Alignment="Center">
+                                    <Mat.Icon FontSize="100" TextAlignment="Center" TextColor="#FFF" Value="&#xe88b;" />
+                                    <App.Text TextAlignment="Center" TextWrapping="Wrap" Dock="Bottom" TextColor="#FFF" Value="Oops no featured posts" />
+                                </DockPanel>
+                            </Case>
+                        </Match>
                     </WhileCount>
                     <WhileCount Items="{Fposts}" GreaterThan="4">
                         <Deferred>
@@ -93,49 +136,65 @@
                     </WhileCount>
                 </Rectangle>
             </DockPanel>
-            <WhileEmpty Items="{posts}">
-                <Panel Alignment="TopCenter" Background="#FFF">
-                    <App.Text TextAlignment="Center">{message}</App.Text>
-                </Panel>
-            </WhileEmpty>
-            <WhileCount Items="{posts}" GreaterThan="0">
-                <DockPanel Background="#EEE">
-                    <Rectangle ux:Name="indicator" LayoutMaster="tabTrd" Layer="Background" Color="#FFF">
-                        <LayoutAnimation>
-                            <Move RelativeTo="WorldPositionChange" X="1" Duration="0.4" Easing="BackIn"/>
-                        </LayoutAnimation>
-                    </Rectangle>
-                    <Grid Dock="Top" ColumnCount="2" Columns="1*, 1*" Height="50">
-                        <Panel ux:Name="tabTrd" HitTestMode="LocalBoundsAndChildren">
-                            <App.Text Value="Recent" />
-                            <Clicked>
-                                <Set Nav_.Active="trending" />
-                            </Clicked>
-                        </Panel>
-                        <Panel ux:Name="tabRec" HitTestMode="LocalBoundsAndChildren">
-                            <App.Text Value="Trending" />
-                            <Clicked>
-                                <Set Nav_.Active="recent" />
-                            </Clicked>
-                        </Panel>
-                    </Grid>
-                    <PageControl IsRouterOutlet="false" Dock="Fill" ActiveIndex="0" ux:Name="Nav_">
-                        <WhileFloat Value="{Property Nav_.ActiveIndex}" GreaterThanEqual="1">
-                            <Set indicator.LayoutMaster="tabRec" />
-                        </WhileFloat>
-                        <WhileFloat Value="{Property Nav_.ActiveIndex}" LessThanEqual="0">
-                            <Set indicator.LayoutMaster="tabTrd" />
-                        </WhileFloat>
-                        <StackPanel MinHeight="800" Height="100%" ux:Name="trending">
-                            <Rectangle Layer="Background" Color="#FFF" />
-                            <Each Items="{posts}">
+            <DockPanel Dock="Fill" MinHeight="95%" Background="#EEE">
+                <Rectangle ux:Name="indicator" LayoutMaster="tabTrd" Layer="Background" Color="#FFF">
+                    <LayoutAnimation>
+                        <Move RelativeTo="WorldPositionChange" X="1" Duration="0.4" Easing="BackIn"/>
+                    </LayoutAnimation>
+                </Rectangle>
+                <Grid Dock="Top" ColumnCount="2" Columns="1*, 1*" Height="50">
+                    <Panel ux:Name="tabTrd" HitTestMode="LocalBoundsAndChildren">
+                        <App.Text Value="Recent" />
+                        <Clicked>
+                            <Set Nav_.Active="trending" />
+                        </Clicked>
+                    </Panel>
+                    <Panel ux:Name="tabRec" HitTestMode="LocalBoundsAndChildren">
+                        <App.Text Value="Trending" />
+                        <Clicked>
+                            <Set Nav_.Active="recent" />
+                        </Clicked>
+                    </Panel>
+                </Grid>
+                <PageControl IsRouterOutlet="false" Dock="Fill" ActiveIndex="0" ux:Name="Nav_">
+                    <WhileFloat Value="{Property Nav_.ActiveIndex}" GreaterThanEqual="1">
+                        <Set indicator.LayoutMaster="tabRec" />
+                    </WhileFloat>
+                    <WhileFloat Value="{Property Nav_.ActiveIndex}" LessThanEqual="0">
+                        <Set indicator.LayoutMaster="tabTrd" />
+                    </WhileFloat>
+                    <StackPanel ux:Name="trending" Padding="0, 0, 0, 20">
+                        <WhileCount Items="{posts}" LessThan="1">
+                            <Match Value="{noPosts}">
+                                <Case Bool="false">
+                                    <DockPanel Alignment="TopCenter">
+                                        <Mat.Icon FontSize="100" TextAlignment="Center" TextColor="#25333D" Value="&#xe5d5;" />
+                                        <App.Text TextAlignment="Center" TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" Value="Loading..." />
+                                    </DockPanel>
+                                </Case>
+                                <Case Bool="true">
+                                    <DockPanel Alignment="TopCenter">
+                                        <Mat.Icon FontSize="100" TextAlignment="Center" TextColor="#25333D" Value="&#xe88b;" />
+                                        <App.Text TextAlignment="Center" TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" Value="Oops no posts" />
+                                    </DockPanel>
+                                </Case>
+                            </Match>
+                        </WhileCount>
+                        <Rectangle Layer="Background" Color="#FFF" />
+                        <WhileCount Items="{posts}" GreaterThan="0">
+                            <Each Limit="{limit}" Items="{posts}">
                                 <Deferred>
                                     <DockPanel Margin="20, 40" ux:Name="page" Width="100%" Height="100%">
                                         <Rectangle Layer="Background" StrokeColor="#FFF" />
-                                        <Panel Clicked="{details}" Height="200" HitTestMode="LocalBoundsAndChildren">
+                                        <Panel Height="200">
                                             <Match Value="{hasVideo}">
                                                 <Case Bool="true">
-                                                   <Rectangle Layer="Background" Color="#000" Opacity="0.5" />
+                                                    <Image StretchMode="UniformToFill" File="../Assets/Images/Logo.jpg" Layer="Background" />
+                                                    <Rectangle HitTestMode="None" Layer="Overlay" Color="#000" Opacity="0.5" />
+                                                </Case>
+                                                <Case String="audio">
+                                                    <Image StretchMode="UniformToFill" File="../Assets/Images/waveform.png" Layer="Background" />
+                                                    <Rectangle HitTestMode="None" Layer="Overlay" Color="#000" Opacity="0.5" />
                                                 </Case>
                                                 <Case Bool="false">
                                                     <Rectangle Layer="Background" Color="#25333D">
@@ -143,7 +202,7 @@
                                                     </Rectangle>
                                                 </Case>
                                             </Match>
-                                            <Rectangle Layer="Overlay" Color="#25333DAA">
+                                            <Rectangle Clicked="{details}" HitTestMode="LocalBoundsAndChildren" Layer="Overlay" Color="#25333DAA">
                                                 <StackPanel Alignment="Center" Width="90%">
                                                     <App.Header TextAlignment="Center" Alignment="Center" FontSize="18" TextColor="#fff" TextWrapping="Wrap" Value="{title}" />
                                                     <DockPanel>
@@ -160,68 +219,129 @@
                                                 </StackPanel>
                                             </Rectangle>
                                         </Panel>
-                                        <Panel Dock="Bottom" Clicked="{details}" Width="100%" HitTestMode="LocalBoundsAndChildren">
-                                            <App.Text TextAlignment="Left" MaxLength="200" TextWrapping="Wrap" FontSize="12" Alignment="Left" Value="{body}" />
-                                        </Panel>
+                                        <DockPanel Dock="Bottom" Width="100%" Padding="10">
+                                            <App.Text Clicked="{details}" HitTestMode="LocalBoundsAndChildren" TextAlignment="Left" MaxLength="200" TextWrapping="Wrap" FontSize="12" Alignment="Left" Value="{body}" />
+                                            <Grid Dock="Bottom" Columns="1*,1*,7*" ColumnCount="3">
+                                                <DockPanel Alignment="CenterLeft">
+                                                    <Icon TextColor="#318700" FontSize="12" Dock="Left" Value="&#xf1a1;" />
+                                                    <App.Text TextColor="#318700" FontSize="12" Value="{commentCnt}" />
+                                                </DockPanel>
+                                                <DockPanel Alignment="CenterLeft">
+                                                    <Icon ux:Name="upVter" TextColor="#318700" FontSize="12" Dock="Left" Value="&#xf233;" />
+                                                    <App.Text TextColor="#318700" FontSize="12" Value="{upvotes}" />
+                                                </DockPanel>
+                                                <Rectangle Color="#E8C11C" HitTestMode="LocalBoundsAndChildren" Width="40%" Alignment="CenterRight" Padding="5, 5" CornerRadius="5" Height="25" >
+                                                    <Grid Width="60%" Alignment="HorizontalCenter" ColumnCount="2" CellSpacing="5" Columns="auto, 1*">
+                                                        <Mat.Icon Alignment="CenterRight" TextAlignment="Right" Value="&#xe80d;" TextColor="#25333D" FontSize="10" />
+                                                        <App.Text Value="Share" Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="9" />
+                                                    </Grid>
+                                                    <Clicked Handler="{shareText}" />
+                                                    <WhilePressed>
+                                                        <Scale Factor="0.8" />
+                                                    </WhilePressed>
+                                                </Rectangle>
+                                            </Grid>
+                                        </DockPanel>
                                     </DockPanel>
                                 </Deferred>
                                 <WhileBusy>
                                     <App.Text Value="Loading posts..." TextAlignment="Center" Alignment="VerticalCenter" />
                                 </WhileBusy>
                             </Each>
-                        </StackPanel>
-                        <StackPanel ux:Name="recent" MinHeight="300">
-                            <Rectangle Layer="Background" Color="#FFF" />
-                            <WhileCount Items="{Tposts}" LessThan="1">
-                                <App.Text Value="Trending posts" TextAlignment="Center" Alignment="VerticalCenter" />
-                            </WhileCount>
-                            <WhileCount Items="{Tposts}" GreaterThan="0">
-                                <Each Items="{Tposts}">
-                                    <Deferred>
-                                        <DockPanel Margin="20, 40" ux:Name="page" Width="100%" Height="100%">
-                                            <Rectangle Layer="Background" StrokeColor="#FFF" />
-                                            <Panel Clicked="{details}" Height="280" HitTestMode="LocalBoundsAndChildren">
-                                                <Match Value="{hasVideo}">
-                                                    <Case Bool="true">
-                                                        <Rectangle Layer="Background" Color="#000" Opacity="0.5" />
-                                                    </Case>
-                                                    <Case Bool="false">
-                                                        <Rectangle Layer="Background" Color="#25333D">
-                                                           <ImageFill MemoryPolicy="UnloadUnused" Url="{image}" StretchMode="UniformToFill" />
-                                                        </Rectangle>
-                                                    </Case>
-                                                </Match>
-                                                <Rectangle Layer="Overlay" Color="#25333DAA">
-                                                    <StackPanel Alignment="Center" Width="90%">
-                                                        <App.Header TextAlignment="Center" Alignment="Center" FontSize="18" TextColor="#fff" TextWrapping="Wrap" Value="{title}" />
-                                                        <DockPanel>
-                                                            <Match Value="{anonymous}">
-                                                                <Case Bool="true">
-                                                                    <App.Header TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="14" Value="Anonymous User" />
-                                                                </Case>
-                                                                <Case Bool="false">
-                                                                    <App.Header TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="14" Value="{author.username}" />
-                                                                </Case>
-                                                            </Match>
-                                                            <App.Text Dock="Bottom" TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="10" Value="{time}" />
-                                                        </DockPanel>
-                                                    </StackPanel>
+                        </WhileCount>
+                    </StackPanel>
+                    <StackPanel Padding="0, 0, 0, 20" ux:Name="recent">
+                        <Rectangle Layer="Background" Color="#FFF" />
+                        <WhileCount Items="{Tposts}" LessThan="1">
+                            <Match Value="{noTPosts}">
+                                <Case Bool="false">
+                                    <DockPanel Alignment="TopCenter">
+                                        <Mat.Icon FontSize="100" TextAlignment="Center" TextColor="#25333D" Value="&#xe5d5;" />
+                                        <App.Text TextAlignment="Center" TextWrapping="Wrap" Dock="Bottom" TextColor="#25333D" Value="Loading..." />
+                                    </DockPanel>
+                                </Case>
+                                <Case Bool="true">
+                                    <DockPanel Alignment="TopCenter">
+                                        <Mat.Icon FontSize="100" TextAlignment="Center" TextColor="#25333D" Value="&#xe88b;" />
+                                        <App.Text Dock="Bottom" TextColor="#25333D" Value="Oops no trending posts" />
+                                    </DockPanel>
+                                </Case>
+                            </Match>
+                        </WhileCount>
+                        <WhileCount Items="{Tposts}" GreaterThan="0">
+                            <Each Items="{Tposts}" Limit="{limit}">
+                                <Deferred>
+                                    <DockPanel Margin="20, 40" ux:Name="page" Width="100%" Height="100%">
+                                        <Rectangle Layer="Background" StrokeColor="#FFF" />
+                                        <Panel Height="200">
+                                            <Match Value="{hasVideo}">
+                                                <Case Bool="true">
+                                                    <Image StretchMode="UniformToFill" File="../Assets/Images/Logo.jpg" Layer="Background" />
+                                                    <Rectangle HitTestMode="None" Layer="Overlay" Color="#000" Opacity="0.5" />
+                                                </Case>
+                                                <Case String="audio">
+                                                    <Image StretchMode="UniformToFill" File="../Assets/Images/waveform.png" Layer="Background" />
+                                                    <Rectangle HitTestMode="None" Layer="Overlay" Color="#000" Opacity="0.5" />
+                                                </Case>
+                                                <Case Bool="false">
+                                                    <Rectangle Layer="Background" Color="#25333D">
+                                                        <ImageFill MemoryPolicy="UnloadUnused" Url="{image}" StretchMode="UniformToFill" />
+                                                    </Rectangle>
+                                                </Case>
+                                            </Match>
+                                            <Rectangle Clicked="{details}" HitTestMode="LocalBoundsAndChildren" Layer="Overlay" Color="#25333DAA">
+                                                <StackPanel Alignment="Center" Width="90%">
+                                                    <App.Header TextAlignment="Center" Alignment="Center" FontSize="18" TextColor="#fff" TextWrapping="Wrap" Value="{title}" />
+                                                    <DockPanel>
+                                                        <Match Value="{anonymous}">
+                                                            <Case Bool="true">
+                                                                <App.Header TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="14" Value="Anonymous User" />
+                                                            </Case>
+                                                            <Case String="audio">
+                                                                <Rectangle Layer="Background" Color="#000" Opacity="0.5" />
+                                                            </Case>
+                                                            <Case Bool="false">
+                                                                <App.Header TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="14" Value="{author.username}" />
+                                                            </Case>
+                                                        </Match>
+                                                        <App.Text Dock="Bottom" TextWrapping="Wrap" TextColor="#fff" TextAlignment="Center" Alignment="Center" FontSize="10" Value="{time}" />
+                                                    </DockPanel>
+                                                </StackPanel>
+                                            </Rectangle>
+                                        </Panel>
+                                        <DockPanel Dock="Bottom" Width="100%" Padding="10">
+                                            <App.Text Clicked="{details}" HitTestMode="LocalBoundsAndChildren" TextAlignment="Left" MaxLength="200" TextWrapping="Wrap" FontSize="12" Alignment="Left" Value="{body}" />
+                                            <Grid Dock="Bottom" Columns="1*,1*,7*" ColumnCount="3">
+                                                <DockPanel Alignment="CenterLeft">
+                                                    <Icon TextColor="#318700" FontSize="12" Dock="Left" Value="&#xf1a1;" />
+                                                    <App.Text TextColor="#318700" FontSize="12" Value="{commentCnt}" />
+                                                </DockPanel>
+                                                <DockPanel Alignment="CenterLeft">
+                                                    <Icon ux:Name="upVter" TextColor="#318700" FontSize="12" Dock="Left" Value="&#xf233;" />
+                                                    <App.Text TextColor="#318700" FontSize="12" Value="{upvotes}" />
+                                                </DockPanel>
+                                                <Rectangle Color="#E8C11C" HitTestMode="LocalBoundsAndChildren" Width="40%" Alignment="CenterRight" Padding="5, 5" CornerRadius="5" Height="25" >
+                                                    <Grid Width="60%" Alignment="HorizontalCenter" ColumnCount="2" CellSpacing="5" Columns="auto, 1*">
+                                                        <Mat.Icon Alignment="CenterRight" TextAlignment="Right" Value="&#xe80d;" TextColor="#25333D" FontSize="10" />
+                                                        <App.Text Value="Share" Alignment="CenterLeft" TextAlignment="Left" TextColor="#25333D" FontSize="9" />
+                                                    </Grid>
+                                                    <Clicked Handler="{shareText}" />
+                                                    <WhilePressed>
+                                                        <Scale Factor="0.8" />
+                                                    </WhilePressed>
                                                 </Rectangle>
-                                            </Panel>
-                                            <Panel Dock="Bottom" Clicked="{details}" Width="100%" HitTestMode="LocalBoundsAndChildren">
-                                                <App.Text TextAlignment="Left" MaxLength="200" TextWrapping="Wrap" FontSize="12" Alignment="Left" Value="{body}" />
-                                            </Panel>
+                                            </Grid>
                                         </DockPanel>
-                                    </Deferred>
-                                    <WhileBusy>
-                                        <App.Text Value="Loading posts..." TextAlignment="Center" Alignment="VerticalCenter" />
-                                    </WhileBusy>
-                                </Each>
-                            </WhileCount>
-                        </StackPanel>
-                    </PageControl>
-                </DockPanel>
-            </WhileCount>
-        </DockPanel>
+                                    </DockPanel>
+                                </Deferred>
+                                <WhileBusy>
+                                    <App.Text Value="Loading posts..." TextAlignment="Center" Alignment="VerticalCenter" />
+                                </WhileBusy>
+                            </Each>
+                        </WhileCount>
+                    </StackPanel>
+                </PageControl>
+            </DockPanel>
+        </StackPanel>
     </ScrollView>
 </Page>
