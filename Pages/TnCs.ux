@@ -3,170 +3,124 @@
         <ScrollView>
             <StackPanel Padding="30, 80, 30, 20" ItemSpacing="20">
                 <DockPanel Padding="0">
-                    <App.Header FontSize="13" Dock="Top" Alignment="Left" TextWrapping="Wrap" Value="1. TERMS OF USE" />
-                    <App.Text FontSize="12" TextWrapping="Wrap">
-                        By downloading, browsing, accessing or using this Sample Store mobile application (“Mobile Application”), you agree to be bound by these Terms and Conditions of Use. We reserve the right to amend these terms and conditions at any time. If you disagree with any of these Terms and Conditions of Use, you must immediately discontinue your access to the Mobile Application and your use of the services offered on the Mobile Application. Continued use of the Mobile Application will constitute acceptance of these Terms and Conditions of Use, as may be amended from time to time. 
-                    </App.Text>
+                    <App.Header FontSize="16" Dock="Top" Alignment="Left" TextWrapping="Wrap" Value="TERMS AND CONDITIONS" />
+                    <StackPanel ItemSpacing="10">
+                        <App.Text FontSize="12" TextWrapping="Wrap">
+                            By downloading or using the app, these terms will automatically apply to you – you should make sure therefore that you read them carefully before using the app. You’re not allowed to copy, or modify the app, any part of the app, or our trademarks in any way. You’re not allowed to attempt to extract the source code of the app, and you also shouldn’t try to translate the app into other languages, or make derivative versions. The app itself, and all the trade marks, copyright, database rights and other intellectual property rights related to it, still belong to. is committed to ensuring that the app is as useful and efficient as possible. For that reason, we reserve the right to make changes to the app or to charge for its services, at any time and for any reason. We will never charge you for the app or its services without making it very clear to you exactly what you’re paying for.
+                        </App.Text>
+                        <App.Text FontSize="12" TextWrapping="Wrap">
+                            You should be aware that there are certain things that will not take responsibility for. Certain functions of the app will require the app to have an active internet connection. The connection can be Wi-Fi, or provided by your mobile network provider, but cannot take responsibility for the app not working at full functionality if you don’t have access to Wi-Fi, and you don’t have any of your data allowance left.
+                        </App.Text>
+                        <App.Text FontSize="12" TextWrapping="Wrap">
+                            The Upright for Nigeria app stores and processes personal data that you have provided to us, in order to provide our Service. It’s your responsibility to keep your phone and access to the app secure. We therefore recommend that you do not jailbreak or root your phone, which is the process of removing software restrictions and limitations imposed by the official operating system of your device. It could make your phone vulnerable to malware/viruses/malicious programs, compromise your phone’s security features and it could mean that the Upright for Nigeria app won’t work properly or at all.
+                        </App.Text>
+                        <App.Text FontSize="12" TextWrapping="Wrap">
+                            Along the same lines, cannot always take responsibility for the way you use the app i.e. You need to make sure that your device stays charged – if it runs out of battery and you can’t turn it on to avail the Service, cannot accept responsibility.
+                        </App.Text>
+                        <App.Text FontSize="12" TextWrapping="Wrap">
+                            If you’re using the app outside of an area with Wi-Fi, you should remember that your terms of the agreement with your mobile network provider will still apply. As a result, you may be charged by your mobile provider for the cost of data for the duration of the connection while accessing the app, or other third party charges. In using the app, you’re accepting responsibility for any such charges, including roaming data charges if you use the app outside of your home territory (i.e. region or country) without turning off data roaming. If you are not the bill payer for the device on which you’re using the app, please be aware that we assume that you have received permission from the bill payer for using the app.
+                        </App.Text>
+                        <App.Text FontSize="12" TextWrapping="Wrap">
+                            With respect to ’s responsibility for your use of the app, when you’re using the app, it’s important to bear in mind that although we endeavour to ensure that it is updated and correct at all times, we do rely on third parties to provide information to us so that we can make it available to you. accepts no liability for any loss, direct or indirect, you experience as a result of relying wholly on this functionality of the app.
+                        </App.Text>
+                        <App.Text FontSize="12" TextWrapping="Wrap">
+                            At some point, we may wish to update the app. The app is currently available on Android and iOS – the requirements for both systems (and for any additional systems we decide to extend the availability of the app to) may change, and you’ll need to download the updates if you want to keep using the app. does not promise that it will always update the app so that it is relevant to you and/or works with the iOS/Android version that you have installed on your device. However, you promise to always accept updates to the application when offered to you, We may also wish to stop providing the app, and may terminate use of it at any time without giving notice of termination to you. Unless we tell you otherwise, upon any termination, (a) the rights and licenses granted to you in these terms will end; (b) you must stop using the app, and (if needed) delete it from your device.
+                        </App.Text>
+                    </StackPanel>
                 </DockPanel>
                 <DockPanel Padding="0">
                     <App.Header FontSize="13"
                         Dock="Top" Alignment="Left" TextWrapping="Wrap"
-                        Value="2. DEFINITIONS" />
-                    <App.Text FontSize="12" TextWrapping="Wrap">In these Terms and Conditions of Use, the following capitalised terms shall have the following meanings, except where the context otherwise requires: "Account" means an account created by a User on the Mobile Application as part of Registration. "Merchant" refers to any entity whose products or Samples can be purchased and/or redeemed (as the case may be) via the Mobile Application. "Privacy Policy" means the privacy policy set out in Clause 12 of these Terms and Conditions of Use. "Redeem" means to redeem a Merchant’s products or Samples on these Terms and Conditions of Use and "Redemption" means the act of redeeming such products or Samples. "Register" means to create an Account on the Mobile Application and "Registration" means the act of creating such an Account. "Samples" means samples of Merchant’s products and/or Merchant’s services, including without limitation, any vouchers for the redemption of such services, and "Sample" means any one of them. "Services" means all the services provided by Singapore Post Limited via the Mobile Application to Users, and "Service" means any one of them, "Users" means users of the Mobile Application, including you and "User" means any one of them.</App.Text>
+                        Value="Changes to these Terms and Conditions" />
+                    <App.Text FontSize="12" TextWrapping="Wrap">We may update our Terms and Conditions from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Terms and Conditions on this page. These changes are effective immediately after they are posted on this page.</App.Text>
                 </DockPanel>
                 <DockPanel Padding="0">
-                    <App.Header FontSize="13" Dock="Top" Alignment="Left" TextWrapping="Wrap"
-                        Value="3. GENERAL ISSUES ABOUT THE MOBILE APPLICATION AND THE SERVICES" />
+                    <App.Header FontSize="13"
+                        Dock="Top" Alignment="Left" TextWrapping="Wrap"
+                        Value="Contact Us" />
+                    <App.Text FontSize="12" TextWrapping="Wrap">If you have any questions or suggestions about our Terms and Conditions, do not hesitate to contact us.</App.Text>
+                </DockPanel>
+                <DockPanel Padding="0">
+                    <DockPanel Padding="0" Dock="Top">
+                        <App.Header FontSize="16" Dock="Top" Alignment="Left" TextWrapping="Wrap" Value="PRIVACY POLICY" />
+                        <App.Text FontSize="12" TextWrapping="Wrap">
+                            We built the Upright for Nigeria app as a Free app. This SERVICE is provided by at no cost and is intended for use as is. This page is used to inform website visitors regarding our policies with the collection, use, and disclosure of Personal Information if anyone decided to use our Service. If you choose to use our Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that we collect is used for providing and improving the Service. We will not use or share your information with anyone except as described in this Privacy Policy. The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at Upright for Nigeria unless otherwise defined in this Privacy Policy.
+                        </App.Text>
+                    </DockPanel>
                     <StackPanel ItemSpacing="10" Orientation="Vertical" Padding="4">
                         <DockPanel Padding="0">
                             <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="3.1 Applicability of terms and conditions" />
+                                TextWrapping="Wrap" Value="Information Collection and Use" />
                             <App.Text FontSize="12" TextWrapping="Wrap">
-                                The use of any Services and/or the Mobile Application and the making of any Redemptions are subject to these Terms and Conditions of Use.
+                                For a better experience, while using our Service, we may require you to provide us with certain personally identifiable information, including but not limited to Name, email. The information that we request is will be retained by us and used as described in this privacy policy. The app does use third party services that may collect information used to identify you. Link to privacy policy of third party service providers used by the app.
                             </App.Text>
                         </DockPanel>
                         <DockPanel Padding="0">
                             <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="3.2 Location" />
+                                TextWrapping="Wrap" Value="Log Data" />
                             <App.Text FontSize="12" TextWrapping="Wrap">
-                                The Mobile Application, the Services and any Redemptions are intended solely for use by Users who access the Mobile Application in Singapore. We make no representation that the Services (or any goods or services) are available or otherwise suitable for use outside of Singapore. Notwithstanding the above, if you access the Mobile Application, use the Services or make any Redemptions from locations outside Singapore, you do so on your own initiative and are responsible for the consequences and for compliance with all applicable laws.
+                                We want to inform you that whenever you use our Service, in a case of an error in the app we collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing our Service, the time and date of your use of the Service, and other statistics.
                             </App.Text>
                         </DockPanel>
                         <DockPanel Padding="0">
                             <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="3.3 Scope" />
+                                TextWrapping="Wrap" Value="Cookies" />
                             <App.Text FontSize="12" TextWrapping="Wrap">
-                                The Mobile Application, the Services and any Redemptions are for your non-commercial, personal use only and must not be used for business purposes.
+                                Cookies are files with a small amount of data that are commonly used as anonymous unique identifiers. These are sent to your browser from the websites that you visit and are stored on your device's internal memory. This Service does not use these “cookies” explicitly. However, the app may use third party code and libraries that use “cookies” to collect information and improve their services. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device. If you choose to refuse our cookies, you may not be able to use some portions of this Service.
                             </App.Text>
                         </DockPanel>
                         <DockPanel Padding="0">
                             <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="3.4 Prevention on use" />
+                                TextWrapping="Wrap" Value="Service Providers" />
+                            <StackPanel ItemSpacing="10">
+                                <App.Text FontSize="12" TextWrapping="Wrap">
+                                    We may employ third-party companies and individuals due to the following reasons:
+                                </App.Text>
+                                <StackPanel Padding="10, 0, 0, 0" ItemSpacing="5">
+                                    <App.Text Alignment="Left" FontSize="12" TextWrapping="Wrap">
+                                        • To facilitate our Service;
+                                    </App.Text>
+                                    <App.Text Alignment="Left" FontSize="12" TextWrapping="Wrap">
+                                        • To provide the Service on our behalf;
+                                    </App.Text>
+                                    <App.Text Alignment="Left" FontSize="12" TextWrapping="Wrap">
+                                        • To perform Service-related services; or
+                                    </App.Text>
+                                    <App.Text Alignment="Left" FontSize="12" TextWrapping="Wrap">
+                                        • To assist us in analyzing how our Service is used.
+                                    </App.Text>
+                                </StackPanel>
+                                <App.Text FontSize="12" TextWrapping="Wrap">
+                                    We want to inform users of this Service that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.
+                                </App.Text>
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel Padding="0">
+                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
+                                TextWrapping="Wrap" Value="Security" />
                             <App.Text FontSize="12" TextWrapping="Wrap">
-                                We reserve the right to prevent you using the Mobile Application and the Service (or any part of them) and to prevent you from making any Redemptions.
+                                We value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and we cannot guarantee its absolute security.
                             </App.Text>
                         </DockPanel>
                         <DockPanel Padding="0">
                             <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="3.5 Equipment and Networks" />
+                                TextWrapping="Wrap" Value="Links to Other Sites" />
                             <App.Text FontSize="12" TextWrapping="Wrap">
-                                The provision of the Services and the Mobile Application does not include the provision of a mobile telephone or handheld device or other necessary equipment to access the Mobile Application or the Services or make any Redemptions. To use the Mobile Application or Services or to make Redemptions, you will require Internet connectivity and appropriate telecommunication links. You acknowledge that the terms of agreement with your respective mobile network provider ("Mobile Provider") will continue to apply when using the Mobile Application. As a result, you may be charged by the Mobile Provider for access to network connection services for the duration of the connection while accessing the Mobile Application or any such third party charges as may arise. You accept responsibility for any such charges that arise.
+                                This Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by us. Therefore, we strongly advise you to review the Privacy Policy of these websites. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
                             </App.Text>
                         </DockPanel>
                         <DockPanel Padding="0">
                             <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="3.6 Permission to use Mobile Application" />
+                                TextWrapping="Wrap" Value="Childrens Privacy" />
                             <App.Text FontSize="12" TextWrapping="Wrap">
-                                If you are not the bill payer for the mobile telephone or handheld device being used to access the Mobile Application, you will be assumed to have received permission from the bill payer for using the Mobile Application.
+                                These Services do not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13. In the case we discover that a child under 13 has provided us with personal information, we immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us so that we will be able to do necessary actions.
                             </App.Text>
                         </DockPanel>
                         <DockPanel Padding="0">
                             <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="3.7 License to Use Material" />
+                                TextWrapping="Wrap" Value="Changes Privacy Policy" />
                             <App.Text FontSize="12" TextWrapping="Wrap">
-                                By submitting any text or images (including photographs) (“Material”) via the Application, you represent that you are the owner of the Material, or have proper authorization from the owner of the Material to use, reproduce and distribute it. You hereby grant us a worldwide, royalty-free, non-exclusive license to use the Material to promote any products or services.
-                            </App.Text>
-                        </DockPanel>
-                    </StackPanel>
-                </DockPanel>
-                <DockPanel Padding="0">
-                    <App.Header FontSize="13" Dock="Top" Alignment="Left" TextWrapping="Wrap"
-                        Value="4. REDEMPTIONS" />
-                    <StackPanel ItemSpacing="10" Orientation="Vertical" Padding="4">
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="4.1 Need for registration" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                You must Register to make a Redemption from the Mobile Application.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="4.2 Application of these Terms and Conditions of Use" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                By making any Redemption, you acknowledge that the Redemption is subject to these Terms and Conditions of Use.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="4.3 Redemption" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                Any attempted Redemption not consistent with these Terms and Conditions of Use may be disallowed or rendered void at our or the relevant Merchant’s discretion.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="4.4 Responsibility for Redemptions of perishable products of Samples" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                Each Merchant shall be responsible to ensure that any of its products or Samples for Redemption that are perishable has not expired.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="4.5 Restrictions:" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">(a) Reproduction, sale, resale or trading of any products or Samples or Redeemed products is prohibited. (b) If any product or Sample is Redeemed for less than its face value, there is no entitlement to a credit, cash or Sample equal to the difference between the face value and the amount Redeemed. (c) Redemption of products or Samples is subject to availability of the relevant Merchants’ stocks.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="4.6 SingPost Not Liable" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                For the avoidance of doubt, Singapore Post Limited shall not be liable for any losses or damages suffered by you resulting from a failure by the relevant Merchant to fulfil any Redemptions in accordance with Clause 4.4 or for a failure by us to deliver any products or Samples to you due to the unavailability of such products or Samples pursuant to Clause 4.5(c).
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="4.7 Lost/stolen Samples" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                Neither we nor any Merchant shall be responsible for lost or stolen Samples or products that have been Redeemed.
-                            </App.Text>
-                        </DockPanel>
-                    </StackPanel>
-                </DockPanel>
-                <DockPanel Padding="0">
-                    <App.Header FontSize="13" Dock="Top" Alignment="Left" TextWrapping="Wrap"
-                        Value="5. LOCATION ALERTS AND NOTIFICATIONS" />
-                    <App.Text FontSize="12" TextWrapping="Wrap">
-                        You agree to receive pre-programmed notifications (“Location Alerts”) on the Mobile Application from Merchants if you have turned on locational services on your mobile telephone or other handheld devices (as the case may be).
-                    </App.Text>
-                </DockPanel>
-                <DockPanel Padding="0">
-                    <App.Header FontSize="13" Dock="Top" Alignment="Left" TextWrapping="Wrap"
-                        Value="6. YOUR OBLIGATIONS" />
-                    <StackPanel ItemSpacing="10" Orientation="Vertical" Padding="4">
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="6.1 Merchant terms" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                You agree to (and shall) abide by the terms and conditions of the relevant Merchant for which your Redemption relates to, as may be amended from time to time.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="6.2 Accurate information" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                You warrant that all information provided on Registration and contained as part of your Account is true, complete and accurate and that you will promptly inform us of any changes to such information by updating the information in your Account.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="6.3 Content on the Mobile Application and Service" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                It is your responsibility to ensure that any products, Samples or information available through the Mobile Application or the Services meet your specific requirements before making any Redemption.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="6.4 Prohibitions in relation to usage of Services or Mobile Application" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                Without limitation, you undertake not to use or permit anyone else to use the Services or Mobile Application:- 6.4.1 to send or receive any material which is not civil or tasteful 6.4.2 to send or receive any material which is threatening, grossly offensive, of an indecent, obscene or menacing character, blasphemous or defamatory of any person, in contempt of court or in breach of confidence, copyright, rights of personality, publicity or privacy or any other third party rights; 6.4.3 to send or receive any material for which you have not obtained all necessary licences and/or approvals (from us or third parties); or which constitutes or encourages conduct that would be considered a criminal offence, give rise to civil liability, or otherwise be contrary to the law of or infringe the rights of any third party in any country in the world; 6.4.4 to send or receive any material which is technically harmful (including computer viruses, logic bombs, Trojan horses, worms, harmful components, corrupted data or other malicious software or harmful data); 6.4.5 to cause annoyance, inconvenience or needless anxiety; 6.4.6 to intercept or attempt to intercept any communications transmitted by way of a telecommunications system; 6.4.7 for a purpose other than which we have designed them or intended them to be used; 6.4.8 for any fraudulent purpose; 6.4.9 other than in conformance with accepted Internet practices and practices of any connected networks; 6.4.10 in any way which is calculated to incite hatred against any ethnic, religious or any other minority or is otherwise calculated to adversely affect any individual, group or entity; or 6.4.11 in such a way as to, or commit any act that would or does, impose an unreasonable or disproportionately large load on our infrastructure.
-                            </App.Text>
-                        </DockPanel>
-                        <DockPanel Padding="0">
-                            <App.Header FontSize="13" Dock="Top" Alignment="Left"   
-                                TextWrapping="Wrap" Value="6.5 Prohibitions in relation to usage of Services, Mobile Application" />
-                            <App.Text FontSize="12" TextWrapping="Wrap">
-                                Without limitation, you further undertake not to or permit anyone else to:- 6.5.1 resell any products or Samples ; 6.5.2 furnish false data including false names, addresses and contact details and fraudulently use credit/debit card numbers; 6.5.3 attempt to circumvent our security or network including to access data not intended for you, log into a server or account you are not expressly authorised to access, or probe the security of other networks (such as running a port scan); 6.5.4 execute any form of network monitoring which will intercept data not intended for you; 6.5.5 enter into fraudulent interactions or transactions with us or a Merchant (including interacting or transacting purportedly on behalf of a third party where you have no authority to bind that third party or you are pretending to be a third party); 6.5.6 extract data from or hack into the Mobile Application; 6.5.7 use the Services or Mobile Application in breach of these Terms and Conditions of Use; 6.5.8 engage in any unlawful activity in connection with the use of the Mobile Application or the Services; or 6.5.9 engage in any conduct which, in our exclusive reasonable opinion, restricts or inhibits any other customer from properly using or enjoying the Mobile Application or Services.
+                                We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately after they are posted on this page.
                             </App.Text>
                         </DockPanel>
                     </StackPanel>

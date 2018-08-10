@@ -37,6 +37,17 @@ module.exports = {
         .catch(err => reject(err));
     });
   },
+  getTopUsers: function () {
+    return new Promise((resolve, reject) => {
+      fetch(`${url}/user/getTopUsers`, {
+          headers: {
+            "Content-Type": "application/json"
+          },
+        })
+        .then(res => resolve(res.json()))
+        .catch(err => reject(err));
+    });
+  },
   signup: function (username, name) {
     return new Promise((resolve, reject) => {
       fetch(`${url}/user/signup/?username=${username}&name=${name}`, {

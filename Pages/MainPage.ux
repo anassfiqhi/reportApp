@@ -389,7 +389,7 @@
                 </Clicked>
             </Icon>
             <StackPanel ux:Name="searchinp" Alignment="Center" ItemSpacing="40" Height="30%" Width="70%" >
-                <App.Input TextAlignment="Center" PlaceholderText="Post Title" Value="{searchTitle}" Radius="0" Height="40" TextColor="#25333D" Underline="true" CaretColor="#333" LineCol="#AAA"  />
+                <App.Input TextAlignment="Center" PlaceholderText="Enter post title" Value="{searchTitle}" Radius="0" Height="40" TextColor="#25333D" Underline="true" CaretColor="#333" LineCol="#AAA"  />
                 <Rectangle Width="70%" Padding="10, 5" CornerRadius="5" Height="35" Color="#E8C11C" HitTestMode="LocalBoundsAndChildren" >
                     <Clicked Handler="{searchPosts}" />
                     <App.Text Value="Search" TextAlignment="Center" TextColor="#25333D" FontSize="14" />

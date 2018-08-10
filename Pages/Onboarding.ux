@@ -4,7 +4,7 @@
     <Activated>
         <Set Fade.Opacity="0" />
     </Activated>
-    <Grid Alignment="BottomCenter" Width="20%" Margin="10" ColumnCount="3" Columns="1*,1*,1*" Layer="Overlay">
+    <Grid Alignment="BottomCenter" Width="25%" Margin="10" ColumnCount="4" Columns="1*,1*,1*,1*" Layer="Overlay">
         <Circle ux:Name="first" Height="10" Width="10" Color="#2F333D">
             <Clicked>
                 <Set nav.Active="fst" />
@@ -20,35 +20,82 @@
                 <Set nav.Active="thd" />
             </Clicked>
         </Circle>
+        <Circle ux:Name="fourth" Height="10" Width="10" Color="#2F333D">
+            <Clicked>
+                <Set nav.Active="fht" />
+            </Clicked>
+        </Circle>
     </Grid>
     <PageControl IsRouterOutlet="false" ux:Name="nav">
-        <Page ux:Name="fst" Padding="0">
+        <Page Background="#E8C11C" ux:Name="fst" Padding="0">
             <Deferred>
-                <Image Layer="Background" StretchMode="UniformToFill" File="../Assets/Images/Tour Guide 01.jpg" />
+                <!-- <Image Layer="Background" StretchMode="UniformToFill" File="../Assets/Images/Tour Guide 02.jpg" /> -->
                 <WhileActive>
                     <Change first.Color="#FFF" />
                     <Scale Target="first" Factor="1.3" />
                 </WhileActive>
-                <StackPanel Orientation="Vertical" Width="50%" Height="40%" Margin="0, 0, 0, 100" Alignment="BottomCenter">
-                    <App.Title TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Value="Lets Hit Corruption" />
-                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="Honesty, Integrity, Transparency" />
+                <StackPanel ItemSpacing="40" Orientation="Vertical" Width="70%" Height="95%" Margin="0, 0, 0, 100" Alignment="VerticalCenter">
+                    <Icon TextColor="#FFF" TextAlignment="Center" FontSize="200" Value="&#xf2f7;" />
+                    <App.Header TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="23" Value="Resist Corruption, Embrace Zero Tolerance for Corruption" />
+                    <StackPanel Orientation="Horizontal"  Alignment="Center">    
+                        <Each Count="5">
+                            <Icon TextColor="#FFF" TextAlignment="Center" FontSize="20" Value="&#xf318;" />
+                        </Each>
+                    </StackPanel>
                 </StackPanel>
             </Deferred>
         </Page>
-        <Page ux:Name="scd" Padding="0">
+        <Page Background="#707272" ux:Name="scd" Padding="0">
             <Deferred>
-                <Image Layer="Background" StretchMode="UniformToFill" File="../Assets/Images/Tour Guide 02.jpg" />
                 <WhileActive>
                     <Change second.Color="#FFF" />
                     <Scale Target="second" Factor="1.3" />
                 </WhileActive>
-                <StackPanel Orientation="Vertical" Width="50%" Height="0%" Margin="0, 0, 0, 100" Alignment="BottomCenter">
-                    <App.Title TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Value="Stay Anonymous, Report Corruption" />
-                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="You do not need to sign in or register to make use of this feature" />
-                </StackPanel>
+                <DockPanel Alignment="Center" Width="80%" Height="70%" >
+                    <Image Alignment="Center" Height="160" Dock="Top" StretchMode="UniformToFill" File="../Assets/Images/pledge_white_md.png" />
+                    <StackPanel Width="60%" Dock="Fill" Margin="0, 20" ItemSpacing="15">
+                        <App.Header TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="25" Value="Take the Anti-Corruption Pledge" />
+                        <StackPanel Orientation="Vertical" Width="70%" Height="40%" Margin="0, 0, 0, 100" Alignment="VerticalCenter">
+                            <App.Header TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="30" Value="57,000" />
+                            <App.Text Value="PLEDGES" TextAlignment="Center" TextColor="#FFF" FontSize="14" />
+                        </StackPanel>
+                    </StackPanel>
+                    <Rectangle Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="80%" Padding="10, 5" CornerRadius="5" Height="40" Color="#E8C11C" >
+                        <App.Text Value="Pledge" TextAlignment="Center" TextColor="#25333D" FontSize="14" />
+                        <WhilePressed>
+                            <Scale Factor="0.8" />
+                        </WhilePressed>
+                        <Clicked>
+                            <Set nav.ActiveIndex="2" />
+                        </Clicked>
+                    </Rectangle>
+                </DockPanel>
             </Deferred>
         </Page>
-        <Page ux:Name="thd" Padding="0">
+        <Page Background="#FFF" ux:Name="thd" Padding="0">
+            <Deferred>
+                <WhileActive>
+                    <Change third.Color="#38B249" />
+                    <Scale Target="third" Factor="1.3" />
+                </WhileActive>
+                <DockPanel Alignment="VerticalCenter" Width="70%" Height="80%" >
+                    <Image Alignment="Center" Height="150" Dock="Top" StretchMode="UniformToFill" File="../Assets/Images/pledge_md.png" />
+                    <App.Text Margin="0, 10" Alignment="Center" TextWrapping="Wrap" TextAlignment="Center" TextColor="#25333D" FontSize="17" Width="90%" >
+                        I pledge to do my part to make Nigeria a better place by standing upright agains corruption by adopting a habit/lifestyle of Honesty, Integrity and Trasparency. Therefore I will resist, discourage and report corrupt practices.  
+                    </App.Text>
+                    <Rectangle Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="100%" Padding="10, 5" CornerRadius="5" Height="40" Color="#38B249" >
+                        <App.Text Value="I stand against corruption" TextAlignment="Center" TextColor="#FFF" FontSize="15" />
+                        <WhilePressed>
+                            <Scale Factor="0.8" />
+                        </WhilePressed>
+                        <Clicked>
+                            <Set nav.ActiveIndex="3" />
+                        </Clicked>
+                    </Rectangle>
+                </DockPanel>
+            </Deferred>
+        </Page>
+        <Page ux:Name="fht" Padding="0">
             <JavaScript>
                 var storage = require("modules/storage");
                 exports.goHome = function() {
@@ -57,22 +104,26 @@
                         .catch(err => router.goto("main", {}))
                 }
             </JavaScript>
-            <Image Layer="Background" StretchMode="UniformToFill" File="../Assets/Images/Tour Guide 03.jpg" />
             <WhileActive>
-                <Change third.Color="#FFF" />
-                <Scale Target="third" Factor="1.3" />
+                <Change fourth.Color="#E8C11C" />
+                <Scale Target="fourth" Factor="1.3" />
             </WhileActive>
             <Deferred>
-                <StackPanel Orientation="Vertical" Width="40%" Height="40%" Margin="0, 0, 0, 100" Alignment="BottomCenter">
-                    <App.Title TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="20" Value="Join the Conversations" />
-                    <App.Text TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="15" Value="Add your voice in the fight against corruption" />
-                    <Rectangle Margin="0, 20, 0, 0" Clicked="{goHome}" CornerRadius="5" Alignment="HorizontalCenter" Width="100%" Padding="10" Height="40" Color="#FFF" >
-                        <App.Text Value="Get Started" TextColor="#25333D" FontSize="15" />
+                <DockPanel Alignment="VerticalCenter" Width="70%" Height="80%" >
+                    <StackPanel ItemSpacing="20">
+                        <Image StretchMode="UniformToFill" File="../Assets/Images/well_done.png" />
+                        <App.Header Value="Well Done" Margin="0, 10" Alignment="Center" TextWrapping="Wrap" TextAlignment="Center" TextColor="#25333D" FontSize="20" />
+                    </StackPanel>
+                    <Rectangle Clicked="{goHome}" Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="70%" Padding="10, 5" CornerRadius="5" Height="40" Color="#E8C11C" >
+                        <App.Text Value="Get Started" TextAlignment="Center" TextColor="#FFF" FontSize="15" />
+                        <WhilePressed>
+                            <Scale Factor="0.8" />
+                        </WhilePressed>
                         <Clicked>
                             <Set Fade.Opacity="1" />
                         </Clicked>
                     </Rectangle>
-                </StackPanel>
+                </DockPanel>
             </Deferred>
         </Page>
     </PageControl>

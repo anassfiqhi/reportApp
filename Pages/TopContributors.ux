@@ -1,9 +1,35 @@
 <Page ux:Class="TopContributors" Background="#FFF">
+    <JavaScript>
+        var Fetch = require("modules/fetcher");
+        var Observable = require("FuseJS/Observable");
+        var users = Observable();
+        var loading = Observable();
+
+        this.Parameter.onValueChanged(module, res => {
+            loading.value = 'Loading Data...';
+            Fetch.getTopUsers()
+                .then(res => {
+                    if (res.length) {
+                        loading.value = '';
+                        users.replaceAll(res);
+                    }
+                })
+                .catch(err => loading.value = 'Data could not be retrieved at this time');
+        })
+
+        module.exports = {
+            users: users,
+            loading: loading,
+        }
+    </JavaScript>
     <DockPanel>
         <Rectangle Alignment="Left" Width="4" Color="#37B34A" Height="100%" />
         <ScrollView Dock="Fill" Padding="0, 60, 0, 0">
             <StackPanel>
-                <Each Count="10">
+                <WhileEmpty Items="{users}">
+                    <App.Text Value="{loading}" TextAlignment="Center" Alignment="VerticalCenter" />
+                </WhileEmpty>
+                <Each Items="{users}">
                     <Deferred>
                         <DockPanel Padding="20" Dock="Top" Height="70">
                             <Rectangle Layer="Background" Color="#FFF" StrokeColor="#EEE"/>
@@ -11,7 +37,7 @@
                                 <Image File="../Assets/Images/user.png"/>
                             </Circle>
                             <Grid Alignment="VerticalCenter" Margin="5, 0, 0, 0" CellSpacing="5" Columns="2*,1*" ColumnCount="2">
-                                <App.Header TextColor="#25333D" TextAlignment="Left" Alignment="VerticalCenter" FontSize="14" Value="Samuel Agbonkpolo" />
+                                <App.Header TextColor="#25333D" TextAlignment="Left" Alignment="VerticalCenter" FontSize="14" Value="{name}" />
                                 <StackPanel Alignment="CenterRight" Orientation="Horizontal">
                                     <Each Count="5">
                                         <Deferred>

@@ -59,11 +59,11 @@ function parseRes(post) {
 }
 
 function getRecentPosts() {
-    if (hasRequestedPosts.value === false && (posts.value !== undefined && posts.toArray().length !== 0 )) {
+    if (hasRequestedPosts.value === false && (posts.value !== undefined && posts.toArray().length !== 0)) {
         hasRequestedPosts.value = true;
         var latest = posts.toArray()[0];
         return Promise.all([Fetch.getRecPosts(latest.createdAt), Fetch.getTrendingPosts(), Fetch.getFeaturedPosts()])
-            .then(function(result) {
+            .then(function (result) {
                 if (result[0].length) {
                     noPosts.value = false;
                     var newPosts = result[0].map(post => parseRes(post));
@@ -101,7 +101,6 @@ function getRecentPosts() {
             }).catch(err => {
                 hasRequestedPosts.value = false;
             });
-
     } else {
         console.log('illicit request');
         getPosts();
@@ -113,51 +112,51 @@ function getPosts() {
         hasRequestedPosts.value = true;
         message.value = "Loading Posts...";
         return Promise.all([Fetch.getPosts(), Fetch.getTrendingPosts(), Fetch.getFeaturedPosts()])
-        .then(function(result) {
-            hasRequestedPosts.value = false;
-            if (result[0].length) {
-                noPosts.value = false;
-                var newPosts = result[0].map(post => parseRes(post));
-                posts.replaceAll(newPosts);
-                storage.addPosts(newPosts)
-                    .then(res => '')
-                    .catch(err => console.log(err));
-            } else {
+            .then(function (result) {
+                hasRequestedPosts.value = false;
+                if (result[0].length) {
+                    noPosts.value = false;
+                    var newPosts = result[0].map(post => parseRes(post));
+                    posts.replaceAll(newPosts);
+                    storage.addPosts(newPosts)
+                        .then(res => '')
+                        .catch(err => console.log(err));
+                } else {
+                    noPosts.value = true;
+                }
+                if (result[1].length) {
+                    noTPosts.value = false;
+                    var trendyPosts = result[1].map(post => parseRes(post));
+                    Tposts.replaceAll(trendyPosts);
+                    storage.addTrendingPosts(trendyPosts)
+                        .then(res => '')
+                        .catch(err => console.log(err));
+                } else {
+                    noTPosts.value = true;
+                }
+                if (result[2].length >= 5) {
+                    noFPosts.value = false;
+                    var featPosts = result[2].map(post => parseRes(post));
+                    Fposts.replaceAll(featPosts);
+                    storage.addFeaturedPosts(featPosts)
+                        .then(res => '')
+                        .catch(err => console.log(err));
+                } else {
+                    noFPosts.value = true;
+                }
+                hasRequestedPosts.value = false;
+                // if (!result[0].length && !result[1].length && !result[2].length)  {
+                //     hasRequestedPosts.value = false;
+                //     noPosts.value = true;
+                //     message.value = "Sorry No recent posts";
+                // }
+            }).catch(err => {
                 noPosts.value = true;
-            }
-            if (result[1].length) {
-                noTPosts.value = false;
-                var trendyPosts = result[1].map(post => parseRes(post));
-                Tposts.replaceAll(trendyPosts);
-                storage.addTrendingPosts(trendyPosts)
-                    .then(res => '')
-                    .catch(err => console.log(err));
-            } else {
                 noTPosts.value = true;
-            }
-            if (result[2].length >= 5) {
-                noFPosts.value = false;
-                var featPosts = result[2].map(post => parseRes(post));
-                Fposts.replaceAll(featPosts);
-                storage.addFeaturedPosts(featPosts)
-                    .then(res => '')
-                    .catch(err => console.log(err));
-            } else {
                 noFPosts.value = true;
-            }
-            hasRequestedPosts.value = false;
-            // if (!result[0].length && !result[1].length && !result[2].length)  {
-            //     hasRequestedPosts.value = false;
-            //     noPosts.value = true;
-            //     message.value = "Sorry No recent posts";
-            // }
-        }).catch(err => {
-            noPosts.value = true;
-            noTPosts.value = true;
-            noFPosts.value = true;
-            message.value = "Ooops couldn't get posts";
-            hasRequestedPosts.value = false;
-        });
+                message.value = "Ooops couldn't get posts";
+                hasRequestedPosts.value = false;
+            });
     } else {
         console.log('illicit request');
     }
@@ -165,40 +164,38 @@ function getPosts() {
 
 this.Parameter.onValueChanged(module, res => {
     storage.getPosts()
-    .then(data => {
-        if (!data.length) {
-            getPosts();
-        } else {
-            noPosts.value = false;
-            posts.replaceAll(data);
-            storage.getTrendingPosts()
-                .then(trending => {
-                    if (trending.length) {
-                        noTPosts.value = false;
-                        Tposts.replaceAll(trending);
-                        storage.getFeaturedPosts()
-                            .then(featured => {
-                                if (featured.length) {
-                                    noFPosts.value = false;
-                                    Fposts.replaceAll(featured);
+        .then(data => {
+            if (!data.length) {
+                getPosts();
+            } else {
+                noPosts.value = false;
+                posts.replaceAll(data);
+                storage.getTrendingPosts()
+                    .then(trending => {
+                        if (trending.length) {
+                            noTPosts.value = false;
+                            Tposts.replaceAll(trending);
+                            storage.getFeaturedPosts()
+                                .then(featured => {
+                                    if (featured.length) {
+                                        noFPosts.value = false;
+                                        Fposts.replaceAll(featured);
+                                        getRecentPosts();
+                                    }
+                                })
+                                .catch(err => {
                                     getRecentPosts();
-                                }
-                            })
-                            .catch(err => {
-                                getRecentPosts();
-                            }
-                        );
-                    } else {
+                                });
+                        } else {
+                            getRecentPosts();
+                        }
+                    })
+                    .catch(err => {
                         getRecentPosts();
-                    }
-                })
-                .catch(err => {
-                    getRecentPosts();
-                }
-            );
-        }
-    })
-    .catch(err => getPosts());
+                    });
+            }
+        })
+        .catch(err => getPosts());
 });
 
 // this.Post.onValueChanged(module, data => {
@@ -225,7 +222,7 @@ module.exports = {
     offset: offset,
     increaseLimit: increaseLimit,
     decreaseLimit: decreaseLimit,
-    shareText: function(args) {
+    shareText: function (args) {
         Share.shareText(`${args.data.title}\n${args.data.body}\n${args.data.image}`, "Upright NG");
     }
 };
