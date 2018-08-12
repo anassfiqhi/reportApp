@@ -34,8 +34,9 @@
                     <Change first.Color="#FFF" />
                     <Scale Target="first" Factor="1.3" />
                 </WhileActive>
-                <StackPanel ItemSpacing="40" Orientation="Vertical" Width="70%" Height="95%" Margin="0, 0, 0, 100" Alignment="VerticalCenter">
-                    <Icon TextColor="#FFF" TextAlignment="Center" FontSize="200" Value="&#xf2f7;" />
+                <StackPanel ItemSpacing="50" Orientation="Vertical" Width="70%" Height="95%" Margin="0, 0, 0, 100" Alignment="VerticalCenter">
+                    <!-- <Icon TextColor="#FFF" TextAlignment="Center" FontSize="200" Value="&#xf2f7;" /> -->
+                    <Image Alignment="Center" Height="160" Dock="Top" StretchMode="UniformToFill" File="../Assets/Images/Asset 2.png" />
                     <App.Header TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="23" Value="Resist Corruption, Embrace Zero Tolerance for Corruption" />
                     <StackPanel Orientation="Horizontal"  Alignment="Center">    
                         <Each Count="5">
@@ -110,9 +111,9 @@
             </WhileActive>
             <Deferred>
                 <DockPanel Alignment="VerticalCenter" Width="70%" Height="80%" >
-                    <StackPanel ItemSpacing="20">
-                        <Image StretchMode="UniformToFill" File="../Assets/Images/well_done.png" />
-                        <App.Header Value="Well Done" Margin="0, 10" Alignment="Center" TextWrapping="Wrap" TextAlignment="Center" TextColor="#25333D" FontSize="20" />
+                    <StackPanel Alignment="Center" ItemSpacing="40">
+                        <Image Height="180" StretchMode="UniformToFill" File="../Assets/Images/well_done.png" />
+                        <App.Header Value="Well Done" Margin="0, 10" Alignment="Center" TextWrapping="Wrap" TextAlignment="Center" TextColor="#25333D" FontSize="25" />
                     </StackPanel>
                     <Rectangle Clicked="{goHome}" Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="70%" Padding="10, 5" CornerRadius="5" Height="40" Color="#E8C11C" >
                         <App.Text Value="Get Started" TextAlignment="Center" TextColor="#FFF" FontSize="15" />

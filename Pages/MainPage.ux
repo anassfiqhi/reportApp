@@ -177,7 +177,7 @@
                 </Grid>
             </DockPanel>
             <ScrollView Visibility="Visible" ux:Name="Form" AllowedScrollDirections="Vertical" Opacity="1">
-                <StackPanel MinHeight="700" ux:Name="Editor" Padding="5" ItemSpacing="5">
+                <StackPanel MinHeight="700" ux:Name="Editor" Padding="5" ItemSpacing="20">
                     <Grid HitTestMode="LocalBoundsAndChildren" Alignment="Center" Width="80%" Columns="1*,1*,1*,1*" ColumnCount="4">
                         <Mat.Icon ux:Name="textIco" TextColor="#707272" FontSize="40" Value="&#xe264;">
                             <Clicked>
@@ -363,11 +363,16 @@
                     </PageControl>               
                     <App.Input ux:Name="title2" Height="50" PlaceholderText="title" PlaceholderColor="#CCC" Margin="30" Radius="0" TextColor="#111" Underline="true" CaretColor="#222" LineCol="#000" Value="{title}" />
                     <FormLabel Margin="30, 0, 30, 0" FontSize="14" TextColor="#CCC" Alignment="Left">Content</FormLabel>
-                    <App.TextBox ux:Name="content2" TextColor="#111" MinHeight="3" Margin="30, 0, 30, 0" Radius="0" LineCol="#000" Text="Content" Value="{content}"/>
+                    <App.TextBox ux:Name="content2" TextColor="#111" MinHeight="10" Margin="30, 0, 30, 0" Radius="0" LineCol="#000" Text="Content" Value="{content}"/>
                     <App.Input Visibility="Collapsed" ux:Name="anon" Value="{isAnon}" />
                     <DockPanel Margin="0, 30, 0, 0" Alignment="Center">
                         <FormLabel FontSize="12" Margin="0, 0, 20, 0" Dock="Left" TextColor="#111" Value="Anonymous ({isAnon})" Alignment="CenterRight"/>
-                        <MyToggle IsActive="{Property anon.Value}" ux:Name="toggle">
+                        <MyToggle SecondaryColor="#E8E8E8" PrimaryColor="#CCCCCC" IsActive="{Property anon.Value}" ux:Name="toggle">
+                            <SwipeGesture ux:Name="swiper" Length="46" Direction="Right" Type="Active" IsActive="{Property toggle.IsActive}" />
+                            <SwipingAnimation Source="swiper">
+                                <Change toggle.PrimaryColor="#FFFFFF" />
+                                <Change toggle.SecondaryColor="#E8C11C" />
+                            </SwipingAnimation>
                             <Clicked>
                                 <Set anon.Value="{ReadProperty toggle.IsActive}"/>
                             </Clicked>
@@ -382,13 +387,13 @@
                 </StackPanel>
             </ScrollView>
         </DockPanel>
-        <Panel Background="#F8ECBB" Edge="Bottom" Dock="Top" ux:Name="sidebar3" Height="100%">
+        <Panel Background="#605423" Edge="Bottom" Dock="Top" ux:Name="sidebar3" Height="100%">
             <Icon Margin="0, 10" Value="&#xf10c;" FontSize="40" TextColor="#333" Alignment="BottomCenter">
                 <Clicked>
                     <NavigateToggle Target="sidebar3" />
                 </Clicked>
             </Icon>
-            <StackPanel ux:Name="searchinp" Alignment="Center" ItemSpacing="40" Height="30%" Width="70%" >
+            <StackPanel ux:Name="searchinp" Alignment="Center" ItemSpacing="40" Height="40%" Width="70%" >
                 <App.Input TextAlignment="Center" PlaceholderText="Enter post title" Value="{searchTitle}" Radius="0" Height="40" TextColor="#25333D" Underline="true" CaretColor="#333" LineCol="#AAA"  />
                 <Rectangle Width="70%" Padding="10, 5" CornerRadius="5" Height="35" Color="#E8C11C" HitTestMode="LocalBoundsAndChildren" >
                     <Clicked Handler="{searchPosts}" />
