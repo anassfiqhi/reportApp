@@ -38,7 +38,7 @@
                     <!-- <Icon TextColor="#FFF" TextAlignment="Center" FontSize="200" Value="&#xf2f7;" /> -->
                     <Image Alignment="Center" Height="160" Dock="Top" StretchMode="UniformToFill" File="../Assets/Images/Asset 2.png" />
                     <App.Header TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="23" Value="Resist Corruption, Embrace Zero Tolerance for Corruption" />
-                    <StackPanel Orientation="Horizontal"  Alignment="Center">    
+                    <StackPanel Orientation="Horizontal"  Alignment="Center">
                         <Each Count="5">
                             <Icon TextColor="#FFF" TextAlignment="Center" FontSize="20" Value="&#xf318;" />
                         </Each>
@@ -82,7 +82,7 @@
                 <DockPanel Alignment="VerticalCenter" Width="70%" Height="80%" >
                     <Image Alignment="Center" Height="150" Dock="Top" StretchMode="UniformToFill" File="../Assets/Images/pledge_md.png" />
                     <App.Text Margin="0, 10" Alignment="Center" TextWrapping="Wrap" TextAlignment="Center" TextColor="#25333D" FontSize="17" Width="90%" >
-                        I pledge to do my part to make Nigeria a better place by standing upright agains corruption by adopting a habit/lifestyle of Honesty, Integrity and Trasparency. Therefore I will resist, discourage and report corrupt practices.  
+                        I pledge to do my part to make Nigeria a better place by standing upright agains corruption by adopting a habit/lifestyle of Honesty, Integrity and Trasparency. Therefore I will resist, discourage and report corrupt practices.
                     </App.Text>
                     <Rectangle Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="100%" Padding="10, 5" CornerRadius="5" Height="40" Color="#38B249" >
                         <App.Text Value="I stand against corruption" TextAlignment="Center" TextColor="#FFF" FontSize="15" />
@@ -99,10 +99,14 @@
         <Page ux:Name="fht" Padding="0">
             <JavaScript>
                 var storage = require("modules/storage");
+                var Share = require("FuseJS/Share");
                 exports.goHome = function() {
-                    storage.writeBaseData()
+                    Share.shareText('I just took #TheUprightPledge to be #Upright4Nigeria. Join other upright citizens by downloading the Upright mobile app', 'Upright NG');
+                    setTimeout(() => {
+                        storage.writeBaseData()
                         .then(res => router.goto("main", {}))
                         .catch(err => router.goto("main", {}))
+                    }, 5000);
                 }
             </JavaScript>
             <WhileActive>
@@ -115,8 +119,8 @@
                         <Image Height="180" StretchMode="UniformToFill" File="../Assets/Images/well_done.png" />
                         <App.Header Value="Well Done" Margin="0, 10" Alignment="Center" TextWrapping="Wrap" TextAlignment="Center" TextColor="#25333D" FontSize="25" />
                     </StackPanel>
-                    <Rectangle Clicked="{goHome}" Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="70%" Padding="10, 5" CornerRadius="5" Height="40" Color="#E8C11C" >
-                        <App.Text Value="Get Started" TextAlignment="Center" TextColor="#FFF" FontSize="15" />
+                    <Rectangle Clicked="{goHome}" Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="80%" Padding="10, 5" CornerRadius="5" Height="40" Color="#E8C11C" >
+                        <App.Text Value="Share Pledge &amp; Get Started" TextAlignment="Center" TextColor="#FFF" FontSize="15" />
                         <WhilePressed>
                             <Scale Factor="0.8" />
                         </WhilePressed>
