@@ -1,4 +1,4 @@
-package com.dirisu.reportapp;
+package com.ccsi.upright;
 
 import java.io.IOException;
 import java.io.File;
@@ -38,8 +38,8 @@ public class Recorder {
 
 		return instance;
 	}
-        
-        
+
+
     public void Start() {
         try {
             outputPath = createOutputPath();
@@ -66,8 +66,8 @@ public class Recorder {
         } catch (Exception e) {
             e.printStackTrace();
             return e.toString();
-        } 
-       
+        }
+
     }
 
     public String Play() {
@@ -97,7 +97,7 @@ public class Recorder {
                 mediaPlayer2.setDataSource(source);
                 mediaPlayer2.prepare();
                 mediaPlayer2.start();
-            } 
+            }
             if (action == "pause") {
                 mediaPlayer2.pause();
             }

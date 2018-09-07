@@ -56,10 +56,10 @@
                     <Image Alignment="Center" Height="160" Dock="Top" StretchMode="UniformToFill" File="../Assets/Images/pledge_white_md.png" />
                     <StackPanel Width="60%" Dock="Fill" Margin="0, 20" ItemSpacing="15">
                         <App.Header TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="25" Value="Take the Anti-Corruption Pledge" />
-                        <StackPanel Orientation="Vertical" Width="70%" Height="40%" Margin="0, 0, 0, 100" Alignment="VerticalCenter">
+                        <!-- <StackPanel Orientation="Vertical" Width="70%" Height="40%" Margin="0, 0, 0, 100" Alignment="VerticalCenter">
                             <App.Header TextColor="#FFF" TextWrapping="Wrap" TextAlignment="Center" FontSize="30" Value="57,000" />
                             <App.Text Value="PLEDGES" TextAlignment="Center" TextColor="#FFF" FontSize="14" />
-                        </StackPanel>
+                        </StackPanel> -->
                     </StackPanel>
                     <Rectangle Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="80%" Padding="10, 5" CornerRadius="5" Height="40" Color="#E8C11C" >
                         <App.Text Value="Pledge" TextAlignment="Center" TextColor="#25333D" FontSize="14" />
@@ -82,7 +82,7 @@
                 <DockPanel Alignment="VerticalCenter" Width="70%" Height="80%" >
                     <Image Alignment="Center" Height="150" Dock="Top" StretchMode="UniformToFill" File="../Assets/Images/pledge_md.png" />
                     <App.Text Margin="0, 10" Alignment="Center" TextWrapping="Wrap" TextAlignment="Center" TextColor="#25333D" FontSize="17" Width="90%" >
-                        I pledge to do my part to make Nigeria a better place by standing upright agains corruption by adopting a habit/lifestyle of Honesty, Integrity and Trasparency. Therefore I will resist, discourage and report corrupt practices.
+                        I pledge to do my part to make Nigeria a better place by standing upright against corruption by adopting a habit/lifestyle of Honesty, Integrity and Trasparency. Therefore I will resist, discourage and report corrupt practices.
                     </App.Text>
                     <Rectangle Dock="Bottom" HitTestMode="LocalBoundsAndChildren" Margin="0, 30, 0, 0" Width="100%" Padding="10, 5" CornerRadius="5" Height="40" Color="#38B249" >
                         <App.Text Value="I stand against corruption" TextAlignment="Center" TextColor="#FFF" FontSize="15" />

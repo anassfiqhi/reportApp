@@ -17,7 +17,7 @@
   "Android": {
     "ApplicationLabel": "Upright_NG",
     "Description": "Corruption Reporting",
-    "Package": "com.dirisu.reportapp",
+    "Package": "com.ccsi.upright",
     "VersionCode": 2,
     "Icons": {
         "LDPI": "Assets/Images/logo-192.png",

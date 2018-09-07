@@ -34,7 +34,7 @@ public class Recorder: NativeModule {
     [Foreign(Language.Java)]
 	static extern(Android) void StartRecording()
 	@{
-		com.dirisu.reportapp.Recorder recorder_ = com.dirisu.reportapp.Recorder.getInstance();
+		com.ccsi.upright.Recorder recorder_ = com.ccsi.upright.Recorder.getInstance();
 		recorder_.Start();
 	@}
 
@@ -45,7 +45,7 @@ public class Recorder: NativeModule {
 	[Foreign(Language.Java)]
 	static extern(Android) string StopRecording()
 	@{
-		com.dirisu.reportapp.Recorder recorder = com.dirisu.reportapp.Recorder.getInstance();
+		com.ccsi.upright.Recorder recorder = com.ccsi.upright.Recorder.getInstance();
 		return recorder.Stop();
 	@}
 
@@ -57,7 +57,7 @@ public class Recorder: NativeModule {
 	[Foreign(Language.Java)]
 	static extern(Android) string PlayRecording()
 	@{
-		com.dirisu.reportapp.Recorder player = com.dirisu.reportapp.Recorder.getInstance();
+		com.ccsi.upright.Recorder player = com.ccsi.upright.Recorder.getInstance();
 		return player.Play();
 	@}
 
@@ -69,7 +69,7 @@ public class Recorder: NativeModule {
 	[Foreign(Language.Java)]
 	static extern(Android) void PlaySound(String src, String Action)
 	@{
-		com.dirisu.reportapp.Recorder player_ = com.dirisu.reportapp.Recorder.getInstance();
+		com.ccsi.upright.Recorder player_ = com.ccsi.upright.Recorder.getInstance();
 		player_.PlaySound(src, Action);
 	@}
 
